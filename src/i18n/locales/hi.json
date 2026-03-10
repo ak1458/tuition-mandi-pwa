@@ -1,0 +1,312 @@
+{
+  "app": {
+    "name": "तख्ती ऐप",
+    "tagline": "ट्यूशन टीचर मैनेजमेंट"
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "attendance": "उपस्थिति",
+    "fees": "फीस",
+    "reports": "रिपोर्ट",
+    "inquiries": "पूछताछ",
+    "logout": "लॉगआउट",
+    "back": "वापस"
+  },
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "save": "सेव करें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "add": "जोड़ें",
+    "create": "बनाएं",
+    "search": "खोजें",
+    "select": "चुनें",
+    "submit": "जमा करें",
+    "close": "बंद करें",
+    "retry": "पुनः प्रयास करें",
+    "success": "सफल",
+    "error": "त्रुटि",
+    "warning": "चेतावनी",
+    "info": "जानकारी",
+    "yes": "हां",
+    "no": "नहीं",
+    "ok": "ठीक है",
+    "done": "पूर्ण",
+    "pending": "लंबित",
+    "paid": "चुकाया",
+    "partial": "आंशिक",
+    "present": "उपस्थित",
+    "absent": "अनुपस्थित",
+    "month": "माह",
+    "date": "तारीख",
+    "student": "छात्र",
+    "students": "छात्र",
+    "batch": "बैच",
+    "batches": "बैच",
+    "teacher": "शिक्षक",
+    "phone": "फोन",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "name": "नाम",
+    "class": "कक्षा",
+    "subject": "विषय",
+    "fee": "फीस",
+    "amount": "राशि",
+    "total": "कुल",
+    "collected": "वसूल",
+    "due": "बकाया",
+    "status": "स्थिति",
+    "actions": "कार्रवाई",
+    "welcome": "स्वागत है",
+    "hello": "नमस्ते",
+    "greeting": "नमस्ते"
+  },
+  "login": {
+    "title": "शिक्षक लॉगिन",
+    "subtitle": "प्राथमिक: फोन ओटीपी | द्वितीयक: ईमेल",
+    "phoneTab": "फोन ओटीपी",
+    "emailTab": "ईमेल",
+    "phoneLabel": "फोन नंबर (E.164)",
+    "phonePlaceholder": "+919876543210",
+    "sendOtp": "ओटीपी भेजें",
+    "sendingOtp": "भेजा जा रहा है...",
+    "otpLabel": "ओटीपी कोड",
+    "otpPlaceholder": "6 अंक का ओटीपी",
+    "verifyOtp": "ओटीपी सत्यापित करें",
+    "verifying": "सत्यापित हो रहा है...",
+    "resendOtp": "ओटीपी पुनः भेजें",
+    "resendIn": "{{seconds}} सेकंड में पुनः भेजें",
+    "emailLabel": "ईमेल",
+    "emailPlaceholder": "teacher@example.com",
+    "passwordLabel": "पासवर्ड",
+    "signIn": "साइन इन करें",
+    "signingIn": "साइन इन हो रहा है...",
+    "invalidPhone": "कृपया E.164 प्रारूप में फोन नंबर दर्ज करें। उदाहरण: +919876543210",
+    "invalidOtp": "अमान्य ओटीपी। कृपया पुनः प्रयास करें।",
+    "loginFailed": "लॉगिन विफल। कृपया पुनः प्रयास करें।",
+    "otpSent": "ओटीपी भेज दिया गया है। कृपया अपना एसएमएस देखें।",
+    "demoMode": "स्थानीय डेमो मोड सक्रिय। ओटीपी सत्यापन अनुकरण किया जा रहा है।",
+    "phoneLabelIndia": "\u092e\u094b\u092c\u093e\u0907\u0932 \u0928\u0902\u092c\u0930 (\u092d\u093e\u0930\u0924)",
+    "phonePlaceholderIndia": "9876543210",
+    "invalidPhoneIndia": "10 \u0905\u0902\u0915\u094b\u0902 \u0915\u093e \u092e\u094b\u092c\u093e\u0907\u0932 \u0928\u0902\u092c\u0930 \u0926\u0930\u094d\u091c \u0915\u0930\u0947\u0902\u0964 +91 \u092a\u0939\u0932\u0947 \u0938\u0947 \u091c\u0941\u095c\u093e \u0939\u0948\u0964",
+    "otpSentTo": "{{phone}} \u092a\u0930 \u0913\u091f\u0940\u092a\u0940 \u092d\u0947\u091c \u0926\u093f\u092f\u093e \u0917\u092f\u093e \u0939\u0948\u0964",
+    "otpSendFailed": "\u0913\u091f\u0940\u092a\u0940 \u092d\u0947\u091c\u0928\u0947 \u092e\u0947\u0902 \u0926\u093f\u0915\u094d\u0915\u0924 \u0939\u0941\u0908\u0964",
+    "otpVerifyFailed": "\u0913\u091f\u0940\u092a\u0940 \u0938\u0924\u094d\u092f\u093e\u092a\u093f\u0924 \u0928\u0939\u0940\u0902 \u0939\u0941\u0906\u0964"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "greeting": "नमस्ते, {{name}}",
+    "demoMode": "स्थानीय डेमो मोड सक्रिय। डेटा स्थानीय स्टोरेज में संग्रहीत है।",
+    "stats": {
+      "totalStudents": "कुल छात्र",
+      "presentToday": "आज उपस्थित",
+      "feesCollected": "वसूल फीस",
+      "feePending": "लंबित फीस"
+    },
+    "createBatch": {
+      "title": "बैच बनाएं",
+      "namePlaceholder": "बैच का नाम",
+      "classPlaceholder": "कक्षा लेबल",
+      "subjectPlaceholder": "विषय",
+      "button": "बैच जोड़ें"
+    },
+    "createStudent": {
+      "title": "छात्र बनाएं",
+      "namePlaceholder": "छात्र का पूरा नाम",
+      "classPlaceholder": "कक्षा लेबल",
+      "subjectPlaceholder": "विषय",
+      "feePlaceholder": "मासिक फीस (संख्या)",
+      "phonePlaceholder": "अभिभावक का फोन (वैकल्पिक)",
+      "batchPlaceholder": "बाद में बैच निर्धारित करें",
+      "button": "छात्र जोड़ें"
+    },
+    "batchesList": {
+      "title": "बैच",
+      "empty": "अभी तक कोई बैच नहीं। ऊपर से अपना पहला बैच बनाएं।"
+    },
+    "studentsList": {
+      "title": "छात्र",
+      "empty": "अभी तक कोई छात्र नहीं। ऊपर के फॉर्म से छात्र जोड़ें।"
+    }
+  },
+  "attendance": {
+    "title": "उपस्थिति",
+    "demoMode": "स्थानीय डेमो मोड सक्रिय। उपस्थिति स्थानीय स्टोरेज में सेव हो रही है।",
+    "selectBatchDate": {
+      "title": "बैच और तारीख चुनें",
+      "batchPlaceholder": "बैच चुनें",
+      "dateLabel": "तारीख"
+    },
+    "attendanceList": {
+      "title": "उपस्थिति सूची",
+      "loading": "उपस्थिति डेटा लोड हो रहा है...",
+      "empty": "चयनित बैच/तारीख के लिए कोई छात्र नहीं मिला।"
+    },
+    "saveButton": "उपस्थिति सेव करें",
+    "saving": "सेव हो रहा है...",
+    "saveSuccess": "उपस्थिति सफलतापूर्वक सेव हो गई।",
+    "offlineQueued": "ऑफलाइन मोड: उपस्थिति सिंक के लिए कतार में है।",
+    "networkError": "नेटवर्क समस्या। उपस्थिति बाद में सिंक के लिए कतार में है।",
+    "syncSuccess": "{{count}} कतारबद्ध उपस्थिति रिकॉर्ड सिंक हो गए।"
+  },
+  "fees": {
+    "title": "फीस",
+    "demoMode": "स्थानीय डेमो मोड सक्रिय। फीस रिकॉर्ड स्थानीय स्टोरेज में अपडेट हो रहे हैं।",
+    "monthLabel": "माह",
+    "summary": {
+      "collected": "वसूल",
+      "due": "बकाया",
+      "paid": "चुकाया",
+      "pendingPartial": "लंबित + आंशिक"
+    },
+    "studentList": {
+      "title": "छात्र फीस स्थिति",
+      "loading": "फीस डेटा लोड हो रहा है...",
+      "empty": "इस माह के लिए कोई छात्र/फीस डेटा नहीं।",
+      "dueText": "बकाया: रु {{amount}}"
+    },
+    "presets": {
+      "pending": "लंबित",
+      "partial": "आंशिक",
+      "paid": "चुकाया"
+    },
+    "saveButton": "सेव करें",
+    "saving": "सेव हो रहा है...",
+    "saveSuccess": "{{name}} के लिए फीस अपडेट सेव हो गया।",
+    "offlineQueued": "ऑफलाइन मोड: फीस अपडेट सिंक के लिए कतार में है।",
+    "networkError": "नेटवर्क समस्या। फीस अपडेट बाद में सिंक के लिए कतार में है।",
+    "syncSuccess": "{{count}} कतारबद्ध फीस अपडेट सिंक हो गए।"
+  },
+  "reports": {
+    "title": "रिपोर्ट",
+    "demoMode": "स्थानीय डेमो मोड सक्रिय। एआई रिपोर्ट सीधे एपीआई का उपयोग करती हैं।",
+    "target": {
+      "title": "रिपोर्ट लक्ष्य",
+      "studentPlaceholder": "छात्र चुनें",
+      "monthLabel": "माह"
+    },
+    "metrics": {
+      "title": "मेट्रिक्स",
+      "loading": "मेट्रिक्स लोड हो रहे हैं...",
+      "attendance": "उपस्थिति",
+      "avgScore": "औसत स्कोर",
+      "testsDone": "टेस्ट पूर्ण"
+    },
+    "buttons": {
+      "generateAi": "एआई रिपोर्ट बनाएं",
+      "generating": "बन रही है...",
+      "manualTemplate": "मैनुअल टेम्पलेट"
+    },
+    "reportText": {
+      "title": "रिपोर्ट टेक्स्ट",
+      "empty": "अभी तक कोई रिपोर्ट उपलब्ध नहीं।",
+      "manualReady": "मैनुअल टेम्पलेट रिपोर्ट तैयार है।"
+    },
+    "shareWhatsapp": "व्हाट्सएप पर शेयर करें",
+    "errors": {
+      "rateLimit": "रिपोर्ट जनरेशन सीमा पूरी हो गई। कृपया बाद में पुनः प्रयास करें।",
+      "retryAfter": "{{seconds}} सेकंड में पुनः प्रयास करें",
+      "aiProviderDown": "एआई सेवा वर्तमान में अनुपलब्ध है। आप नीचे दिए मैनुअल टेम्पलेट का उपयोग कर सकते हैं।",
+      "networkError": "इंटरनेट कनेक्शन कमजोर है। कृपया कनेक्शन जांचें और पुनः प्रयास करें।",
+      "validationError": "छात्र डेटा अधूरा है। कृपया विवरण अपडेट करें।",
+      "useManual": "मैनुअल टेम्पलेट का उपयोग करें",
+      "updateStudent": "छात्र विवरण अपडेट करें"
+    }
+  },
+  "language": {
+    "title": "भाषा",
+    "select": "भाषा चुनें",
+    "changed": "भाषा {{language}} में बदल दी गई"
+  },
+  "pwa": {
+    "offlineBanner": "ऑफ़लाइन मोड सक्रिय है। इंटरनेट आने पर सिंक होगा।",
+    "installButton": "तख्ती ऐप इंस्टॉल करें"
+  },
+  "profileSetup": {
+    "title": "प्रोफ़ाइल सेटअप",
+    "subtitle": "अपनी शिक्षण प्रोफ़ाइल बनाएं",
+    "step1Title": "बुनियादी जानकारी",
+    "step2Title": "शिक्षण विवरण",
+    "step3Title": "फीस और उपलब्धता",
+    "fullName": "पूरा नाम",
+    "fullNamePlaceholder": "आपका पूरा नाम",
+    "areaMohalla": "एरिया / मोहल्ला",
+    "areaMohallaPlaceholder": "सिविल लाइन्स, गांधी नगर...",
+    "city": "शहर",
+    "cityPlaceholder": "गोंडा",
+    "district": "जिला",
+    "districtPlaceholder": "गोंडा",
+    "pincode": "पिनकोड",
+    "pincodePlaceholder": "271001",
+    "bio": "बायो",
+    "bioPlaceholder": "अपने बारे में कुछ लिखें...",
+    "charsLeft": "{{count}} अक्षर बाकी",
+    "subjects": "विषय",
+    "classes": "कक्षाएं",
+    "medium": "माध्यम",
+    "experience": "अनुभव (वर्ष)",
+    "timeSlots": "समय स्लॉट",
+    "feeMin": "न्यूनतम फीस (₹/माह)",
+    "feeMax": "अधिकतम फीस (₹/माह)",
+    "feeNegotiable": "फीस में बात हो सकती है?",
+    "homeTuition": "होम ट्यूशन उपलब्ध",
+    "onlineTuition": "ऑनलाइन ट्यूशन उपलब्ध",
+    "openToSchool": "स्कूल पदों के लिए उपलब्ध",
+    "selectItems": "चुनें",
+    "back": "← पीछे",
+    "next": "आगे →",
+    "saving": "सेव हो रहा है...",
+    "createProfile": "✅ प्रोफ़ाइल बनाएं",
+    "saveError": "प्रोफ़ाइल सेव नहीं हुई। कृपया पुनः प्रयास करें।"
+  },
+  "search": {
+    "title": "तख्ती सर्च",
+    "subtitle": "अपने क्षेत्र का सर्वश्रेष्ठ शिक्षक खोजें",
+    "cityPlaceholder": "शहर दालें — गोंडा, लखनऊ...",
+    "showFilters": "फ़िल्टर दिखाएं ▼",
+    "hideFilters": "फ़िल्टर बंद करें ▲",
+    "subject": "विषय",
+    "class": "कक्षा",
+    "medium": "माध्यम",
+    "homeTuition": "🏠 होम ट्यूशन",
+    "online": "💻 ऑनलाइन",
+    "resultCount": "{{city}} में {{count}} शिक्षक",
+    "emptyTitle": "इस क्षेत्र में अभी शिक्षक नहीं हैं",
+    "emptySubtitle": "क्या आप शिक्षक हैं? मुफ़्त में प्रोफ़ाइल बनाएं।",
+    "createProfile": "प्रोफ़ाइल बनाएं",
+    "initialTitle": "अपने शहर का नाम दालें",
+    "initialSubtitle": "अपने शहर के सर्वश्रेष्ठ शिक्षक खोजें",
+    "whatsapp": "💬 व्हाट्सएप",
+    "viewProfile": "प्रोफ़ाइल देखें",
+    "featured": "फ़ीचर्ड"
+  },
+  "teacherProfile": {
+    "notFound": "प्रोफ़ाइल नहीं मिली",
+    "notFoundDesc": "यह शिक्षक प्रोफ़ाइल उपलब्ध नहीं है।",
+    "backToSearch": "शिक्षक खोजें",
+    "whatsappContact": "💬 व्हाट्सएप पर संपर्क करें",
+    "teachingDetails": "शिक्षण विवरण",
+    "subjects": "विषय",
+    "classes": "कक्षाएं",
+    "fees": "फीस",
+    "feeNegotiable": "💬 फीस में बात हो सकती है",
+    "timings": "उपलब्ध समय",
+    "verifiedResults": "✅ तख्ती सत्यापित परिणाम",
+    "ratings": "रेटिंग और समीक्षा",
+    "noReviews": "अभी कोई समीक्षा नहीं है",
+    "writeReview": "✍️ अपना अनुभव साझा करें",
+    "shareTitle": "इस प्रोफ़ाइल को साझा करें",
+    "shareButton": "📤 प्रोफ़ाइल शेयर करें",
+    "about": "परिचय",
+    "experience": "{{years}} वर्ष का अनुभव"
+  },
+  "boostProfile": {
+    "title": "प्रोफ़ाइल बूस्ट करें",
+    "description": "खोज परिणामों में अपनी प्रोफ़ाइल को ऊपर लाएं और अधिक पूछताछ प्राप्त करें। (शिक्षक सत्यापित अनुभाग)।",
+    "boostedTitle": "प्रोफ़ाइल बूस्टेड!",
+    "boostedDescription": "आपकी प्रोफ़ाइल खोज परिणामों में सबसे ऊपर दिखाई दे रही है। यह बूस्ट <strong>{{date}}</strong> तक मान्य है।",
+    "localMode": "⚠️ लोकल डेमो मोड: भुगतान सिम्युलेट किया जाएगा",
+    "paymentFailed": "बूस्ट भुगतान विफल रहा"
+  }
+}

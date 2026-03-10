@@ -1,0 +1,312 @@
+{
+  "app": {
+    "name": "Takhti App",
+    "tagline": "Tuition Teacher Management"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "attendance": "Attendance",
+    "fees": "Fees",
+    "reports": "Reports",
+    "inquiries": "Inquiries",
+    "logout": "Logout",
+    "back": "Back"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "create": "Create",
+    "search": "Search",
+    "select": "Select",
+    "submit": "Submit",
+    "close": "Close",
+    "retry": "Retry",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "done": "Done",
+    "pending": "Pending",
+    "paid": "Paid",
+    "partial": "Partial",
+    "present": "Present",
+    "absent": "Absent",
+    "month": "Month",
+    "date": "Date",
+    "student": "Student",
+    "students": "Students",
+    "batch": "Batch",
+    "batches": "Batches",
+    "teacher": "Teacher",
+    "phone": "Phone",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "class": "Class",
+    "subject": "Subject",
+    "fee": "Fee",
+    "amount": "Amount",
+    "total": "Total",
+    "collected": "Collected",
+    "due": "Due",
+    "status": "Status",
+    "actions": "Actions",
+    "welcome": "Welcome",
+    "hello": "Hello",
+    "greeting": "Namaste"
+  },
+  "login": {
+    "title": "Teacher Login",
+    "subtitle": "Primary: Phone OTP | Secondary: Email",
+    "phoneTab": "Phone OTP",
+    "emailTab": "Email",
+    "phoneLabel": "Phone number (E.164)",
+    "phonePlaceholder": "+919876543210",
+    "sendOtp": "Send OTP",
+    "sendingOtp": "Sending...",
+    "otpLabel": "OTP code",
+    "otpPlaceholder": "6 digit OTP",
+    "verifyOtp": "Verify OTP",
+    "verifying": "Verifying...",
+    "resendOtp": "Resend OTP",
+    "resendIn": "Resend in {{seconds}}s",
+    "emailLabel": "Email",
+    "emailPlaceholder": "teacher@example.com",
+    "passwordLabel": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "invalidPhone": "Please enter phone in E.164 format. Example: +919876543210",
+    "invalidOtp": "Invalid OTP. Please try again.",
+    "loginFailed": "Login failed. Please try again.",
+    "otpSent": "OTP sent. Please check your SMS.",
+    "demoMode": "Local demo mode active. OTP verification is simulated.",
+    "phoneLabelIndia": "Mobile number (India)",
+    "phonePlaceholderIndia": "9876543210",
+    "invalidPhoneIndia": "Enter 10-digit mobile number. +91 is already added.",
+    "otpSentTo": "OTP sent to {{phone}}.",
+    "otpSendFailed": "Could not send OTP. Please try again.",
+    "otpVerifyFailed": "OTP verification failed. Please try again."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Namaste, {{name}}",
+    "demoMode": "Local demo mode active. Data is stored in local storage.",
+    "stats": {
+      "totalStudents": "Total Students",
+      "presentToday": "Present Today",
+      "feesCollected": "Fees Collected",
+      "feePending": "Fee Pending"
+    },
+    "createBatch": {
+      "title": "Create Batch",
+      "namePlaceholder": "Batch name",
+      "classPlaceholder": "Class label",
+      "subjectPlaceholder": "Subject",
+      "button": "Add Batch"
+    },
+    "createStudent": {
+      "title": "Create Student",
+      "namePlaceholder": "Student full name",
+      "classPlaceholder": "Class label",
+      "subjectPlaceholder": "Subject",
+      "feePlaceholder": "Monthly fee (number)",
+      "phonePlaceholder": "Guardian phone (optional)",
+      "batchPlaceholder": "Assign batch later",
+      "button": "Add Student"
+    },
+    "batchesList": {
+      "title": "Batches",
+      "empty": "No batches yet. Create your first batch above."
+    },
+    "studentsList": {
+      "title": "Students",
+      "empty": "No students yet. Add students from the form above."
+    }
+  },
+  "attendance": {
+    "title": "Attendance",
+    "demoMode": "Local demo mode active. Attendance is saved to local storage.",
+    "selectBatchDate": {
+      "title": "Select Batch and Date",
+      "batchPlaceholder": "Choose batch",
+      "dateLabel": "Date"
+    },
+    "attendanceList": {
+      "title": "Attendance List",
+      "loading": "Loading attendance data...",
+      "empty": "No students found for selected batch/date."
+    },
+    "saveButton": "Save Attendance",
+    "saving": "Saving...",
+    "saveSuccess": "Attendance saved successfully.",
+    "offlineQueued": "Offline mode: attendance queued for sync.",
+    "networkError": "Network issue. Attendance queued for later sync.",
+    "syncSuccess": "{{count}} queued attendance records synced."
+  },
+  "fees": {
+    "title": "Fees",
+    "demoMode": "Local demo mode active. Fee records are updated in local storage.",
+    "monthLabel": "Month",
+    "summary": {
+      "collected": "Collected",
+      "due": "Due",
+      "paid": "Paid",
+      "pendingPartial": "Pending + Partial"
+    },
+    "studentList": {
+      "title": "Student Fee Status",
+      "loading": "Loading fee data...",
+      "empty": "No students/fee data for this month.",
+      "dueText": "Due: Rs {{amount}}"
+    },
+    "presets": {
+      "pending": "Pending",
+      "partial": "Partial",
+      "paid": "Paid"
+    },
+    "saveButton": "Save",
+    "saving": "Saving...",
+    "saveSuccess": "Fee update saved for {{name}}.",
+    "offlineQueued": "Offline mode: fee update queued for sync.",
+    "networkError": "Network issue. Fee update queued for later sync.",
+    "syncSuccess": "{{count}} queued fee updates synced."
+  },
+  "reports": {
+    "title": "Reports",
+    "demoMode": "Local demo mode active. AI reports use direct API.",
+    "target": {
+      "title": "Report Target",
+      "studentPlaceholder": "Select student",
+      "monthLabel": "Month"
+    },
+    "metrics": {
+      "title": "Metrics",
+      "loading": "Loading metrics...",
+      "attendance": "Attendance",
+      "avgScore": "Avg Score",
+      "testsDone": "Tests Done"
+    },
+    "buttons": {
+      "generateAi": "Generate AI Report",
+      "generating": "Generating...",
+      "manualTemplate": "Manual Template"
+    },
+    "reportText": {
+      "title": "Report Text",
+      "empty": "No report available yet.",
+      "manualReady": "Manual template report is ready."
+    },
+    "shareWhatsapp": "Share on WhatsApp",
+    "errors": {
+      "rateLimit": "Report generation limit reached. Please try again later.",
+      "retryAfter": "Retry in {{seconds}}s",
+      "aiProviderDown": "AI service is currently unavailable. You can use the manual template below.",
+      "networkError": "Internet connection is weak. Please check connection and retry.",
+      "validationError": "Student data is incomplete. Please update details.",
+      "useManual": "Use Manual Template",
+      "updateStudent": "Update Student Details"
+    }
+  },
+  "language": {
+    "title": "Language",
+    "select": "Select Language",
+    "changed": "Language changed to {{language}}"
+  },
+  "pwa": {
+    "offlineBanner": "Offline mode active. Sync will run when internet returns.",
+    "installButton": "Install Takhti App"
+  },
+  "profileSetup": {
+    "title": "Profile Setup",
+    "subtitle": "Create your teaching profile",
+    "step1Title": "Basic Information",
+    "step2Title": "Teaching Details",
+    "step3Title": "Fees & Availability",
+    "fullName": "Full Name",
+    "fullNamePlaceholder": "Your full name",
+    "areaMohalla": "Area / Mohalla",
+    "areaMohallaPlaceholder": "Civil Lines, Gandhi Nagar...",
+    "city": "City",
+    "cityPlaceholder": "Gonda",
+    "district": "District",
+    "districtPlaceholder": "Gonda",
+    "pincode": "Pincode",
+    "pincodePlaceholder": "271001",
+    "bio": "Bio",
+    "bioPlaceholder": "Write something about yourself...",
+    "charsLeft": "{{count}} chars left",
+    "subjects": "Subjects",
+    "classes": "Classes",
+    "medium": "Medium",
+    "experience": "Experience (years)",
+    "timeSlots": "Time Slots",
+    "feeMin": "Min Fee (₹/month)",
+    "feeMax": "Max Fee (₹/month)",
+    "feeNegotiable": "Fee negotiable?",
+    "homeTuition": "Home tuition available",
+    "onlineTuition": "Online tuition available",
+    "openToSchool": "Available for school positions",
+    "selectItems": "Select items",
+    "back": "← Back",
+    "next": "Next →",
+    "saving": "Saving...",
+    "createProfile": "✅ Create Profile",
+    "saveError": "Could not save profile. Please try again."
+  },
+  "search": {
+    "title": "Takhti Search",
+    "subtitle": "Find the best teacher in your area",
+    "cityPlaceholder": "Enter city — Gonda, Lucknow...",
+    "showFilters": "Show Filters ▼",
+    "hideFilters": "Hide Filters ▲",
+    "subject": "Subject",
+    "class": "Class",
+    "medium": "Medium",
+    "homeTuition": "🏠 Home Tuition",
+    "online": "💻 Online",
+    "resultCount": "{{count}} teacher(s) in {{city}}",
+    "emptyTitle": "No teachers in this area yet",
+    "emptySubtitle": "Are you a teacher? Create your profile for free.",
+    "createProfile": "Create Profile",
+    "initialTitle": "Enter your city name",
+    "initialSubtitle": "Search for the best teachers in your city",
+    "whatsapp": "💬 WhatsApp",
+    "viewProfile": "View Profile",
+    "featured": "Featured"
+  },
+  "teacherProfile": {
+    "notFound": "Profile not found",
+    "notFoundDesc": "This teacher profile is not available.",
+    "backToSearch": "Search Teachers",
+    "whatsappContact": "💬 Contact on WhatsApp",
+    "teachingDetails": "Teaching Details",
+    "subjects": "Subjects",
+    "classes": "Classes",
+    "fees": "Fees",
+    "feeNegotiable": "💬 Fee is negotiable",
+    "timings": "Available Timings",
+    "verifiedResults": "✅ Takhti Verified Results",
+    "ratings": "Ratings & Reviews",
+    "noReviews": "No reviews yet",
+    "writeReview": "✍️ Share your experience",
+    "shareTitle": "Share this profile",
+    "shareButton": "📤 Share Profile",
+    "about": "About",
+    "experience": "{{years}} years experience"
+  },
+  "boostProfile": {
+    "title": "Boost Profile",
+    "description": "Boost your profile in search results to get more inquiries. (Teachers verified section).",
+    "boostedTitle": "Profile Boosted!",
+    "boostedDescription": "Your profile is appearing at the top of search results. This boost is valid until <strong>{{date}}</strong>.",
+    "localMode": "⚠️ Local demo mode: Payment will be simulated",
+    "paymentFailed": "Boost payment failed"
+  }
+}

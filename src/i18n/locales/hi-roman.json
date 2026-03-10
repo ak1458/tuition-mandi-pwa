@@ -1,0 +1,312 @@
+{
+  "app": {
+    "name": "Takhti App",
+    "tagline": "Tuition Teacher Management"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "attendance": "Attendance",
+    "fees": "Fees",
+    "reports": "Reports",
+    "inquiries": "Inquiries",
+    "logout": "Logout",
+    "back": "Back"
+  },
+  "common": {
+    "loading": "load ho raha hai...",
+    "save": "save karein",
+    "cancel": "cancel",
+    "delete": "delete",
+    "edit": "edit",
+    "add": "add",
+    "create": "create",
+    "search": "search",
+    "select": "select",
+    "submit": "submit",
+    "close": "close",
+    "retry": "phir try karein",
+    "success": "success",
+    "error": "error",
+    "warning": "warning",
+    "info": "information",
+    "yes": "haan",
+    "no": "nahi",
+    "ok": "theek hai",
+    "done": "ho gaya",
+    "pending": "pending",
+    "paid": "paid",
+    "partial": "partial",
+    "present": "present",
+    "absent": "absent",
+    "month": "mahina",
+    "date": "tareekh",
+    "student": "student",
+    "students": "students",
+    "batch": "batch",
+    "batches": "batches",
+    "teacher": "teacher",
+    "phone": "phone",
+    "email": "email",
+    "password": "password",
+    "name": "naam",
+    "class": "class",
+    "subject": "subject",
+    "fee": "fee",
+    "amount": "rakam",
+    "total": "total",
+    "collected": "collected",
+    "due": "baki",
+    "status": "status",
+    "actions": "actions",
+    "welcome": "swagat hai",
+    "hello": "namaste",
+    "greeting": "Namaste"
+  },
+  "login": {
+    "title": "Teacher Login",
+    "subtitle": "Primary: Phone OTP | Secondary: Email",
+    "phoneTab": "Phone OTP",
+    "emailTab": "Email",
+    "phoneLabel": "Phone number (E.164)",
+    "phonePlaceholder": "+919876543210",
+    "sendOtp": "OTP bhejein",
+    "sendingOtp": "bheja ja raha hai...",
+    "otpLabel": "OTP code",
+    "otpPlaceholder": "6 digit OTP",
+    "verifyOtp": "OTP verify karein",
+    "verifying": "verify ho raha hai...",
+    "resendOtp": "OTP phir bhejein",
+    "resendIn": "{{seconds}}s mein phir bhejein",
+    "emailLabel": "Email",
+    "emailPlaceholder": "teacher@example.com",
+    "passwordLabel": "Password",
+    "signIn": "Sign In karein",
+    "signingIn": "Sign In ho raha hai...",
+    "invalidPhone": "Phone number E.164 format mein daaliye. Example: +919876543210",
+    "invalidOtp": "OTP galat hai. Phir try karein.",
+    "loginFailed": "Login nahi hua. Phir try karein.",
+    "otpSent": "OTP bhej diya gaya hai. SMS check karein.",
+    "demoMode": "Local demo mode active. OTP verification local mode me simulate ho rahi hai.",
+    "phoneLabelIndia": "Mobile number (India)",
+    "phonePlaceholderIndia": "9876543210",
+    "invalidPhoneIndia": "10 digit mobile number daliyie. +91 auto-added hai.",
+    "otpSentTo": "{{phone}} par OTP bhej diya gaya hai.",
+    "otpSendFailed": "OTP bhejne me dikkat hui.",
+    "otpVerifyFailed": "OTP verify nahi hua."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Namaste, {{name}}",
+    "demoMode": "Local demo mode active. Data local storage me chal raha hai.",
+    "stats": {
+      "totalStudents": "Total Students",
+      "presentToday": "Present Today",
+      "feesCollected": "Fees Collected",
+      "feePending": "Fee Pending"
+    },
+    "createBatch": {
+      "title": "Batch banayein",
+      "namePlaceholder": "Batch ka naam",
+      "classPlaceholder": "Class label",
+      "subjectPlaceholder": "Subject",
+      "button": "Batch jodein"
+    },
+    "createStudent": {
+      "title": "Student banayein",
+      "namePlaceholder": "Student ka poora naam",
+      "classPlaceholder": "Class label",
+      "subjectPlaceholder": "Subject",
+      "feePlaceholder": "Monthly fee (number)",
+      "phonePlaceholder": "Guardian phone (optional)",
+      "batchPlaceholder": "Baad mein batch assign karein",
+      "button": "Student jodein"
+    },
+    "batchesList": {
+      "title": "Batches",
+      "empty": "Abhi koi batch nahi. Upar se apna pehla batch banayein."
+    },
+    "studentsList": {
+      "title": "Students",
+      "empty": "Abhi koi student nahi. Upar ke form se students jodein."
+    }
+  },
+  "attendance": {
+    "title": "Attendance",
+    "demoMode": "Local demo mode active. Attendance local storage me save ho rahi hai.",
+    "selectBatchDate": {
+      "title": "Batch aur Date chunein",
+      "batchPlaceholder": "Batch chunein",
+      "dateLabel": "Date"
+    },
+    "attendanceList": {
+      "title": "Attendance List",
+      "loading": "Attendance data load ho raha hai...",
+      "empty": "Selected batch/date ke liye koi student nahi mila."
+    },
+    "saveButton": "Attendance save karein",
+    "saving": "save ho raha hai...",
+    "saveSuccess": "Attendance successfully save ho gaya.",
+    "offlineQueued": "Offline mode: attendance queue me save ho gaya.",
+    "networkError": "Network issue. Attendance queue me dala gaya.",
+    "syncSuccess": "{{count}} queued attendance sync ho gaya."
+  },
+  "fees": {
+    "title": "Fees",
+    "demoMode": "Local demo mode active. Fee records local storage me update ho rahe hain.",
+    "monthLabel": "Mahina",
+    "summary": {
+      "collected": "Collected",
+      "due": "Due",
+      "paid": "Paid",
+      "pendingPartial": "Pending + Partial"
+    },
+    "studentList": {
+      "title": "Student Fee Status",
+      "loading": "Fee data load ho raha hai...",
+      "empty": "Is mahine ke liye koi student/fee data nahi.",
+      "dueText": "Due: Rs {{amount}}"
+    },
+    "presets": {
+      "pending": "Pending",
+      "partial": "Partial",
+      "paid": "Paid"
+    },
+    "saveButton": "Save",
+    "saving": "Saving...",
+    "saveSuccess": "{{name}} ka fee update save ho gaya.",
+    "offlineQueued": "Offline mode: fee update queue me save ho gaya.",
+    "networkError": "Network issue. Fee update queue me dala gaya.",
+    "syncSuccess": "{{count}} queued fee updates sync ho gaye."
+  },
+  "reports": {
+    "title": "Reports",
+    "demoMode": "Local demo mode active. AI reports OpenRouter key se direct generate ho rahe hain.",
+    "target": {
+      "title": "Report Target",
+      "studentPlaceholder": "Student chunein",
+      "monthLabel": "Mahina"
+    },
+    "metrics": {
+      "title": "Metrics",
+      "loading": "Metrics load ho rahe hain...",
+      "attendance": "Attendance",
+      "avgScore": "Avg Score",
+      "testsDone": "Tests Done"
+    },
+    "buttons": {
+      "generateAi": "AI Report banayein",
+      "generating": "Ban raha hai...",
+      "manualTemplate": "Manual Template"
+    },
+    "reportText": {
+      "title": "Report Text",
+      "empty": "Abhi koi report available nahi hai.",
+      "manualReady": "Manual template report ready hai."
+    },
+    "shareWhatsapp": "WhatsApp par share karein",
+    "errors": {
+      "rateLimit": "Abhi report generate nahi ho pa rahi, thodi der mein try karein.",
+      "retryAfter": "{{seconds}}s mein retry karein",
+      "aiProviderDown": "AI seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.",
+      "networkError": "Internet connection weak hai. Connection check karke phir try karein.",
+      "validationError": "Student data adhoora hai. Kripya details update karein.",
+      "useManual": "Manual Template use karein",
+      "updateStudent": "Student details update karein"
+    }
+  },
+  "language": {
+    "title": "Bhasha",
+    "select": "Bhasha chunein",
+    "changed": "Bhasha {{language}} mein badal di gayi"
+  },
+  "pwa": {
+    "offlineBanner": "Offline mode active. Sync internet aane par hoga.",
+    "installButton": "Takhti App install karein"
+  },
+  "profileSetup": {
+    "title": "Profile Setup",
+    "subtitle": "Apni teaching profile banayein",
+    "step1Title": "Basic Information",
+    "step2Title": "Teaching Details",
+    "step3Title": "Fees & Availability",
+    "fullName": "Poora Naam",
+    "fullNamePlaceholder": "Aapka poora naam",
+    "areaMohalla": "Area / Mohalla",
+    "areaMohallaPlaceholder": "Civil Lines, Gandhi Nagar...",
+    "city": "City",
+    "cityPlaceholder": "Gonda",
+    "district": "District",
+    "districtPlaceholder": "Gonda",
+    "pincode": "Pincode",
+    "pincodePlaceholder": "271001",
+    "bio": "Bio",
+    "bioPlaceholder": "Apne baare mein kuch likhein...",
+    "charsLeft": "{{count}} chars baki",
+    "subjects": "Subjects",
+    "classes": "Classes",
+    "medium": "Medium",
+    "experience": "Experience (saal)",
+    "timeSlots": "Time Slots",
+    "feeMin": "Min Fee (₹/month)",
+    "feeMax": "Max Fee (₹/month)",
+    "feeNegotiable": "Fee negotiable hai?",
+    "homeTuition": "Home tuition available",
+    "onlineTuition": "Online tuition available",
+    "openToSchool": "School positions ke liye available",
+    "selectItems": "Select karein",
+    "back": "← Peeche",
+    "next": "Aage →",
+    "saving": "Save ho raha hai...",
+    "createProfile": "✅ Profile Banayein",
+    "saveError": "Profile save nahi hua. Dobara try karein."
+  },
+  "search": {
+    "title": "Takhti Search",
+    "subtitle": "Apne area ka best teacher dhundhein",
+    "cityPlaceholder": "City daalein — Gonda, Lucknow...",
+    "showFilters": "Filters dikhao ▼",
+    "hideFilters": "Filters band karo ▲",
+    "subject": "Subject",
+    "class": "Class",
+    "medium": "Medium",
+    "homeTuition": "🏠 Home Tuition",
+    "online": "💻 Online",
+    "resultCount": "{{city}} mein {{count}} teacher",
+    "emptyTitle": "Is area mein abhi teachers nahi hain",
+    "emptySubtitle": "Kya aap teacher hain? Free mein profile banayein.",
+    "createProfile": "Profile Banayein",
+    "initialTitle": "Apne city ka naam daalein",
+    "initialSubtitle": "Upar search bar mein city daalke best teachers dhundhein",
+    "whatsapp": "💬 WhatsApp",
+    "viewProfile": "Profile Dekhein",
+    "featured": "Featured"
+  },
+  "teacherProfile": {
+    "notFound": "Profile nahi mili",
+    "notFoundDesc": "Ye teacher profile available nahi hai.",
+    "backToSearch": "Teachers Search karein",
+    "whatsappContact": "💬 WhatsApp pe contact karein",
+    "teachingDetails": "Teaching Details",
+    "subjects": "Subjects",
+    "classes": "Classes",
+    "fees": "Fees",
+    "feeNegotiable": "💬 Fees mein baat ho sakti hai",
+    "timings": "Available Timings",
+    "verifiedResults": "✅ Takhti Verified Results",
+    "ratings": "Ratings & Reviews",
+    "noReviews": "Abhi koi review nahi hai",
+    "writeReview": "✍️ Apna anubhav share karein",
+    "shareTitle": "Is profile ko share karein",
+    "shareButton": "📤 Profile Share karein",
+    "about": "About",
+    "experience": "{{years}} saal ka anubhav"
+  },
+  "boostProfile": {
+    "title": "Profile Boost karein",
+    "description": "Search results mein profile ko upar laayein aur zyada inquiries paayein. (Teachers verified section).",
+    "boostedTitle": "Profile Boosted!",
+    "boostedDescription": "Aapki profile search results mein sabse upar dikh rahi hai. Ye boost <strong>{{date}}</strong> tak chalega.",
+    "localMode": "⚠️ Local demo mode: Payment simulate hoga",
+    "paymentFailed": "Boost payment failed"
+  }
+}

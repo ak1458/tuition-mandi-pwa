@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Caveat:wght@600;700&display=swap');
+
+:root {
+  --ink: #1c1b35;
+  --ink-light: #2e2d52;
+  --cream: #f7f0e3;
+  --cream-dark: #ede3cc;
+  --saffron: #e07a2f;
+  --sage: #5b8c6e;
+  --rose: #c0586a;
+  --text-main: #1c1b35;
+  --text-muted: #6b6880;
+}

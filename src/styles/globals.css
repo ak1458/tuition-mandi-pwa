@@ -1,0 +1,24 @@
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--text-main);
+  font-family: 'Baloo 2', sans-serif;
+  background: var(--cream);
+}
+
+#root {
+  min-height: 100vh;
+}
