@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabase-client'
-import type { TeacherProfile, SearchFilters } from '@/types/marketplace'
+import type { TeacherProfile, SearchFilters, ParentRating, ProfileBoost } from '@/types/marketplace'
 
 // ----------------------------------------------------------
 // Teacher Profile CRUD
@@ -82,13 +82,13 @@ export async function searchTeachers(filters: SearchFilters) {
     return sortTeachers(data || [])
 }
 
-function sortTeachers(teachers: any[]) {
+function sortTeachers(teachers: TeacherProfile[]) {
     return teachers.sort((a, b) => {
         const aBoost = a.profile_boosts?.some(
-            (boost: any) => boost.is_active && new Date(boost.expires_at) > new Date()
+            (boost: ProfileBoost) => boost.is_active && new Date(boost.expires_at) > new Date()
         )
         const bBoost = b.profile_boosts?.some(
-            (boost: any) => boost.is_active && new Date(boost.expires_at) > new Date()
+            (boost: ProfileBoost) => boost.is_active && new Date(boost.expires_at) > new Date()
         )
 
         if (aBoost && !bBoost) return -1
@@ -100,9 +100,9 @@ function sortTeachers(teachers: any[]) {
     })
 }
 
-function avgRating(ratings: any[]): number {
+function avgRating(ratings: ParentRating[] | undefined): number {
     if (!ratings?.length) return 0
-    return ratings.reduce((sum: number, r: any) => sum + r.rating, 0) / ratings.length
+    return ratings.reduce((sum: number, r: ParentRating) => sum + r.rating, 0) / ratings.length
 }
 
 // ----------------------------------------------------------

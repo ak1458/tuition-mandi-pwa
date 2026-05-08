@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router'
 import { MobileShell } from '@/app/layouts/mobile-shell'
 import { RouteGuard } from '@/app/route-guard'
 import { AttendancePage } from '@/features/attendance/pages/attendance-page'

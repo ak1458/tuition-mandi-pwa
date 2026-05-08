@@ -4,6 +4,7 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { isLocalMode } from '@/lib/env'
 import { openRazorpayCheckout } from '@/features/paywall/services/razorpay-service'
 import { activateBoost, getActiveBoost } from '@/lib/queries/teachers'
+import type { ProfileBoost } from '@/types/marketplace'
 
 interface BoostProfileCardProps {
     onBoostSuccess?: () => void
@@ -29,7 +30,7 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
     const { session } = useAuth()
     const teacherId = session?.user.id
 
-    const [activeBoost, setActiveBoost] = useState<any>(null)
+    const [activeBoost, setActiveBoost] = useState<ProfileBoost | null>(null)
     const [loading, setLoading] = useState(true)
     const [processing, setProcessing] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -44,7 +45,7 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
         try {
             const boost = await getActiveBoost(teacherId!)
             setActiveBoost(boost)
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Failed to load boost', err)
         } finally {
             setLoading(false)
@@ -79,8 +80,9 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
             await loadBoost()
             if (onBoostSuccess) onBoostSuccess()
 
-        } catch (err: any) {
-            setError(err?.message || t('boostProfile.paymentFailed'))
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : t('boostProfile.paymentFailed')
+            setError(message)
         } finally {
             setProcessing(false)
         }

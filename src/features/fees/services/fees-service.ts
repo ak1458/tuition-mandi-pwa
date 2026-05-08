@@ -7,6 +7,7 @@ export interface FeeRow {
   studentId: string
   fullName: string
   classLabel: string
+  guardianPhone: string | null
   amountDue: number
   amountPaid: number
   status: FeeStatus
@@ -71,7 +72,7 @@ export async function getFeeRows(teacherId: string, feeMonth: string): Promise<F
 
   const { data: students, error: studentsError } = await supabase
     .from('students')
-    .select('id,full_name,class_label,monthly_fee')
+    .select('id,full_name,class_label,monthly_fee,guardian_phone')
     .eq('teacher_id', teacherId)
     .eq('is_active', true)
     .order('full_name', { ascending: true })
@@ -108,6 +109,7 @@ export async function getFeeRows(teacherId: string, feeMonth: string): Promise<F
       studentId: student.id as string,
       fullName: student.full_name as string,
       classLabel: student.class_label as string,
+      guardianPhone: (student.guardian_phone as string | null) ?? null,
       amountDue,
       amountPaid,
       status,
@@ -188,5 +190,8 @@ export async function saveFeeMutation(payload: FeeMutationPayload): Promise<void
 
   if (error) {
     throw new Error(error.message)
+  }
+}
+   throw new Error(error.message)
   }
 }

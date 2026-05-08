@@ -51,6 +51,7 @@ export interface TeacherProfile {
     average_rating?: number;
     total_ratings?: number;
     outcomes?: TeacherOutcome[];
+    teacher_outcomes?: TeacherOutcome[]; // Supabase join alias (table name)
     parent_ratings?: ParentRating[];
     profile_boosts?: ProfileBoost[];
 

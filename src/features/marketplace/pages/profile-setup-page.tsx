@@ -1,8 +1,9 @@
 import { useCallback, useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { upsertTeacherProfile } from '@/lib/queries/teachers'
 import { AnimatedLogo } from '@/components/common/animated-logo'
+import type { TeachingMedium } from '@/types/marketplace'
 
 // ------- Constants -------
 const SUBJECTS = [
@@ -240,7 +241,7 @@ export function ProfileSetupPage() {
                 pincode: form.pincode.trim() || null,
                 subjects: form.subjects,
                 classes_taught: form.classes_taught,
-                medium: form.medium as any,
+                medium: form.medium as TeachingMedium,
                 experience_years: parseInt(form.experience_years) || 0,
                 time_slots: form.time_slots,
                 home_tuition: form.home_tuition,
@@ -253,8 +254,9 @@ export function ProfileSetupPage() {
             })
 
             navigate('/dashboard', { replace: true })
-        } catch (err: any) {
-            setError(err?.message || 'Profile save mein dikkat aayi. Dobara try karein.')
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Profile save mein dikkat aayi. Dobara try karein.'
+            setError(message)
         } finally {
             setSaving(false)
         }

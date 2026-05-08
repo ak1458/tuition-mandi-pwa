@@ -1,10 +1,11 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { BottomNav } from '@/components/common/bottom-nav'
 import { useAuth } from '@/app/providers/auth-provider'
 import { InstallPrompt } from '@/features/pwa/install-prompt'
 import { AnimatedLogo } from '@/components/common/animated-logo'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
+import { useOfflineSync } from '@/hooks/use-offline-sync'
 
 function pageLabelKey(pathname: string) {
   if (pathname.startsWith('/attendance')) return 'nav.attendance'
@@ -19,12 +20,13 @@ export function MobileShell() {
   const { session, authMethod, signOut } = useAuth()
   const teacherName = session?.user?.user_metadata?.full_name as string | undefined
   const greetingName = teacherName || (authMethod === 'phone_otp' ? `${t('common.teacher')} Ji` : t('common.teacher'))
+  useOfflineSync()
 
   return (
     <main className="flex min-h-screen w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-ink selection:bg-saffron selection:text-white">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-5 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md lg:px-8">
         <div className="flex items-center justify-between pb-3">
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-saffron/90">
+          <p className="min-w-0 truncate text-[10px] font-bold uppercase tracking-[0.15em] text-saffron/90 sm:text-[11px] sm:tracking-[0.2em]">
             {t(pageLabelKey(location.pathname))}
           </p>
           <div className="flex items-center gap-2">
@@ -40,7 +42,7 @@ export function MobileShell() {
         </div>
         <div className="flex items-center gap-3">
           <AnimatedLogo />
-          <h1 className="font-display text-3xl font-semibold leading-tight text-ink">
+          <h1 className="font-display text-2xl font-semibold leading-tight text-ink sm:text-3xl">
             {t('dashboard.greeting', { name: greetingName })}
           </h1>
         </div>

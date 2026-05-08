@@ -13,6 +13,7 @@ export interface ReportMetrics {
   attendancePercent: number
   avgScore: number
   testsDone: number
+  feePendingAmount: number
 }
 
 export interface GeneratedReportResponse {
@@ -172,10 +173,29 @@ export async function getReportMetrics(
         ).toFixed(2),
       )
 
+  const { data: studentData } = await supabase
+    .from('students')
+    .select('monthly_fee')
+    .eq('id', studentId)
+    .single()
+    
+  const { data: feeData } = await supabase
+    .from('fee_records')
+    .select('amount_due, amount_paid')
+    .eq('student_id', studentId)
+    .eq('fee_month', monthStart)
+    .maybeSingle()
+
+  const monthlyFee = Number(studentData?.monthly_fee || 0)
+  const amountDue = feeData?.amount_due ?? monthlyFee
+  const amountPaid = feeData?.amount_paid ?? 0
+  const feePendingAmount = Math.max(amountDue - amountPaid, 0)
+
   return {
     attendancePercent,
     avgScore,
     testsDone,
+    feePendingAmount,
   }
 }
 

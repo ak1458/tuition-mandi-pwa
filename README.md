@@ -1,5 +1,7 @@
 # Takhti App (Tuition Teacher PWA)
 
+**🤖 AI CONNECTORS: Please read `AI_CONTEXT.md` in the root of this repository before proceeding! It contains the master roadmap, current state, and index of all design documents.**
+
 Production-focused PWA for tuition teachers with:
 - Phone OTP primary auth
 - Attendance + fees tracking

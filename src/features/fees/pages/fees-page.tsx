@@ -15,6 +15,7 @@ import {
   flushQueuedMutations,
   type OfflineMutation,
 } from '@/lib/offline/mutation-queue'
+import { buildFeeReminderLink } from '@/utils/whatsapp'
 
 function isNetworkError(error: unknown): boolean {
   const message = error instanceof Error ? error.message.toLowerCase() : ''
@@ -197,17 +198,32 @@ export function FeesPage() {
                       {row.classLabel} • Due: Rs {row.amountDue}
                     </p>
                   </div>
-                  <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                      row.status === 'paid'
-                        ? 'bg-sage/20 text-sage'
-                        : row.status === 'partial'
-                          ? 'bg-saffron/20 text-saffron'
-                          : 'bg-rose/20 text-rose'
-                    }`}
-                  >
-                    {row.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {row.guardianPhone && (row.status === 'pending' || row.status === 'partial') && (
+                      <a
+                        href={buildFeeReminderLink(row.guardianPhone, row.fullName, row.amountDue - row.amountPaid, selectedMonth)}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex h-7 w-7 items-center justify-center rounded-full bg-[#25D366]/10 text-[#25D366] transition-colors hover:bg-[#25D366]/20"
+                        title="Send WhatsApp Reminder"
+                      >
+                        <svg className="h-4 w-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M12.031 0C5.405 0 0 5.405 0 12.031c0 2.115.549 4.182 1.593 6L.045 24l6.115-1.517c1.765.952 3.754 1.455 5.871 1.455 6.626 0 12.031-5.405 12.031-12.031S18.657 0 12.031 0zm3.626 17.202c-.524 1.464-3.003 2.502-4.148 2.585-1.026.074-2.45-.195-4.15-1.055-1.122-.568-2.616-1.528-3.766-2.73-1.034-1.082-2.316-2.58-2.766-3.83-.45-1.25-.45-2.404-.08-3.155.333-.678 1.055-1.155 1.558-1.246.335-.06.786-.022 1.134.022.383.048.883.21 1.203 1.065.344.915.938 2.518 1.022 2.683.084.165.234.42.105.742-.128.323-.195.488-.39.73-.195.24-.405.534-.585.713-.195.21-.405.442-.165.848.24.405 1.066 1.748 1.808 2.415.96.863 1.636 1.125 1.996 1.275.36.15.57.12.78-.12.21-.24.916-1.065 1.156-1.425.24-.36.48-.3.81-.18.33.12 2.086.99 2.446 1.17.36.18.6.27.69.42.09.15.09.87-.435 2.334z" />
+                        </svg>
+                      </a>
+                    )}
+                    <span
+                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
+                        row.status === 'paid'
+                          ? 'bg-sage/20 text-sage'
+                          : row.status === 'partial'
+                            ? 'bg-saffron/20 text-saffron'
+                            : 'bg-rose/20 text-rose'
+                      }`}
+                    >
+                      {row.status}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="mt-3 grid gap-2">

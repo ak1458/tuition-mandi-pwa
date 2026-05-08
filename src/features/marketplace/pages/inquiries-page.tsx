@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '@/app/providers/auth-provider'
+import { isLocalMode } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 import type { ParentInquiry } from '@/types/marketplace'
 
@@ -31,6 +32,13 @@ export function InquiriesPage() {
         setLoading(true)
         setError(null)
 
+        // In local mode, inquiries are a V2 marketplace feature — show empty state
+        if (isLocalMode) {
+            setInquiries([])
+            setLoading(false)
+            return
+        }
+
         try {
             const { data, error: err } = await supabase
                 .from('parent_inquiries')
@@ -39,8 +47,9 @@ export function InquiriesPage() {
 
             if (err) throw err
             setInquiries((data || []) as ParentInquiry[])
-        } catch (err: any) {
-            setError(err?.message || 'Inquiries load nahi ho payein.')
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Inquiries load nahi ho payein.'
+            setError(message)
         } finally {
             setLoading(false)
         }
@@ -51,6 +60,8 @@ export function InquiriesPage() {
     }, [loadInquiries])
 
     async function updateStatus(inquiryId: string, newStatus: string) {
+        if (isLocalMode) return
+
         try {
             const { error: err } = await supabase
                 .from('parent_inquiries')
@@ -61,11 +72,12 @@ export function InquiriesPage() {
 
             setInquiries((prev) =>
                 prev.map((inq) =>
-                    inq.id === inquiryId ? { ...inq, status: newStatus as any } : inq
+                    inq.id === inquiryId ? { ...inq, status: newStatus as ParentInquiry['status'] } : inq
                 )
             )
-        } catch (err: any) {
-            alert(err?.message || 'Status update failed.')
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Status update failed.'
+            alert(message)
         }
     }
 

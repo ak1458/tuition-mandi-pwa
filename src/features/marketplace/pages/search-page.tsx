@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { searchTeachers } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import { AnimatedLogo } from '@/components/common/animated-logo'
-import type { SearchFilters } from '@/types/marketplace'
+import type { SearchFilters, TeacherProfile, ParentRating, ProfileBoost, TeachingMedium } from '@/types/marketplace'
 
 // ------- Constants -------
 const POPULAR_SUBJECTS = [
@@ -20,19 +20,19 @@ const CLASS_OPTIONS = [
 const MEDIUM_OPTIONS = ['Hindi', 'English', 'Both'] as const
 
 // ------- Helper -------
-function avgRating(ratings: any[]): number {
+function avgRating(ratings: ParentRating[] | undefined): number {
     if (!ratings?.length) return 0
-    return ratings.reduce((sum: number, r: any) => sum + r.rating, 0) / ratings.length
+    return ratings.reduce((sum: number, r: ParentRating) => sum + r.rating, 0) / ratings.length
 }
 
-function isBoosted(teacher: any): boolean {
+function isBoosted(teacher: TeacherProfile): boolean {
     return teacher.profile_boosts?.some(
-        (b: any) => b.is_active && new Date(b.expires_at) > new Date()
+        (b: ProfileBoost) => b.is_active && new Date(b.expires_at) > new Date()
     ) ?? false
 }
 
 // ------- Teacher Card -------
-function TeacherCard({ teacher }: { teacher: any }) {
+function TeacherCard({ teacher }: { teacher: TeacherProfile }) {
     const rating = avgRating(teacher.parent_ratings)
     const ratingCount = teacher.parent_ratings?.length || 0
     const boosted = isBoosted(teacher)
@@ -178,7 +178,7 @@ export function SearchPage() {
     const [selectedMedium, setSelectedMedium] = useState<string | undefined>()
     const [homeTuition, setHomeTuition] = useState(false)
     const [onlineTuition, setOnlineTuition] = useState(false)
-    const [teachers, setTeachers] = useState<any[]>([])
+    const [teachers, setTeachers] = useState<TeacherProfile[]>([])
     const [loading, setLoading] = useState(false)
     const [searched, setSearched] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -199,14 +199,15 @@ export function SearchPage() {
                 city: city.trim(),
                 subject: selectedSubject,
                 class_level: selectedClass,
-                medium: selectedMedium as any,
+                medium: selectedMedium as TeachingMedium,
                 home_tuition: homeTuition || undefined,
                 online_tuition: onlineTuition || undefined,
             }
             const results = await searchTeachers(filters)
             setTeachers(results)
-        } catch (err: any) {
-            setError(err?.message || 'Search mein dikkat aayi. Dobara try karein.')
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Search mein dikkat aayi. Dobara try karein.'
+            setError(message)
         } finally {
             setLoading(false)
         }

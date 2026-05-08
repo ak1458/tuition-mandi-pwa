@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useAuth } from '@/app/providers/auth-provider'
 import { usePlan } from '@/hooks/use-plan'
-import { isLocalMode } from '@/lib/env'
+import { appEnv, isLocalMode } from '@/lib/env'
 import { openRazorpayCheckout } from '@/features/paywall/services/razorpay-service'
 import type { UpgradeReason } from '@/types/plan'
 
@@ -70,6 +70,13 @@ export function UpgradeModal({ reason, onClose, onUpgradeSuccess }: UpgradeModal
       if (isLocalMode) {
         await upgradeToPro(cycle)
       } else {
+        // Check if Razorpay is configured before attempting payment
+        if (!appEnv.razorpayKey) {
+          setErrorMessage('Payment gateway jald hi available hoga. Filhal local mode mein use karein.')
+          setIsProcessing(false)
+          return
+        }
+
         await openRazorpayCheckout({
           amountPaise,
           description,

@@ -17,3 +17,14 @@ Profile: ${profileUrl}`
     const cleanPhone = phone.replace(/\D/g, '')
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
 }
+
+export function buildFeeReminderLink(
+    phone: string,
+    studentName: string,
+    amountDue: number,
+    month: string
+): string {
+    const message = `Namaste! \n\nYe message ${studentName} ki tuition fees ke liye hai. \n${month} mahine ki pending fees Rs ${amountDue} hai. \n\nKripya samay par jama karein. Shukriya!`
+    const cleanPhone = phone.replace(/\D/g, '')
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
+}

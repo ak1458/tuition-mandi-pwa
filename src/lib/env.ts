@@ -7,7 +7,7 @@ export const appEnv = {
   razorpayKey: import.meta.env.VITE_RAZORPAY_KEY ?? '',
   openRouterApiKey: import.meta.env.VITE_OPENROUTER_API_KEY ?? '',
   openRouterModel: import.meta.env.VITE_OPENROUTER_MODEL ?? 'google/gemini-2.0-flash-lite-001',
-  openRouterReferer: import.meta.env.VITE_OPENROUTER_REFERER ?? 'https://smilefotilo.com',
+  openRouterReferer: import.meta.env.VITE_OPENROUTER_REFERER ?? 'https://takhti.app',
   openRouterTitle: import.meta.env.VITE_OPENROUTER_TITLE ?? 'Takhti App',
 }
 

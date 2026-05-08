@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router'
 import { getTeacherPublicProfile } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import { ShareProfileButton } from '@/components/marketplace/share-profile'
 import { AnimatedLogo } from '@/components/common/animated-logo'
+import type { TeacherProfile, ParentRating, TeacherOutcome } from '@/types/marketplace'
 
 // ------- Helper -------
-function avgRating(ratings: any[]): number {
+function avgRating(ratings: ParentRating[] | undefined): number {
     if (!ratings?.length) return 0
-    return ratings.reduce((sum: number, r: any) => sum + r.rating, 0) / ratings.length
+    return ratings.reduce((sum: number, r: ParentRating) => sum + r.rating, 0) / ratings.length
 }
 
 function StarDisplay({ rating }: { rating: number }) {
@@ -22,7 +23,7 @@ function StarDisplay({ rating }: { rating: number }) {
 // ------- Main Page -------
 export function TeacherProfilePage() {
     const { id } = useParams<{ id: string }>()
-    const [teacher, setTeacher] = useState<any>(null)
+    const [teacher, setTeacher] = useState<TeacherProfile | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
 
@@ -51,8 +52,9 @@ export function TeacherProfilePage() {
                         document.head.appendChild(meta)
                     }
                 }
-            } catch (err: any) {
-                setError(err?.message || 'Profile load nahi ho payi.')
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : 'Profile load nahi ho payi.'
+                setError(message)
             } finally {
                 setLoading(false)
             }
@@ -228,12 +230,12 @@ export function TeacherProfilePage() {
                 )}
 
                 {/* ------- SECTION 5: RESULTS / OUTCOMES ------- */}
-                {teacher.teacher_outcomes?.length > 0 && (
+                {(teacher.teacher_outcomes?.length ?? 0) > 0 && (
                     <section className="rounded-2xl border border-green-200 bg-green-50/50 p-4 shadow-sm">
                         <h2 className="text-[10px] font-bold uppercase tracking-wider text-green-600 mb-3">
                             ✅ Takhti Verified Results
                         </h2>
-                        {teacher.teacher_outcomes.map((outcome: any) => (
+                        {teacher.teacher_outcomes?.map((outcome: TeacherOutcome) => (
                             <div key={outcome.id} className="rounded-xl bg-white border border-green-100 p-3 mb-2 last:mb-0">
                                 <p className="text-[10px] font-semibold text-muted mb-1">
                                     {outcome.academic_year} • {outcome.subject} • {outcome.class_level}
@@ -277,7 +279,7 @@ export function TeacherProfilePage() {
 
                             {/* Reviews list */}
                             <div className="space-y-3">
-                                {teacher.parent_ratings?.map((review: any) => (
+                                {teacher.parent_ratings?.map((review: ParentRating) => (
                                     <div key={review.id} className="rounded-xl border border-slate-100 bg-slate-50/50 p-3">
                                         <div className="flex items-center justify-between mb-1">
                                             <span className="text-xs font-semibold text-ink">{review.parent_name}</span>

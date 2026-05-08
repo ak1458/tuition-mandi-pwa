@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link } from 'react-router'
 import { submitRating } from '@/lib/queries/teachers'
 import { AnimatedLogo } from '@/components/common/animated-logo'
 
@@ -38,8 +38,9 @@ export function RateTeacherPage() {
                 review_text: form.review_text.trim() || undefined,
             })
             setSubmitted(true)
-        } catch (err: any) {
-            setError(err?.message || 'Review submit nahi ho payi. Dobara try karein.')
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : 'Review submit nahi ho payi. Dobara try karein.'
+            setError(message)
         } finally {
             setSaving(false)
         }
