@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { getTeacherPublicProfile } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import { ShareProfileButton } from '@/components/marketplace/share-profile'
@@ -22,6 +23,7 @@ function StarDisplay({ rating }: { rating: number }) {
 
 // ------- Main Page -------
 export function TeacherProfilePage() {
+    const { t } = useTranslation()
     const { id } = useParams<{ id: string }>()
     const [teacher, setTeacher] = useState<TeacherProfile | null>(null)
     const [loading, setLoading] = useState(true)
@@ -146,14 +148,20 @@ export function TeacherProfilePage() {
                     )}
 
                     {/* WhatsApp CTA */}
-                    <a
-                        href={whatsappUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-saffron py-3.5 text-sm font-bold text-white shadow-[0_8px_16px_rgba(224,122,47,0.35)] transition-all hover:shadow-[0_12px_24px_rgba(224,122,47,0.45)]"
-                    >
-                        💬 WhatsApp pe contact karein
-                    </a>
+                    {whatsappUrl ? (
+                        <a
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-saffron py-3.5 text-sm font-bold text-white shadow-[0_8px_16px_rgba(224,122,47,0.35)] transition-all hover:shadow-[0_12px_24px_rgba(224,122,47,0.45)]"
+                        >
+                            {t('teacherProfile.whatsappContact')}
+                        </a>
+                    ) : (
+                        <p className="mt-4 rounded-2xl bg-slate-100 py-3.5 text-center text-sm font-semibold text-slate-400">
+                            {t('teacherProfile.noPhone')}
+                        </p>
+                    )}
                 </section>
 
                 {/* ------- SECTION 2: QUICK INFO CHIPS ------- */}

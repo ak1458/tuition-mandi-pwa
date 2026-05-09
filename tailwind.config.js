@@ -12,11 +12,15 @@ export default {
         muted: 'var(--text-muted)',
       },
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        display: ['Outfit', 'sans-serif'],
-      },
-      boxShadow: {
-        shell: '0 0 0 10px #1c1b35, 0 0 0 12px #2e2d52, 0 30px 60px rgba(28,27,53,0.35)',
+        body: [
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'Arial',
+          'sans-serif',
+        ],
       },
     },
   },

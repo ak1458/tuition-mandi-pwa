@@ -24,7 +24,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'hi',
+    fallbackLng: 'en',
     supportedLngs: ['en', 'hi', 'hi-roman'],
     nonExplicitSupportedLngs: true,
     load: 'languageOnly',

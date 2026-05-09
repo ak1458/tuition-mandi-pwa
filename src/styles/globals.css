@@ -1,5 +1,6 @@
-@import './tokens.css';
+/* ── Takhti Global Styles ── */
 
+@import 'tokens.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,17 +9,39 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  color: var(--text-main);
-  font-family: 'Baloo 2', sans-serif;
-  background: var(--cream);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
 }
 
-#root {
-  min-height: 100vh;
+/* ── Devanagari ligature fix ── */
+html[lang="hi"],
+html[lang="hi"] * {
+  letter-spacing: 0px !important;
+  font-kerning: normal !important;
+}
+
+/* ── Scrollbar hide for bottom nav areas ── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Safe area padding for notched devices ── */
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
 }

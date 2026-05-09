@@ -13,13 +13,13 @@ interface BoostProfileCardProps {
 const BOOST_OPTIONS = [
     {
         days: 7,
-        label: '1 Week Boost',
+        labelKey: 'boostProfile.optionWeek',
         amountPaise: 4900, // ₹49
         description: 'Boost for 7 days',
     },
     {
         days: 30,
-        label: '1 Month Boost',
+        labelKey: 'boostProfile.optionMonth',
         amountPaise: 14900, // ₹149
         description: 'Boost for 30 days',
     },
@@ -133,20 +133,20 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
 
             <div className="space-y-2">
                 {BOOST_OPTIONS.map(opt => (
-                    <button
-                        key={opt.days}
-                        type="button"
-                        disabled={processing}
-                        onClick={() => handlePurchase(opt)}
-                        className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-saffron hover:bg-saffron/5 disabled:opacity-50"
-                    >
-                        <div className="text-left">
-                            <p className="text-sm font-bold text-ink">{opt.label}</p>
-                        </div>
-                        <div className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
-                            ₹{opt.amountPaise / 100}
-                        </div>
-                    </button>
+                <button
+                    key={opt.days}
+                    type="button"
+                    disabled={processing}
+                    onClick={() => handlePurchase(opt)}
+                    className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-saffron hover:bg-saffron/5 disabled:opacity-50"
+                >
+                    <div className="text-left">
+                        <p className="text-sm font-bold text-ink">{t(opt.labelKey)}</p>
+                    </div>
+                    <div className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-700">
+                        ₹{opt.amountPaise / 100}
+                    </div>
+                </button>
                 ))}
             </div>
         </section>

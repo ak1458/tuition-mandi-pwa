@@ -96,7 +96,8 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "greeting": "Namaste, {{name}}",
+    "greeting": "Namaste, {{name}} Ji 👋",
+    "subtitle": "Aaj kispe dhyan dein?",
     "demoMode": "Local demo mode active. Data local storage me chal raha hai.",
     "stats": {
       "totalStudents": "Total Students",
@@ -104,6 +105,15 @@
       "feesCollected": "Fees Collected",
       "feePending": "Fee Pending"
     },
+    "cards": {
+      "absentStudents": "Absent Students",
+      "allPresent": "Sab present hain ✓",
+      "pendingFees": "Pending Fees",
+      "allFeesClear": "Sab fees clear hain ✓"
+    },
+    "todaysTask": "Aaj ka kaam",
+    "markAttendance": "Attendance Lagayein",
+    "loading": "Loading...",
     "createBatch": {
       "title": "Batch banayein",
       "namePlaceholder": "Batch ka naam",
@@ -164,7 +174,7 @@
       "title": "Student Fee Status",
       "loading": "Fee data load ho raha hai...",
       "empty": "Is mahine ke liye koi student/fee data nahi.",
-      "dueText": "Due: Rs {{amount}}"
+      "dueText": "Due: ₹{{amount}}"
     },
     "presets": {
       "pending": "Pending",
@@ -181,6 +191,7 @@
   "reports": {
     "title": "Reports",
     "demoMode": "Local demo mode active. AI reports OpenRouter key se direct generate ho rahe hain.",
+    "heroSubtitle": "Hindi report banaiye aur parents ko bhejiye.",
     "target": {
       "title": "Report Target",
       "studentPlaceholder": "Student chunein",
@@ -194,20 +205,29 @@
       "testsDone": "Tests Done"
     },
     "buttons": {
-      "generateAi": "AI Report banayein",
+      "generateAi": "Report banayein ✨",
       "generating": "Ban raha hai...",
-      "manualTemplate": "Manual Template"
+      "manualTemplate": "Manual Template",
+      "pdfDownload": "🖨️ PDF Download",
+      "copy": "Copy Karein"
     },
     "reportText": {
       "title": "Report Text",
       "empty": "Abhi koi report available nahi hai.",
       "manualReady": "Manual template report ready hai."
     },
+    "preview": {
+      "title": "Report Preview"
+    },
+    "messages": {
+      "copySuccess": "Report copy ho gaya ✓",
+      "success": "Report ban gaya ✨"
+    },
     "shareWhatsapp": "WhatsApp par share karein",
     "errors": {
       "rateLimit": "Abhi report generate nahi ho pa rahi, thodi der mein try karein.",
       "retryAfter": "{{seconds}}s mein retry karein",
-      "aiProviderDown": "AI seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.",
+      "aiProviderDown": "Report seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.",
       "networkError": "Internet connection weak hai. Connection check karke phir try karein.",
       "validationError": "Student data adhoora hai. Kripya details update karein.",
       "useManual": "Manual Template use karein",
@@ -218,6 +238,26 @@
     "title": "Bhasha",
     "select": "Bhasha chunein",
     "changed": "Bhasha {{language}} mein badal di gayi"
+  },
+  "more": {
+    "title": "More",
+    "plan": {
+      "free": "Takhti Free Plan — 3 Mahine FREE chal raha hai",
+      "pro": "Takhti Pro Plan"
+    },
+    "language": "Language / भाषा",
+    "menu": {
+      "classDetails": "Class Details",
+      "feeSettings": "Fee Settings",
+      "reminders": "Reminders",
+      "backupRestore": "Backup & Restore",
+      "helpSupport": "Help & Support",
+      "settings": "Settings"
+    },
+    "buttons": {
+      "upgrade": "Plan Upgrade Karein",
+      "logout": "Logout"
+    }
   },
   "pwa": {
     "offlineBanner": "Offline mode active. Sync internet aane par hoga.",
@@ -277,6 +317,13 @@
     "createProfile": "Profile Banayein",
     "initialTitle": "Apne city ka naam daalein",
     "initialSubtitle": "Upar search bar mein city daalke best teachers dhundhein",
+    "initialSubtitle2": "Ya neeche se jaldi search karein",
+    "quick": {
+      "maths": "📐 Maths Teacher",
+      "class10": "🏫 Class 10",
+      "nearMe": "📍 Near Me"
+    },
+    "noPhone": "📞 Phone Nahi Hai",
     "whatsapp": "💬 WhatsApp",
     "viewProfile": "Profile Dekhein",
     "featured": "Featured"
@@ -286,6 +333,7 @@
     "notFoundDesc": "Ye teacher profile available nahi hai.",
     "backToSearch": "Teachers Search karein",
     "whatsappContact": "💬 WhatsApp pe contact karein",
+    "noPhone": "📞 Phone number available nahi hai",
     "teachingDetails": "Teaching Details",
     "subjects": "Subjects",
     "classes": "Classes",
@@ -307,6 +355,8 @@
     "boostedTitle": "Profile Boosted!",
     "boostedDescription": "Aapki profile search results mein sabse upar dikh rahi hai. Ye boost <strong>{{date}}</strong> tak chalega.",
     "localMode": "⚠️ Local demo mode: Payment simulate hoga",
-    "paymentFailed": "Boost payment failed"
+    "paymentFailed": "Boost payment failed",
+    "optionWeek": "1 Week Boost",
+    "optionMonth": "1 Month Boost"
   }
 }

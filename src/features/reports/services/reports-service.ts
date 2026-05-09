@@ -131,6 +131,7 @@ export async function getReportMetrics(
       attendancePercent,
       avgScore,
       testsDone,
+      feePendingAmount: 0,
     }
   }
 
@@ -316,18 +317,26 @@ function buildOpenRouterPrompt(input: InvokeAiReportInput): string {
   ].join('\n')
 }
 
+/**
+ * QwQ-32b wraps reasoning inside <think>...</think> blocks.
+ * Strip those so only the final report text is returned.
+ */
+function stripThinkTags(text: string): string {
+  return text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim()
+}
+
 function parseOpenRouterText(payload: OpenRouterResponse): string {
   const content = payload.choices?.[0]?.message?.content
+  let raw = ''
   if (typeof content === 'string') {
-    return content.trim()
-  }
-  if (Array.isArray(content)) {
-    return content
+    raw = content.trim()
+  } else if (Array.isArray(content)) {
+    raw = content
       .map((part) => part.text ?? '')
       .join('\n')
       .trim()
   }
-  return ''
+  return stripThinkTags(raw)
 }
 
 async function saveAiReport(input: InvokeAiReportInput, reportText: string): Promise<string> {
@@ -385,7 +394,7 @@ async function invokeOpenRouter(input: InvokeAiReportInput): Promise<GeneratedRe
     return {
       status: 'error',
       error_code: 'AI_PROVIDER_DOWN',
-      user_message_hi: 'AI seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
+      user_message_hi: 'Report seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
     }
   }
 
@@ -425,7 +434,7 @@ async function invokeOpenRouter(input: InvokeAiReportInput): Promise<GeneratedRe
       return {
         status: 'error',
         error_code: 'AI_PROVIDER_DOWN',
-        user_message_hi: 'AI seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
+        user_message_hi: 'Report seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
       }
     }
 
@@ -435,7 +444,7 @@ async function invokeOpenRouter(input: InvokeAiReportInput): Promise<GeneratedRe
       return {
         status: 'error',
         error_code: 'AI_PROVIDER_DOWN',
-        user_message_hi: 'AI seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
+        user_message_hi: 'Report seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
       }
     }
 
@@ -455,7 +464,7 @@ async function invokeOpenRouter(input: InvokeAiReportInput): Promise<GeneratedRe
       return {
         status: 'error',
         error_code: 'UPGRADE_REQUIRED',
-        user_message_hi: 'Free plan me 1 AI report included hai. Pro plan le kar unlimited reports banayein.',
+        user_message_hi: 'Free plan me 1 report included hai. Pro plan le kar unlimited reports banayein.',
       }
     }
 
@@ -476,7 +485,7 @@ export async function invokeAiReport(input: InvokeAiReportInput): Promise<Genera
     return {
       status: 'error',
       error_code: 'AI_PROVIDER_DOWN',
-      user_message_hi: 'AI seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
+      user_message_hi: 'Report seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
     }
   }
 
@@ -484,7 +493,7 @@ export async function invokeAiReport(input: InvokeAiReportInput): Promise<Genera
     return {
       status: 'error',
       error_code: 'AI_PROVIDER_DOWN',
-      user_message_hi: 'AI seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
+      user_message_hi: 'Report seva filhal uplabdh nahi hai. Neeche manual report bhej sakte hain.',
     }
   }
 
@@ -501,7 +510,7 @@ export async function invokeAiReport(input: InvokeAiReportInput): Promise<Genera
       return {
         status: 'error',
         error_code: 'UPGRADE_REQUIRED',
-        user_message_hi: 'Free plan me 1 AI report included hai. Pro plan le kar unlimited reports banayein.',
+        user_message_hi: 'Free plan me 1 report included hai. Pro plan le kar unlimited reports banayein.',
       }
     }
 

@@ -96,7 +96,8 @@
   },
   "dashboard": {
     "title": "डैशबोर्ड",
-    "greeting": "नमस्ते, {{name}}",
+    "greeting": "नमस्ते, {{name}} जी 👋",
+    "subtitle": "आज किसपे ध्यान दें?",
     "demoMode": "स्थानीय डेमो मोड सक्रिय। डेटा स्थानीय स्टोरेज में संग्रहीत है।",
     "stats": {
       "totalStudents": "कुल छात्र",
@@ -104,6 +105,15 @@
       "feesCollected": "वसूल फीस",
       "feePending": "लंबित फीस"
     },
+    "cards": {
+      "absentStudents": "अनुपस्थित छात्र",
+      "allPresent": "सब उपस्थित हैं ✓",
+      "pendingFees": "बकाया फीस",
+      "allFeesClear": "सब फीस जमा हैं ✓"
+    },
+    "todaysTask": "आज का काम",
+    "markAttendance": "हाजिरी लगाएं",
+    "loading": "लोड हो रहा है...",
     "createBatch": {
       "title": "बैच बनाएं",
       "namePlaceholder": "बैच का नाम",
@@ -181,6 +191,7 @@
   "reports": {
     "title": "रिपोर्ट",
     "demoMode": "स्थानीय डेमो मोड सक्रिय। एआई रिपोर्ट सीधे एपीआई का उपयोग करती हैं।",
+    "heroSubtitle": "हिंदी में रिपोर्ट बनाएं और माता-पिता को भेजें।",
     "target": {
       "title": "रिपोर्ट लक्ष्य",
       "studentPlaceholder": "छात्र चुनें",
@@ -194,14 +205,23 @@
       "testsDone": "टेस्ट पूर्ण"
     },
     "buttons": {
-      "generateAi": "एआई रिपोर्ट बनाएं",
+      "generateAi": "रिपोर्ट बनाएं",
       "generating": "बन रही है...",
-      "manualTemplate": "मैनुअल टेम्पलेट"
+      "manualTemplate": "मैनुअल टेम्पलेट",
+      "pdfDownload": "🖨️ पीडीएफ डाउनलोड",
+      "copy": "कॉपी करें"
     },
     "reportText": {
       "title": "रिपोर्ट टेक्स्ट",
       "empty": "अभी तक कोई रिपोर्ट उपलब्ध नहीं।",
       "manualReady": "मैनुअल टेम्पलेट रिपोर्ट तैयार है।"
+    },
+    "preview": {
+      "title": "रिपोर्ट पूर्वावलोकन"
+    },
+    "messages": {
+      "copySuccess": "रिपोर्ट कॉपी हो गई ✓",
+      "success": "रिपोर्ट बन गई ✨"
     },
     "shareWhatsapp": "व्हाट्सएप पर शेयर करें",
     "errors": {
@@ -218,6 +238,26 @@
     "title": "भाषा",
     "select": "भाषा चुनें",
     "changed": "भाषा {{language}} में बदल दी गई"
+  },
+  "more": {
+    "title": "अधिक",
+    "plan": {
+      "free": "तख्ती फ्री प्लान - ३ महीने फ्री चल रहा है",
+      "pro": "तख्ती प्रो प्लान"
+    },
+    "language": "भाषा / Language",
+    "menu": {
+      "classDetails": "कक्षा विवरण",
+      "feeSettings": "फीस सेटिंग्स",
+      "reminders": "रिमाइंडर्स",
+      "backupRestore": "बैकअप और रिस्टोर",
+      "helpSupport": "मदद और सपोर्ट",
+      "settings": "सेटिंग्स"
+    },
+    "buttons": {
+      "upgrade": "प्लान अपग्रेड करें",
+      "logout": "लॉगआउट"
+    }
   },
   "pwa": {
     "offlineBanner": "ऑफ़लाइन मोड सक्रिय है। इंटरनेट आने पर सिंक होगा।",
@@ -277,6 +317,13 @@
     "createProfile": "प्रोफ़ाइल बनाएं",
     "initialTitle": "अपने शहर का नाम दालें",
     "initialSubtitle": "अपने शहर के सर्वश्रेष्ठ शिक्षक खोजें",
+    "initialSubtitle2": "या नीचे से जल्दी खोजें",
+    "quick": {
+      "maths": "📐 गणित शिक्षक",
+      "class10": "🏫 कक्षा 10",
+      "nearMe": "📍 मेरे पास"
+    },
+    "noPhone": "📞 फोन उपलब्ध नहीं है",
     "whatsapp": "💬 व्हाट्सएप",
     "viewProfile": "प्रोफ़ाइल देखें",
     "featured": "फ़ीचर्ड"
@@ -286,6 +333,7 @@
     "notFoundDesc": "यह शिक्षक प्रोफ़ाइल उपलब्ध नहीं है।",
     "backToSearch": "शिक्षक खोजें",
     "whatsappContact": "💬 व्हाट्सएप पर संपर्क करें",
+    "noPhone": "📞 फोन नंबर उपलब्ध नहीं है",
     "teachingDetails": "शिक्षण विवरण",
     "subjects": "विषय",
     "classes": "कक्षाएं",
@@ -307,6 +355,8 @@
     "boostedTitle": "प्रोफ़ाइल बूस्टेड!",
     "boostedDescription": "आपकी प्रोफ़ाइल खोज परिणामों में सबसे ऊपर दिखाई दे रही है। यह बूस्ट <strong>{{date}}</strong> तक मान्य है।",
     "localMode": "⚠️ लोकल डेमो मोड: भुगतान सिम्युलेट किया जाएगा",
-    "paymentFailed": "बूस्ट भुगतान विफल रहा"
+    "paymentFailed": "बूस्ट भुगतान विफल रहा",
+    "optionWeek": "1 हफ़्ते का बूस्ट",
+    "optionMonth": "1 महीने का बूस्ट"
   }
 }

@@ -1,13 +1,40 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&family=Caveat:wght@600;700&display=swap');
+/* ── Takhti Design Tokens (CSS Custom Properties) ── */
 
 :root {
-  --ink: #1c1b35;
-  --ink-light: #2e2d52;
-  --cream: #f7f0e3;
-  --cream-dark: #ede3cc;
-  --saffron: #e07a2f;
-  --sage: #5b8c6e;
-  --rose: #c0586a;
-  --text-main: #1c1b35;
-  --text-muted: #6b6880;
+  /* Primary palette */
+  --primary: #1B8A3E;
+  --primary-container: #15863b;
+  --primary-light: #E8F5E9;
+  --on-primary: #ffffff;
+
+  /* Semantic colors */
+  --danger: #E53935;
+  --danger-light: #FFEBEE;
+  --warning: #E65100;
+  --warning-light: #FFF3E0;
+  --whatsapp: #25D366;
+
+  /* Surfaces */
+  --bg-page: #F5F5F5;
+  --bg-card: #FFFFFF;
+
+  /* Text */
+  --text-primary: #1A1A1A;
+  --text-secondary: #757575;
+
+  /* Borders */
+  --border: #E0E0E0;
+  --border-light: #F0F0F0;
+
+  /* Navigation */
+  --nav-active: #1B8A3E;
+  --nav-inactive: #9E9E9E;
+
+  /* Legacy aliases (for existing Tailwind config) */
+  --ink: #1A1A1A;
+  --saffron: #1B8A3E;
+  --cream: #F5F5F5;
+  --sage: #1B8A3E;
+  --rose: #E53935;
+  --text-muted: #757575;
 }

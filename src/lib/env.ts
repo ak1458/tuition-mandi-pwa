@@ -6,7 +6,7 @@ export const appEnv = {
   supabaseRedirectUrl: import.meta.env.VITE_SUPABASE_REDIRECT_URL ?? '',
   razorpayKey: import.meta.env.VITE_RAZORPAY_KEY ?? '',
   openRouterApiKey: import.meta.env.VITE_OPENROUTER_API_KEY ?? '',
-  openRouterModel: import.meta.env.VITE_OPENROUTER_MODEL ?? 'google/gemini-2.0-flash-lite-001',
+  openRouterModel: import.meta.env.VITE_OPENROUTER_MODEL ?? 'qwen/qwq-32b',
   openRouterReferer: import.meta.env.VITE_OPENROUTER_REFERER ?? 'https://takhti.app',
   openRouterTitle: import.meta.env.VITE_OPENROUTER_TITLE ?? 'Takhti App',
 }

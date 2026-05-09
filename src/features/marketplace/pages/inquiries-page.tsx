@@ -34,7 +34,9 @@ export function InquiriesPage() {
 
         // In local mode, inquiries are a V2 marketplace feature — show empty state
         if (isLocalMode) {
-            setInquiries([])
+            const existing = localStorage.getItem('takhti_local_inquiries')
+            const localInqs = existing ? JSON.parse(existing) : []
+            setInquiries(localInqs)
             setLoading(false)
             return
         }
@@ -60,7 +62,18 @@ export function InquiriesPage() {
     }, [loadInquiries])
 
     async function updateStatus(inquiryId: string, newStatus: string) {
-        if (isLocalMode) return
+        if (isLocalMode) {
+            const existing = localStorage.getItem('takhti_local_inquiries')
+            if (existing) {
+                const inqs = JSON.parse(existing) as ParentInquiry[]
+                const updated = inqs.map((inq) =>
+                    inq.id === inquiryId ? { ...inq, status: newStatus as ParentInquiry['status'] } : inq
+                )
+                localStorage.setItem('takhti_local_inquiries', JSON.stringify(updated))
+                setInquiries(updated)
+            }
+            return
+        }
 
         try {
             const { error: err } = await supabase

@@ -63,6 +63,7 @@ export async function getFeeRows(teacherId: string, feeMonth: string): Promise<F
         studentId: student.id,
         fullName: student.full_name,
         classLabel: student.class_label,
+        guardianPhone: student.guardian_phone ?? null,
         amountDue,
         amountPaid,
         status,
@@ -192,6 +193,4 @@ export async function saveFeeMutation(payload: FeeMutationPayload): Promise<void
     throw new Error(error.message)
   }
 }
-   throw new Error(error.message)
-  }
-}
+

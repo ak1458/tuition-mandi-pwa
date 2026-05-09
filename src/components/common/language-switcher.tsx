@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { LANGUAGES, type LanguageCode } from '@/i18n/config'
 
-const DEFAULT_LANGUAGE: LanguageCode = 'hi'
+const DEFAULT_LANGUAGE: LanguageCode = 'en'
 
 function resolveLanguageCode(value: string): LanguageCode {
   if (value === 'en' || value === 'hi' || value === 'hi-roman') {

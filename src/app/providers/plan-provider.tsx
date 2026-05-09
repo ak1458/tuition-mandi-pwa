@@ -43,6 +43,15 @@ function isExpired(expiresAt: string | null) {
 }
 
 function normalizePlan(rawPlan: string | null | undefined, rawExpiry: string | null | undefined): PlanState {
+  // Free launch toggle: grant Pro to all users until the configured date
+  const freeLaunchUntil = import.meta.env.VITE_FREE_LAUNCH_UNTIL as string | undefined
+  if (freeLaunchUntil && new Date(freeLaunchUntil).getTime() > Date.now()) {
+    return {
+      plan: 'pro',
+      plan_expires_at: new Date(freeLaunchUntil).toISOString(),
+    }
+  }
+
   const candidate: PlanType = rawPlan === 'pro' ? 'pro' : 'free'
   const expiry = rawExpiry ?? null
 

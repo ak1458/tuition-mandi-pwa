@@ -96,7 +96,8 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "greeting": "Namaste, {{name}}",
+    "greeting": "Namaste, {{name}} Ji 👋",
+    "subtitle": "What should we focus on today?",
     "demoMode": "Local demo mode active. Data is stored in local storage.",
     "stats": {
       "totalStudents": "Total Students",
@@ -104,6 +105,15 @@
       "feesCollected": "Fees Collected",
       "feePending": "Fee Pending"
     },
+    "cards": {
+      "absentStudents": "Absent Students",
+      "allPresent": "All present ✓",
+      "pendingFees": "Pending Fees",
+      "allFeesClear": "All fees clear ✓"
+    },
+    "todaysTask": "Today's task",
+    "markAttendance": "Mark Attendance",
+    "loading": "Loading...",
     "createBatch": {
       "title": "Create Batch",
       "namePlaceholder": "Batch name",
@@ -164,7 +174,7 @@
       "title": "Student Fee Status",
       "loading": "Loading fee data...",
       "empty": "No students/fee data for this month.",
-      "dueText": "Due: Rs {{amount}}"
+      "dueText": "Due: ₹{{amount}}"
     },
     "presets": {
       "pending": "Pending",
@@ -181,6 +191,7 @@
   "reports": {
     "title": "Reports",
     "demoMode": "Local demo mode active. AI reports use direct API.",
+    "heroSubtitle": "Create reports in Hindi and send to parents.",
     "target": {
       "title": "Report Target",
       "studentPlaceholder": "Select student",
@@ -194,20 +205,29 @@
       "testsDone": "Tests Done"
     },
     "buttons": {
-      "generateAi": "Generate AI Report",
+      "generateAi": "Generate Report",
       "generating": "Generating...",
-      "manualTemplate": "Manual Template"
+      "manualTemplate": "Manual Template",
+      "pdfDownload": "🖨️ PDF Download",
+      "copy": "Copy"
     },
     "reportText": {
       "title": "Report Text",
       "empty": "No report available yet.",
       "manualReady": "Manual template report is ready."
     },
+    "preview": {
+      "title": "Report Preview"
+    },
+    "messages": {
+      "copySuccess": "Report copied ✓",
+      "success": "Report generated ✨"
+    },
     "shareWhatsapp": "Share on WhatsApp",
     "errors": {
       "rateLimit": "Report generation limit reached. Please try again later.",
       "retryAfter": "Retry in {{seconds}}s",
-      "aiProviderDown": "AI service is currently unavailable. You can use the manual template below.",
+      "aiProviderDown": "Report service is currently unavailable. You can use the manual template below.",
       "networkError": "Internet connection is weak. Please check connection and retry.",
       "validationError": "Student data is incomplete. Please update details.",
       "useManual": "Use Manual Template",
@@ -218,6 +238,26 @@
     "title": "Language",
     "select": "Select Language",
     "changed": "Language changed to {{language}}"
+  },
+  "more": {
+    "title": "More",
+    "plan": {
+      "free": "Takhti Free Plan — 3 Months FREE",
+      "pro": "Takhti Pro Plan"
+    },
+    "language": "Language / भाषा",
+    "menu": {
+      "classDetails": "Class Details",
+      "feeSettings": "Fee Settings",
+      "reminders": "Reminders",
+      "backupRestore": "Backup & Restore",
+      "helpSupport": "Help & Support",
+      "settings": "Settings"
+    },
+    "buttons": {
+      "upgrade": "Upgrade Plan",
+      "logout": "Logout"
+    }
   },
   "pwa": {
     "offlineBanner": "Offline mode active. Sync will run when internet returns.",
@@ -277,6 +317,13 @@
     "createProfile": "Create Profile",
     "initialTitle": "Enter your city name",
     "initialSubtitle": "Search for the best teachers in your city",
+    "initialSubtitle2": "Or quickly search below",
+    "quick": {
+      "maths": "📐 Maths Teacher",
+      "class10": "🏫 Class 10",
+      "nearMe": "📍 Near Me"
+    },
+    "noPhone": "📞 No Phone Available",
     "whatsapp": "💬 WhatsApp",
     "viewProfile": "View Profile",
     "featured": "Featured"
@@ -286,6 +333,7 @@
     "notFoundDesc": "This teacher profile is not available.",
     "backToSearch": "Search Teachers",
     "whatsappContact": "💬 Contact on WhatsApp",
+    "noPhone": "📞 Phone number is not available",
     "teachingDetails": "Teaching Details",
     "subjects": "Subjects",
     "classes": "Classes",
@@ -307,6 +355,8 @@
     "boostedTitle": "Profile Boosted!",
     "boostedDescription": "Your profile is appearing at the top of search results. This boost is valid until <strong>{{date}}</strong>.",
     "localMode": "⚠️ Local demo mode: Payment will be simulated",
-    "paymentFailed": "Boost payment failed"
+    "paymentFailed": "Boost payment failed",
+    "optionWeek": "1 Week Boost",
+    "optionMonth": "1 Month Boost"
   }
 }

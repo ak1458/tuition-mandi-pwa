@@ -6,6 +6,8 @@ import { LoginPage } from '@/features/auth/pages/login-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { FeesPage } from '@/features/fees/pages/fees-page'
 import { ReportsPage } from '@/features/reports/pages/reports-page'
+import { StudentsPage } from '@/features/students/pages/students-page'
+import { MorePage } from '@/features/settings/pages/more-page'
 import { ProfileSetupPage } from '@/features/marketplace/pages/profile-setup-page'
 import { SearchPage } from '@/features/marketplace/pages/search-page'
 import { TeacherProfilePage } from '@/features/marketplace/pages/teacher-profile-page'
@@ -30,9 +32,11 @@ export function AppRouter() {
         <Route element={<MobileShell />}>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/students" element={<StudentsPage />} />
           <Route path="/attendance" element={<AttendancePage />} />
           <Route path="/fees" element={<FeesPage />} />
           <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/more" element={<MorePage />} />
           <Route path="/inquiries" element={<InquiriesPage />} />
         </Route>
       </Route>

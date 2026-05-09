@@ -19,7 +19,7 @@ const REASONS: Record<UpgradeReason, { title: string; message: string }> = {
     message: 'Pro plan pe unlimited students add karo aur apni tuition grow karo.',
   },
   ai_report: {
-    title: 'AI Reports Pro Feature',
+    title: 'Reports Pro Feature',
     message: 'Parents ko professional report bhejne ke liye Pro unlock karo.',
   },
 }
@@ -32,13 +32,13 @@ const BILLING_OPTIONS: Array<{
 }> = [
   {
     cycle: 'monthly',
-    label: 'Pro Monthly - Rs 199',
+    label: 'Pro Monthly - ₹199',
     amountPaise: 19900,
     description: 'Pro Plan - 1 Mahina',
   },
   {
     cycle: 'yearly',
-    label: 'Pro Yearly - Rs 1499',
+    label: 'Pro Yearly - ₹1499',
     amountPaise: 149900,
     description: 'Pro Plan - 1 Saal',
   },
@@ -117,8 +117,8 @@ export function UpgradeModal({ reason, onClose, onUpgradeSuccess }: UpgradeModal
         </div>
 
         <div className="mt-4 rounded-2xl bg-cream px-3 py-3 text-sm text-ink">
-          <p className="font-semibold">Rs 199/month</p>
-          <p className="mt-1 text-muted">ya Rs 1499/year (4 mahine free)</p>
+          <p className="font-semibold">₹199/month</p>
+          <p className="mt-1 text-muted">ya ₹1499/year (4 mahine free)</p>
         </div>
 
         <div className="mt-4 space-y-2">

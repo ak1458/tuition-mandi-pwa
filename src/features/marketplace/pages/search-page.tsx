@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { searchTeachers } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import { AnimatedLogo } from '@/components/common/animated-logo'
@@ -33,6 +34,7 @@ function isBoosted(teacher: TeacherProfile): boolean {
 
 // ------- Teacher Card -------
 function TeacherCard({ teacher }: { teacher: TeacherProfile }) {
+    const { t } = useTranslation()
     const rating = avgRating(teacher.parent_ratings)
     const ratingCount = teacher.parent_ratings?.length || 0
     const boosted = isBoosted(teacher)
@@ -127,19 +129,25 @@ function TeacherCard({ teacher }: { teacher: TeacherProfile }) {
 
             {/* Action buttons */}
             <div className="flex gap-2">
-                <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 rounded-xl bg-green-500 py-2.5 text-center text-[11px] font-bold text-white shadow-sm transition-all hover:bg-green-600 hover:shadow-md"
-                >
-                    💬 WhatsApp
-                </a>
+                {whatsappUrl ? (
+                    <a
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 rounded-xl bg-green-500 py-2.5 text-center text-[11px] font-bold text-white shadow-sm transition-all hover:bg-green-600 hover:shadow-md"
+                    >
+                        💬 WhatsApp
+                    </a>
+                ) : (
+                    <span className="flex-1 rounded-xl bg-gray-200 py-2.5 text-center text-[11px] font-bold text-gray-400">
+                        {t('search.noPhone', '📞 Phone Nahi Hai')}
+                    </span>
+                )}
                 <Link
                     to={`/profile/${teacher.id}`}
                     className="flex-1 rounded-xl border border-saffron bg-saffron/5 py-2.5 text-center text-[11px] font-bold text-saffron transition-all hover:bg-saffron hover:text-white"
                 >
-                    View Profile
+                    {t('search.viewProfile')}
                 </Link>
             </div>
         </div>
@@ -172,6 +180,7 @@ function FilterChip({
 
 // ------- Main Page -------
 export function SearchPage() {
+    const { t } = useTranslation()
     const [city, setCity] = useState('')
     const [selectedSubject, setSelectedSubject] = useState<string | undefined>()
     const [selectedClass, setSelectedClass] = useState<string | undefined>()
@@ -367,10 +376,65 @@ export function SearchPage() {
                 )}
 
                 {!searched && !loading && (
-                    <div className="text-center py-20">
+                    <div className="text-center py-12">
                         <p className="text-4xl mb-3">🎓</p>
-                        <p className="text-sm font-semibold text-ink mb-1">Apne city ka naam daalein</p>
-                        <p className="text-xs text-muted">Upar search bar mein city daalke best teachers dhundhein</p>
+                        <p className="text-sm font-semibold text-ink mb-1">{t('search.initialTitle')}</p>
+                        <p className="text-xs text-muted mb-5">{t('search.initialSubtitle2', 'Ya neeche se jaldi search karein')}</p>
+
+                        {/* Quick pill buttons */}
+                        <div className="flex flex-wrap justify-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSelectedSubject('Mathematics')
+                                    setCity(city || 'Gonda')
+                                    setSearched(true)
+                                    handleSearch()
+                                }}
+                                className="rounded-full border border-[#1B8A3E] bg-[#E8F5E9] px-4 py-2 text-xs font-semibold text-[#1B8A3E]"
+                            >
+                                {t('search.quick.maths', '📐 Maths Teacher')}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSelectedClass('Class 10')
+                                    setCity(city || 'Gonda')
+                                    setSearched(true)
+                                    handleSearch()
+                                }}
+                                className="rounded-full border border-[#1B8A3E] bg-[#E8F5E9] px-4 py-2 text-xs font-semibold text-[#1B8A3E]"
+                            >
+                                {t('search.quick.class10', '🏫 Class 10')}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if ('geolocation' in navigator) {
+                                        navigator.geolocation.getCurrentPosition(
+                                            () => {
+                                                // For now, set a default city since we don't have geocoding
+                                                setCity('Gonda')
+                                                setSearched(true)
+                                                handleSearch()
+                                            },
+                                            () => {
+                                                setCity('Gonda')
+                                                setSearched(true)
+                                                handleSearch()
+                                            }
+                                        )
+                                    } else {
+                                        setCity('Gonda')
+                                        setSearched(true)
+                                        handleSearch()
+                                    }
+                                }}
+                                className="rounded-full border border-[#1B8A3E] bg-[#E8F5E9] px-4 py-2 text-xs font-semibold text-[#1B8A3E]"
+                            >
+                                {t('search.quick.nearMe', '📍 Near Me')}
+                            </button>
+                        </div>
                     </div>
                 )}
             </section>

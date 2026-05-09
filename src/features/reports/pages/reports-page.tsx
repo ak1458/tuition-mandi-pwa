@@ -1,12 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router'
+import { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
-import { UpgradeModal } from '@/components/common/upgrade-modal'
-import { isLocalMode } from '@/lib/env'
-import { useAiReportCount } from '@/hooks/use-ai-report-count'
-import { usePlan } from '@/hooks/use-plan'
-import type { UpgradeReason } from '@/types/plan'
 import {
   fetchLatestReport,
   generateManualTemplate,
@@ -14,157 +9,102 @@ import {
   invokeAiReport,
   listReportStudents,
   saveManualReport,
-  type GeneratedReportResponse,
   type ReportMetrics,
   type ReportStudent,
 } from '@/features/reports/services/reports-service'
-
-interface ErrorState {
-  code: GeneratedReportResponse['error_code'] | null
-  message: string
-  retryAfterSeconds: number
-}
 
 const defaultMetrics: ReportMetrics = {
   attendancePercent: 0,
   avgScore: 0,
   testsDone: 0,
+  feePendingAmount: 0,
 }
-const FREE_PLAN_AI_REPORT_LIMIT = 1
 
 export function ReportsPage() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { session } = useAuth()
-  const { isFree, isPro, isLoading: isPlanLoading, refreshPlan } = usePlan()
+  const navigate = useNavigate()
   const teacherId = session?.user.id ?? ''
-  const { count: aiReportCount, isLoading: isAiCountLoading, refresh: refreshAiReportCount } = useAiReportCount(teacherId)
+
   const [students, setStudents] = useState<ReportStudent[]>([])
   const [selectedStudentId, setSelectedStudentId] = useState('')
-  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7))
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().toISOString().slice(0, 7)
+  )
   const [metrics, setMetrics] = useState<ReportMetrics>(defaultMetrics)
   const [generatedText, setGeneratedText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [infoMessage, setInfoMessage] = useState('')
-  const [errorState, setErrorState] = useState<ErrorState>({
-    code: null,
-    message: '',
-    retryAfterSeconds: 0,
-  })
-  const [upgradeReason, setUpgradeReason] = useState<UpgradeReason | null>(null)
+  const [message, setMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
-  const selectedStudent = useMemo(
-    () => students.find((student) => student.id === selectedStudentId) ?? null,
-    [selectedStudentId, students],
-  )
-
+  const selectedStudent =
+    students.find((s) => s.id === selectedStudentId) ?? null
   const monthStart = `${selectedMonth}-01`
-
-  useEffect(() => {
-    if (!errorState.retryAfterSeconds) return
-    const intervalId = window.setInterval(() => {
-      setErrorState((prev) => ({
-        ...prev,
-        retryAfterSeconds: Math.max(prev.retryAfterSeconds - 1, 0),
-      }))
-    }, 1000)
-
-    return () => {
-      window.clearInterval(intervalId)
-    }
-  }, [errorState.retryAfterSeconds])
 
   const loadStudents = useCallback(async () => {
     if (!teacherId) {
       setIsLoading(false)
       return
     }
-
     setIsLoading(true)
     try {
       const rows = await listReportStudents(teacherId)
       setStudents(rows)
       if (rows.length > 0) {
-        setSelectedStudentId((current) => current || rows[0].id)
+        setSelectedStudentId((c) => c || rows[0].id)
       }
     } catch (error) {
-      setErrorState({
-        code: 'NETWORK_ERROR',
-        message: error instanceof Error ? error.message : 'Students load failed',
-        retryAfterSeconds: 0,
-      })
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Students load failed'
+      )
     } finally {
       setIsLoading(false)
     }
   }, [teacherId])
 
-  const loadMetricsAndLatest = useCallback(async () => {
+  const loadMetrics = useCallback(async () => {
     if (!teacherId || !selectedStudentId) {
       setMetrics(defaultMetrics)
       setGeneratedText('')
       return
     }
-
     setIsLoading(true)
-    setInfoMessage('')
     try {
-      const [metricsValue, latestReport] = await Promise.all([
+      const [m, latest] = await Promise.all([
         getReportMetrics(teacherId, selectedStudentId, monthStart),
         fetchLatestReport(teacherId, selectedStudentId, monthStart),
       ])
-      setMetrics(metricsValue)
-      setGeneratedText(latestReport ?? '')
+      setMetrics(m)
+      setGeneratedText(latest ?? '')
     } catch (error) {
-      setErrorState({
-        code: 'NETWORK_ERROR',
-        message: error instanceof Error ? error.message : 'Metrics load failed',
-        retryAfterSeconds: 0,
-      })
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Metrics load failed'
+      )
     } finally {
       setIsLoading(false)
     }
   }, [monthStart, selectedStudentId, teacherId])
 
   useEffect(() => {
-    loadStudents().catch(() => { })
+    loadStudents().catch(() => {})
   }, [loadStudents])
 
   useEffect(() => {
-    loadMetricsAndLatest().catch(() => { })
-  }, [loadMetricsAndLatest])
+    loadMetrics().catch(() => {})
+  }, [loadMetrics])
 
-  const generateManual = useCallback(async () => {
+  const onGenerateReport = async () => {
     if (!selectedStudent || !teacherId) return
-    const text = generateManualTemplate(selectedStudent.full_name, metrics)
-    setGeneratedText(text)
-    setInfoMessage('Manual template report ready hai.')
-    setErrorState({
-      code: null,
-      message: '',
-      retryAfterSeconds: 0,
-    })
-    await saveManualReport(teacherId, selectedStudent.id, monthStart, metrics, text)
-  }, [metrics, monthStart, selectedStudent, teacherId])
-
-  const generateAiReport = async () => {
-    if (!selectedStudent) return
-    if (isFree && aiReportCount >= FREE_PLAN_AI_REPORT_LIMIT) {
-      setUpgradeReason('ai_report')
-      return
-    }
-
     setIsGenerating(true)
-    setInfoMessage('')
-    setErrorState({
-      code: null,
-      message: '',
-      retryAfterSeconds: 0,
-    })
+    setMessage('')
+    setErrorMessage('')
 
     try {
-      const currentLanguage = (i18n.language === 'en' || i18n.language === 'hi' || i18n.language === 'hi-roman')
-        ? i18n.language
-        : 'hi-roman'
+      const lang =
+        i18n.language === 'en' || i18n.language === 'hi' || i18n.language === 'hi-roman'
+          ? i18n.language
+          : 'hi-roman'
 
       const response = await invokeAiReport({
         teacherId,
@@ -174,34 +114,27 @@ export function ReportsPage() {
         classLabel: selectedStudent.class_label,
         subject: selectedStudent.subject,
         metrics,
-        language: currentLanguage as 'en' | 'hi' | 'hi-roman',
+        language: lang as 'en' | 'hi' | 'hi-roman',
       })
 
       if (response.status === 'ok' && response.report_text) {
         setGeneratedText(response.report_text)
-        setInfoMessage('AI report successfully generate ho gaya.')
-        await refreshAiReportCount()
-        await loadMetricsAndLatest()
+        setMessage(t('reports.messages.success'))
         return
       }
 
-      if (response.error_code === 'UPGRADE_REQUIRED') {
-        setUpgradeReason('ai_report')
-      }
-
-      const message =
-        response.user_message_hi ?? 'Abhi report generate nahi ho pa rahi, thodi der mein try karein.'
-      setErrorState({
-        code: response.error_code ?? 'NETWORK_ERROR',
-        message,
-        retryAfterSeconds: response.retry_after_seconds ?? 0,
-      })
+      // Fallback to manual template
+      const text = generateManualTemplate(selectedStudent.full_name, metrics)
+      setGeneratedText(text)
+      await saveManualReport(teacherId, selectedStudent.id, monthStart, metrics, text)
+      setMessage(t('reports.reportText.manualReady'))
     } catch {
-      setErrorState({
-        code: 'NETWORK_ERROR',
-        message: 'Internet connection weak hai. Connection check karke phir try karein.',
-        retryAfterSeconds: 0,
-      })
+      // Fallback to manual
+      if (selectedStudent) {
+        const text = generateManualTemplate(selectedStudent.full_name, metrics)
+        setGeneratedText(text)
+        setMessage(t('reports.reportText.manualReady'))
+      }
     } finally {
       setIsGenerating(false)
     }
@@ -214,160 +147,114 @@ export function ReportsPage() {
   }
 
   return (
-    <div className="space-y-4">
-      {isLocalMode && (
-        <p className="rounded-xl bg-saffron/15 px-3 py-2 text-sm text-ink">
-          Local demo mode active. AI reports OpenRouter key se direct generate ho rahe hain.
-        </p>
-      )}
-      {infoMessage && <p className="rounded-xl bg-sage/10 px-3 py-2 text-sm text-sage">{infoMessage}</p>}
+    <div className="flex flex-col min-h-full">
+      {/* ── Header ── */}
+      <div className="sticky top-0 z-10 bg-[#F5F5F5] px-4 pt-6 pb-3">
+        <div className="flex items-center gap-3">
+          <button type="button" onClick={() => navigate(-1)} className="p-1">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+          <h1 className="text-xl font-bold text-[#1A1A1A]">Reports</h1>
+        </div>
+      </div>
 
-      {errorState.message && (
-        <section className="rounded-2xl border border-rose/30 bg-rose/10 px-4 py-4">
-          <p className="text-sm text-rose">{errorState.message}</p>
-          {errorState.code === 'AI_RATE_LIMIT' && errorState.retryAfterSeconds > 0 && (
-            <p className="mt-2 text-xs text-rose">Retry in {errorState.retryAfterSeconds}s</p>
-          )}
-          {errorState.code === 'AI_PROVIDER_DOWN' && (
-            <button
-              className="mt-3 rounded-xl border border-[#dfd4bc] bg-white px-3 py-2 text-sm font-semibold text-ink"
-              onClick={() => {
-                generateManual().catch(() => { })
-              }}
-              type="button"
-            >
-              Use Manual Template
-            </button>
-          )}
-          {errorState.code === 'NETWORK_ERROR' && (
-            <button
-              className="mt-3 rounded-xl border border-[#dfd4bc] bg-white px-3 py-2 text-sm font-semibold text-ink"
-              onClick={generateAiReport}
-              type="button"
-            >
-              Retry
-            </button>
-          )}
-          {errorState.code === 'VALIDATION_ERROR' && (
-            <Link className="mt-3 inline-block rounded-xl bg-white px-3 py-2 text-sm font-semibold text-ink" to="/dashboard">
-              Student details update karein
-            </Link>
-          )}
-          {errorState.code === 'UPGRADE_REQUIRED' && (
-            <button
-              className="mt-3 rounded-xl bg-white px-3 py-2 text-sm font-semibold text-ink"
-              onClick={() => setUpgradeReason('ai_report')}
-              type="button"
-            >
-              Pro Lo
-            </button>
-          )}
-        </section>
-      )}
+      <div className="flex-1 px-4 space-y-4 pb-24">
+        {/* Messages */}
+        {errorMessage && (
+          <div className="rounded-xl bg-[#FFEBEE] px-4 py-2 text-sm text-[#E53935]">
+            {errorMessage}
+          </div>
+        )}
+        {message && (
+          <div className="rounded-xl bg-[#E8F5E9] px-4 py-2 text-sm text-[#1B8A3E]">
+            {message}
+          </div>
+        )}
 
-      <section className="rounded-2xl border border-[#dfd4bc] bg-white px-4 py-4">
-        <p className="text-xs uppercase tracking-[0.16em] text-saffron">Report Target</p>
-        <div className="mt-3 grid gap-2">
+        {/* ── Center illustration ── */}
+        <div className="text-center py-4">
+          <p className="text-5xl mb-3">✨</p>
+          <p className="text-sm text-[#757575]">
+            {t('reports.heroSubtitle')}
+          </p>
+        </div>
+
+        {/* ── Selectors ── */}
+        <div className="space-y-2">
           <select
-            className="rounded-xl border border-[#dfd4bc] px-3 py-2 text-sm"
-            onChange={(event) => setSelectedStudentId(event.target.value)}
             value={selectedStudentId}
+            onChange={(e) => setSelectedStudentId(e.target.value)}
+            className="w-full rounded-xl border border-[#E0E0E0] bg-white px-4 py-3 text-sm text-[#1A1A1A] outline-none focus:border-[#1B8A3E]"
           >
-            <option value="">Select student</option>
-            {students.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.full_name} - {student.class_label}
+            <option value="">{t('reports.target.studentPlaceholder')}</option>
+            {students.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.full_name} - {s.class_label}
               </option>
             ))}
           </select>
           <input
-            className="rounded-xl border border-[#dfd4bc] px-3 py-2 text-sm"
-            onChange={(event) => setSelectedMonth(event.target.value)}
             type="month"
             value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="w-full rounded-xl border border-[#E0E0E0] bg-white px-4 py-3 text-sm outline-none focus:border-[#1B8A3E]"
           />
         </div>
-      </section>
 
-      <section className="rounded-2xl border border-[#dfd4bc] bg-white px-4 py-4">
-        <p className="text-xs uppercase tracking-[0.16em] text-saffron">Metrics</p>
-        {isLoading ? (
-          <p className="mt-2 text-sm text-muted">Metrics load ho rahe hain...</p>
-        ) : (
-          <div className="mt-3 grid grid-cols-3 gap-2 text-sm">
-            <div className="rounded-xl bg-cream px-3 py-2 text-center">
-              <p className="font-display text-xl text-sage">{metrics.attendancePercent}%</p>
-              <p className="text-xs text-muted">Attendance</p>
-            </div>
-            <div className="rounded-xl bg-cream px-3 py-2 text-center">
-              <p className="font-display text-xl text-saffron">{metrics.avgScore}%</p>
-              <p className="text-xs text-muted">Avg Score</p>
-            </div>
-            <div className="rounded-xl bg-cream px-3 py-2 text-center">
-              <p className="font-display text-xl text-rose">{metrics.testsDone}</p>
-              <p className="text-xs text-muted">Tests Done</p>
+        {/* ── Generate Button ── */}
+        <button
+          type="button"
+          disabled={isGenerating || !selectedStudent || isLoading}
+          onClick={onGenerateReport}
+          className="bg-[#1B8A3E] text-white rounded-xl py-3 w-full font-semibold text-sm disabled:opacity-50 active:bg-[#15732F]"
+        >
+          {isGenerating ? t('reports.buttons.generating') : t('reports.buttons.generateAi')}
+        </button>
+
+        {/* ── Report Preview ── */}
+        {generatedText && (
+          <div className="rounded-xl bg-white p-4 shadow-sm">
+            <p className="text-xs font-medium text-[#757575] uppercase mb-2">
+              {t('reports.preview.title')}
+            </p>
+            <p className="text-sm text-[#1A1A1A] leading-7 whitespace-pre-wrap">
+              {generatedText}
+            </p>
+
+            <div className="mt-4 space-y-2">
+              <button
+                type="button"
+                onClick={shareOnWhatsapp}
+                className="bg-[#25D366] text-white rounded-xl py-3 w-full font-semibold text-sm flex items-center justify-center gap-2"
+              >
+                <svg className="h-4 w-4 fill-white" viewBox="0 0 24 24">
+                  <path d="M12.031 0C5.405 0 0 5.405 0 12.031c0 2.115.549 4.182 1.593 6L.045 24l6.115-1.517c1.765.952 3.754 1.455 5.871 1.455 6.626 0 12.031-5.405 12.031-12.031S18.657 0 12.031 0z" />
+                </svg>
+                {t('reports.shareWhatsapp')}
+              </button>
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="border border-[#1B8A3E] text-[#1B8A3E] bg-white rounded-xl py-3 w-full font-semibold text-sm"
+              >
+                {t('reports.buttons.pdfDownload')}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedText).catch(() => {})
+                  setMessage(t('reports.messages.copySuccess'))
+                }}
+                className="border border-[#E0E0E0] text-[#757575] bg-white rounded-xl py-3 w-full font-semibold text-sm"
+              >
+                {t('reports.buttons.copy')}
+              </button>
             </div>
           </div>
         )}
-      </section>
-
-      <section className="rounded-2xl border border-[#dfd4bc] bg-white px-4 py-3 text-xs text-muted">
-        {isPlanLoading || isAiCountLoading
-          ? 'Plan check ho raha hai...'
-          : isPro
-            ? 'Plan: Pro (AI reports unlimited)'
-            : `Free plan usage: ${aiReportCount}/${FREE_PLAN_AI_REPORT_LIMIT} AI reports used`}
-      </section>
-
-      <div className="grid grid-cols-2 gap-2">
-        <button
-          className="rounded-xl bg-saffron px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
-          disabled={
-            isGenerating || !selectedStudent || errorState.retryAfterSeconds > 0 || isPlanLoading || isAiCountLoading
-          }
-          onClick={generateAiReport}
-          type="button"
-        >
-          {isGenerating ? 'Generating...' : 'Generate AI Report'}
-        </button>
-        <button
-          className="rounded-xl border border-[#dfd4bc] bg-white px-4 py-3 text-sm font-semibold text-ink disabled:opacity-60"
-          disabled={!selectedStudent}
-          onClick={() => {
-            generateManual().catch(() => { })
-          }}
-          type="button"
-        >
-          Manual Template
-        </button>
       </div>
-
-      <section className="rounded-2xl border border-[#dfd4bc] bg-white px-4 py-4">
-        <p className="text-xs uppercase tracking-[0.16em] text-saffron">Report Text</p>
-        <p className="mt-2 whitespace-pre-wrap text-sm text-ink">
-          {generatedText || 'Abhi koi report available nahi hai.'}
-        </p>
-        <button
-          className="mt-4 w-full rounded-xl bg-ink px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
-          disabled={!generatedText}
-          onClick={shareOnWhatsapp}
-          type="button"
-        >
-          Share on WhatsApp
-        </button>
-      </section>
-
-      {upgradeReason && (
-        <UpgradeModal
-          onClose={() => setUpgradeReason(null)}
-          onUpgradeSuccess={() => {
-            refreshPlan().catch(() => {})
-            refreshAiReportCount().catch(() => {})
-            setInfoMessage('Plan successfully upgraded to Pro.')
-          }}
-          reason={upgradeReason}
-        />
-      )}
     </div>
   )
 }
