@@ -27,7 +27,7 @@ i18n
     fallbackLng: 'en',
     supportedLngs: ['en', 'hi', 'hi-roman'],
     nonExplicitSupportedLngs: true,
-    load: 'languageOnly',
+    load: 'all',
     cleanCode: true,
     interpolation: {
       escapeValue: false,

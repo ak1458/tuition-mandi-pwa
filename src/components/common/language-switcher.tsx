@@ -15,7 +15,7 @@ function resolveLanguageCode(value: string): LanguageCode {
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation()
-  const currentLang = resolveLanguageCode(i18n.resolvedLanguage ?? i18n.language)
+  const currentLang = resolveLanguageCode(i18n.language ?? i18n.resolvedLanguage)
 
   const handleChange = (code: LanguageCode) => {
     i18n.changeLanguage(code)

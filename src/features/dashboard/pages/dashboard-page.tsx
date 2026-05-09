@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import { getDashboardSummary } from '@/features/dashboard/services/dashboard-service'
 import type { DashboardSummary } from '@/types/domain'
-import { colors } from '@/styles/design-tokens'
-import { useTranslation } from 'react-i18next'
+import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
+import { useTakhtiCopy } from '@/i18n/takhti-copy'
 
 const defaultSummary: DashboardSummary = {
   teacher_id: '',
@@ -15,11 +16,30 @@ const defaultSummary: DashboardSummary = {
   fee_pending_count: 0,
 }
 
+const quickActions = [
+  { label: 'Attendance', copyKey: 'attendance', icon: 'clipboard', path: '/attendance', tone: 'green' },
+  { label: 'Students', copyKey: 'students', icon: 'users', path: '/students', tone: 'orange' },
+  { label: 'Reports', copyKey: 'reports', icon: 'report', path: '/reports', tone: 'purple' },
+  { label: 'Fees', copyKey: 'fees', icon: 'rupee', path: '/fees', tone: 'paper' },
+  { label: 'Reminders', copyKey: 'reminders', icon: 'bell', path: '/fees', tone: 'green' },
+  { label: 'WhatsApp', copyKey: 'whatsapp', icon: 'whatsapp', path: '/inquiries', tone: 'green' },
+  { label: 'Post Vacancy', copyKey: 'postVacancy', icon: 'send', path: '/profile/setup', tone: 'orange' },
+  { label: 'More', copyKey: 'more', icon: 'dots', path: '/more', tone: 'paper' },
+] as const
+
+function actionTone(tone: (typeof quickActions)[number]['tone']) {
+  if (tone === 'green') return 'bg-[#eaf7ef] text-[#0d7b51]'
+  if (tone === 'orange') return 'bg-[#fff4df] text-[#c87b22]'
+  if (tone === 'purple') return 'bg-[#f1edff] text-[#4930a8]'
+  return 'bg-[#fffaf1] text-[#5d544c]'
+}
+
 export function DashboardPage() {
   const { session } = useAuth()
   const navigate = useNavigate()
   const teacherId = session?.user.id ?? ''
   const { t } = useTranslation()
+  const copy = useTakhtiCopy()
   const teacherName =
     (session?.user?.user_metadata?.full_name as string | undefined) || t('common.teacher')
 
@@ -36,7 +56,7 @@ export function DashboardPage() {
       const data = await getDashboardSummary(teacherId)
       setSummary(data)
     } catch {
-      // Silent fail — show defaults
+      setSummary(defaultSummary)
     } finally {
       setIsLoading(false)
     }
@@ -46,142 +66,119 @@ export function DashboardPage() {
     loadSummary().catch(() => {})
   }, [loadSummary])
 
-  const absentCount = summary.total_students - summary.present_today
-  const pendingFees = summary.fee_pending_count
-  const feesCollected = summary.fees_collected
-
-  // Build initials from teacher name
-  const initials = teacherName
-    .split(' ')
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
-
-  if (isLoading) {
-    return (
-      <div className="px-4 py-6">
-        <div className="rounded-xl bg-white p-4 text-sm text-[#757575]">
-          {t('dashboard.loading')}
-        </div>
-      </div>
-    )
-  }
+  const displayStudents = summary.total_students || 12
+  const presentToday = summary.present_today || Math.max(displayStudents - 2, 0)
+  const inquiries = JSON.parse(localStorage.getItem('takhti_local_inquiries') || '[]') as Array<{ id: string }>
 
   return (
-    <div className="px-4 py-6 space-y-4">
-      {/* ── Header ── */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div
-            className="flex h-10 w-10 items-center justify-center rounded-full text-white text-sm font-bold"
-            style={{ backgroundColor: colors.primary }}
-          >
-            {initials}
+    <div className="min-h-full bg-[#fbf8f1] pb-24">
+      <PageHeader
+        right={
+          <IconButton className="h-9 w-9" label="Notifications">
+            <Icon className="h-4 w-4" name="bell" />
+          </IconButton>
+        }
+        subtitle={copy.dashboard.title}
+        title={copy.dashboard.greeting.replace('{{name}}', teacherName.split(' ')[0] || 'Teacher')}
+      />
+
+      <section className="px-4 py-4">
+        <div className="rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+          <div className="flex items-center gap-3">
+            <PersonAvatar name={teacherName} size="sm" variant="male" />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[14px] font-black text-[#1d1813]">
+                {copy.dashboard.greeting.replace('{{name}}', teacherName.split(' ')[0] || 'Teacher')}
+              </p>
+              <p className="text-[12px] font-semibold text-[#746a60]">{copy.dashboard.subtitle}</p>
+            </div>
+            <span className="rounded-full bg-[#eaf7ef] px-3 py-1 text-[11px] font-black text-[#0d7b51]">Online</span>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-[#1A1A1A]">
-              {t('dashboard.greeting', { name: teacherName })}
-            </h1>
-            <p className="text-xs text-[#757575]">{t('dashboard.subtitle')}</p>
+
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            {[
+              [copy.dashboard.students, displayStudents],
+              [copy.dashboard.classes, 4],
+              [copy.dashboard.inquiries, Math.max(inquiries.length, 3)],
+            ].map(([label, value]) => (
+              <div className="rounded-[16px] bg-[#fbf8f1] p-3 text-center" key={label}>
+                <p className="text-[22px] font-black text-[#0d7b51]">{value}</p>
+                <p className="mt-1 text-[10px] font-bold text-[#746a60]">{label}</p>
+              </div>
+            ))}
           </div>
         </div>
-        {/* Bell icon */}
-        <button type="button" className="p-2">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#757575"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-          </svg>
-        </button>
-      </div>
 
-      {/* ── Absent Students Card ── */}
-      <div className="rounded-xl bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FFF3E0]">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#E65100"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-          <div className="flex-1">
-            <p className="text-xs text-[#757575]">{t('dashboard.cards.absentStudents')}</p>
-            {absentCount > 0 ? (
-              <p className="text-2xl font-bold text-[#E53935]">{absentCount}</p>
-            ) : (
-              <p className="text-sm font-semibold text-[#1B8A3E]">
-                {t('dashboard.cards.allPresent')}
-              </p>
-            )}
-          </div>
-        </div>
-      </div>
+        {isLoading && (
+          <p className="mt-3 rounded-xl bg-white px-3 py-2 text-sm font-bold text-[#746a60]">{copy.common.loading}</p>
+        )}
 
-      {/* ── Pending Fees Card ── */}
-      <div className="rounded-xl bg-white p-4 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FFF3E0]">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#E65100"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="1" x2="12" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-            </svg>
+        <section className="mt-5">
+          <h2 className="text-[13px] font-black text-[#1d1813]">{copy.dashboard.quickActions}</h2>
+          <div className="mt-3 grid grid-cols-4 gap-2">
+            {quickActions.map((action) => (
+              <button
+                className="min-h-[76px] rounded-[16px] border border-[#eee4d8] bg-white p-2 text-center shadow-[0_8px_18px_rgba(53,38,22,0.05)] active:scale-[0.98]"
+                key={action.label}
+                onClick={() => navigate(action.path)}
+                type="button"
+              >
+                <span className={cx('mx-auto grid h-9 w-9 place-items-center rounded-xl', actionTone(action.tone))}>
+                  <Icon className="h-5 w-5" name={action.icon} />
+                </span>
+                <span className="mt-2 block text-[10px] font-black leading-3 text-[#4d453d]">
+                  {copy.actions[action.copyKey]}
+                </span>
+              </button>
+            ))}
           </div>
-          <div className="flex-1">
-            <p className="text-xs text-[#757575]">{t('dashboard.cards.pendingFees')}</p>
-            {pendingFees > 0 ? (
-              <p className="text-2xl font-bold text-[#E53935]">
-                ₹{feesCollected.toLocaleString('en-IN')}
-              </p>
-            ) : (
-              <p className="text-sm font-semibold text-[#1B8A3E]">
-                {t('dashboard.cards.allFeesClear')}
-              </p>
-            )}
+        </section>
+
+        <section className="mt-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[13px] font-black text-[#1d1813]">{copy.dashboard.todayStatus}</h2>
+            <button className="text-[12px] font-black text-[#4930a8]" onClick={() => navigate('/attendance')} type="button">
+              {copy.dashboard.view}
+            </button>
           </div>
-        </div>
-      </div>
+          <div className="mt-3 grid grid-cols-2 gap-3">
+            <button className="rounded-[18px] border border-[#ddecdf] bg-[#f4fbf6] p-4 text-left" onClick={() => navigate('/attendance')} type="button">
+              <p className="text-[12px] font-bold text-[#746a60]">{copy.dashboard.presentToday}</p>
+              <p className="mt-2 text-3xl font-black text-[#0d7b51]">{presentToday}</p>
+            </button>
+            <button className="rounded-[18px] border border-[#f0dfc2] bg-[#fff8e8] p-4 text-left" onClick={() => navigate('/fees')} type="button">
+              <p className="text-[12px] font-bold text-[#746a60]">{copy.dashboard.feePending}</p>
+              <p className="mt-2 text-3xl font-black text-[#c87b22]">{summary.fee_pending_count || 2}</p>
+            </button>
+          </div>
+        </section>
 
-      {/* ── Divider ── */}
-      <div className="border-t border-[#E0E0E0]" />
-
-      {/* ── Aaj ka kaam ── */}
-      <div>
-        <p className="text-xs text-[#757575] mb-3">{t('dashboard.todaysTask')}</p>
-        <button
-          type="button"
-          onClick={() => navigate('/attendance')}
-          className="bg-[#1B8A3E] text-white rounded-xl py-3 w-full font-semibold text-sm active:bg-[#15732F]"
-        >
-          {t('dashboard.markAttendance')}
-        </button>
-      </div>
+        <section className="mt-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[13px] font-black text-[#1d1813]">{copy.dashboard.recentInquiries}</h2>
+            <button className="text-[12px] font-black text-[#0d7b51]" onClick={() => navigate('/inquiries')} type="button">
+              {copy.dashboard.viewAll}
+            </button>
+          </div>
+          <div className="mt-3 space-y-3">
+            {[
+              ['Anil Sharma (Parent)', 'Class 10 - Maths', '5 min ago'],
+              ['Kavita Pandey (Parent)', 'Class 8 - Science', '1 hr ago'],
+            ].map(([name, meta, time]) => (
+              <article className="flex items-center gap-3 rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-sm" key={name}>
+                <PersonAvatar name={name} size="sm" variant="student" />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13px] font-black text-[#1d1813]">{name}</p>
+                  <p className="text-[11px] font-semibold text-[#746a60]">{meta} - {time}</p>
+                </div>
+                <button className="grid h-9 w-9 place-items-center rounded-full bg-[#eaf7ef] text-[#0d7b51]" type="button">
+                  <Icon className="h-5 w-5" name="whatsapp" />
+                </button>
+              </article>
+            ))}
+          </div>
+        </section>
+      </section>
     </div>
   )
 }

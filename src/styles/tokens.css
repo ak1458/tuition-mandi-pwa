@@ -2,39 +2,40 @@
 
 :root {
   /* Primary palette */
-  --primary: #1B8A3E;
-  --primary-container: #15863b;
-  --primary-light: #E8F5E9;
+  --primary: #0d7b51;
+  --primary-container: #0b6845;
+  --primary-light: #eaf7ef;
   --on-primary: #ffffff;
 
   /* Semantic colors */
-  --danger: #E53935;
-  --danger-light: #FFEBEE;
-  --warning: #E65100;
-  --warning-light: #FFF3E0;
+  --danger: #d84b3f;
+  --danger-light: #fff0ee;
+  --warning: #c87b22;
+  --warning-light: #fff4df;
   --whatsapp: #25D366;
+  --purple: #4930a8;
 
   /* Surfaces */
-  --bg-page: #F5F5F5;
-  --bg-card: #FFFFFF;
+  --bg-page: #fbf8f1;
+  --bg-card: #ffffff;
 
   /* Text */
-  --text-primary: #1A1A1A;
-  --text-secondary: #757575;
+  --text-primary: #1d1813;
+  --text-secondary: #746a60;
 
   /* Borders */
-  --border: #E0E0E0;
-  --border-light: #F0F0F0;
+  --border: #eadfcd;
+  --border-light: #f3eadc;
 
   /* Navigation */
-  --nav-active: #1B8A3E;
-  --nav-inactive: #9E9E9E;
+  --nav-active: #0d7b51;
+  --nav-inactive: #9a8f83;
 
   /* Legacy aliases (for existing Tailwind config) */
-  --ink: #1A1A1A;
-  --saffron: #1B8A3E;
-  --cream: #F5F5F5;
-  --sage: #1B8A3E;
-  --rose: #E53935;
-  --text-muted: #757575;
+  --ink: #1d1813;
+  --saffron: #4930a8;
+  --cream: #fbf8f1;
+  --sage: #0d7b51;
+  --rose: #d84b3f;
+  --text-muted: #746a60;
 }

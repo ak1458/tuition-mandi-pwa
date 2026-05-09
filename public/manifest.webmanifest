@@ -1,11 +1,11 @@
 {
   "name": "Takhti App - Tuition Teacher PWA",
   "short_name": "Takhti",
-  "description": "Attendance, fees, and AI progress reports for tuition teachers.",
+  "description": "Hyperlocal tuition discovery, WhatsApp inquiries, attendance, fees, and parent reports.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f7f0e3",
-  "theme_color": "#1c1b35",
+  "theme_color": "#0d7b51",
   "lang": "en",
   "orientation": "portrait-primary",
   "icons": [

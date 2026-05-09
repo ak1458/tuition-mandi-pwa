@@ -190,7 +190,7 @@
   },
   "reports": {
     "title": "Reports",
-    "demoMode": "Local demo mode active. AI reports use direct API.",
+    "demoMode": "Local demo mode active. Reports use the smart report service.",
     "heroSubtitle": "Create reports in Hindi and send to parents.",
     "target": {
       "title": "Report Target",

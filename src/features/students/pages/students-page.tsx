@@ -1,25 +1,23 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
-import {
-  listStudents,
-  createStudent,
-} from '@/features/students/services/students-service'
+import { createStudent, listStudents } from '@/features/students/services/students-service'
 import type { Student } from '@/types/domain'
-import { getAvatarColor } from '@/styles/design-tokens'
+import { Icon, IconButton, PageHeader, PersonAvatar, PrimaryButton } from '@/components/common/takhti-ui'
+import { useTakhtiCopy } from '@/i18n/takhti-copy'
 
 export function StudentsPage() {
   const { session } = useAuth()
+  const navigate = useNavigate()
+  const copy = useTakhtiCopy()
   const teacherId = session?.user.id ?? ''
 
   const [students, setStudents] = useState<Student[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [showSearch, setShowSearch] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-
-  // Form state
   const [fullName, setFullName] = useState('')
   const [classLabel, setClassLabel] = useState('')
   const [subject, setSubject] = useState('')
@@ -36,9 +34,7 @@ export function StudentsPage() {
       const data = await listStudents(teacherId)
       setStudents(data)
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Students load failed'
-      )
+      setErrorMessage(error instanceof Error ? error.message : 'Students load failed')
     } finally {
       setIsLoading(false)
     }
@@ -48,8 +44,8 @@ export function StudentsPage() {
     loadStudents().catch(() => {})
   }, [loadStudents])
 
-  const onCreateStudent = async (e: FormEvent) => {
-    e.preventDefault()
+  const onCreateStudent = async (event: FormEvent) => {
+    event.preventDefault()
     if (!teacherId || !fullName.trim()) return
 
     setIsSubmitting(true)
@@ -71,9 +67,7 @@ export function StudentsPage() {
       setShowForm(false)
       await loadStudents()
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Student create failed'
-      )
+      setErrorMessage(error instanceof Error ? error.message : 'Student create failed')
     } finally {
       setIsSubmitting(false)
     }
@@ -81,190 +75,90 @@ export function StudentsPage() {
 
   const filtered = searchQuery
     ? students.filter(
-        (s) =>
-          s.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.class_label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          s.subject.toLowerCase().includes(searchQuery.toLowerCase())
+        (student) =>
+          student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          student.class_label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          student.subject.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : students
 
   return (
-    <div className="flex flex-col min-h-full">
-      {/* ── Header ── */}
-      <div className="sticky top-0 z-10 bg-[#F5F5F5] px-4 pt-6 pb-3">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-[#1A1A1A]">Students</h1>
+    <div className="min-h-full bg-[#fbf8f1] pb-28">
+      <PageHeader
+        left={
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
+        }
+        right={
+          <IconButton className="h-9 w-9" label="Add student" onClick={() => setShowForm((value) => !value)}>
+            <Icon className="h-4 w-4 text-[#0d7b51]" name="plus" />
+          </IconButton>
+        }
+        subtitle={`${filtered.length || students.length} students`}
+        title={copy.students.title}
+      />
+
+      <section className="px-4 py-4">
+        <div className="rounded-2xl border border-[#eadfcd] bg-white p-2 shadow-sm">
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setShowSearch(!showSearch)}
-              className="p-2"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#757575"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="11" cy="11" r="8" />
-                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              onClick={() => setShowForm(!showForm)}
-              className="p-2"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#1B8A3E"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="16" />
-                <line x1="8" y1="12" x2="16" y2="12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        {/* Search bar */}
-        {showSearch && (
-          <div className="mt-3">
+            <Icon className="ml-2 h-5 w-5 text-[#82786d]" name="search" />
             <input
-              type="text"
-              placeholder="Search student..."
+              className="min-w-0 flex-1 bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-[#9a8f83]"
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder={copy.students.search}
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-xl border border-[#E0E0E0] bg-white px-4 py-2.5 text-sm text-[#1A1A1A] placeholder-[#9E9E9E] outline-none focus:border-[#1B8A3E] focus:ring-1 focus:ring-[#1B8A3E]"
             />
           </div>
-        )}
-      </div>
-
-      {/* ── Error message ── */}
-      {errorMessage && (
-        <div className="mx-4 mb-3 rounded-xl bg-[#FFEBEE] px-4 py-2 text-sm text-[#E53935]">
-          {errorMessage}
         </div>
-      )}
 
-      {/* ── Create Student Form ── */}
-      {showForm && (
-        <div className="mx-4 mb-3 rounded-xl bg-white p-4 shadow-sm">
-          <p className="text-xs font-medium text-[#757575] uppercase mb-3">
-            Naya Student Jodein
-          </p>
-          <form className="grid gap-2" onSubmit={onCreateStudent}>
-            <input
-              type="text"
-              placeholder="Student ka naam"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="rounded-lg border border-[#E0E0E0] px-3 py-2 text-sm outline-none focus:border-[#1B8A3E]"
-              required
-            />
-            <input
-              type="text"
-              placeholder="Class (e.g. Class 8)"
-              value={classLabel}
-              onChange={(e) => setClassLabel(e.target.value)}
-              className="rounded-lg border border-[#E0E0E0] px-3 py-2 text-sm outline-none focus:border-[#1B8A3E]"
-            />
-            <input
-              type="text"
-              placeholder="Subject"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className="rounded-lg border border-[#E0E0E0] px-3 py-2 text-sm outline-none focus:border-[#1B8A3E]"
-            />
-            <input
-              type="number"
-              placeholder="Monthly fee"
-              value={monthlyFee}
-              onChange={(e) => setMonthlyFee(e.target.value)}
-              className="rounded-lg border border-[#E0E0E0] px-3 py-2 text-sm outline-none focus:border-[#1B8A3E]"
-            />
-            <input
-              type="tel"
-              placeholder="Guardian phone (optional)"
-              value={guardianPhone}
-              onChange={(e) => setGuardianPhone(e.target.value)}
-              className="rounded-lg border border-[#E0E0E0] px-3 py-2 text-sm outline-none focus:border-[#1B8A3E]"
-            />
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-[#1B8A3E] text-white rounded-xl py-2.5 font-semibold text-sm disabled:opacity-50"
-            >
-              {isSubmitting ? 'Saving...' : 'Save'}
-            </button>
+        {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
+
+        {showForm && (
+          <form className="mt-4 space-y-2 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]" onSubmit={onCreateStudent}>
+            <p className="text-[13px] font-black text-[#1d1813]">{copy.students.add}</p>
+            <input className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]" onChange={(event) => setFullName(event.target.value)} placeholder={copy.students.name} required value={fullName} />
+            <div className="grid grid-cols-2 gap-2">
+              <input className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]" onChange={(event) => setClassLabel(event.target.value)} placeholder={copy.students.class} value={classLabel} />
+              <input className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]" onChange={(event) => setSubject(event.target.value)} placeholder={copy.students.subject} value={subject} />
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <input className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]" inputMode="numeric" onChange={(event) => setMonthlyFee(event.target.value)} placeholder={copy.students.monthlyFee} value={monthlyFee} />
+              <input className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]" inputMode="tel" onChange={(event) => setGuardianPhone(event.target.value)} placeholder={copy.students.parentPhone} value={guardianPhone} />
+            </div>
+            <PrimaryButton disabled={isSubmitting} type="submit">
+              {isSubmitting ? copy.students.saving : copy.students.save}
+            </PrimaryButton>
           </form>
-        </div>
-      )}
-
-      {/* ── Student List ── */}
-      <div className="flex-1 px-4 space-y-2 pb-24">
-        {isLoading ? (
-          <div className="rounded-xl bg-white p-4 text-sm text-[#757575]">
-            Loading students...
-          </div>
-        ) : filtered.length === 0 ? (
-          <div className="rounded-xl bg-white p-6 text-center text-sm text-[#757575]">
-            {searchQuery
-              ? 'Koi student nahi mila.'
-              : 'Abhi koi student nahi hai. Upar + button se jodein.'}
-          </div>
-        ) : (
-          filtered.map((student, index) => {
-            const initial = student.full_name.charAt(0).toUpperCase()
-            const bgColor = getAvatarColor(index)
-
-            return (
-              <div
-                key={student.id}
-                className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm"
-              >
-                <div
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white text-sm font-bold"
-                  style={{ backgroundColor: bgColor }}
-                >
-                  {initial}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#1A1A1A] truncate">
-                    {student.full_name}
-                  </p>
-                  <p className="text-xs text-[#757575] truncate">
-                    {student.class_label} • {student.subject}
-                  </p>
-                </div>
-                <p className="text-xs text-[#757575] shrink-0">
-                  ₹{student.monthly_fee} / month
-                </p>
-              </div>
-            )
-          })
         )}
-      </div>
 
-      {/* ── Fixed bottom button ── */}
-      <div className="fixed bottom-16 inset-x-0 px-4 py-3 bg-gradient-to-t from-[#F5F5F5] to-transparent z-30">
-        <button
-          type="button"
-          onClick={() => setShowForm(true)}
-          className="bg-[#1B8A3E] text-white rounded-xl py-3 w-full font-semibold text-sm active:bg-[#15732F]"
-        >
-          + Student Jodein
+        <div className="mt-4 space-y-3">
+          {isLoading ? (
+            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-sm font-bold text-[#746a60]">{copy.students.loading}</div>
+          ) : filtered.length === 0 ? (
+            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-6 text-center text-sm font-bold text-[#746a60]">
+              {searchQuery ? copy.students.noResult : copy.students.empty}
+            </div>
+          ) : (
+            filtered.map((student, index) => (
+              <article className="flex items-center gap-3 rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-sm" key={student.id}>
+                <PersonAvatar name={student.full_name} size="sm" variant={index % 2 ? 'female' : 'student'} />
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13px] font-black text-[#1d1813]">{student.full_name}</p>
+                  <p className="truncate text-[11px] font-semibold text-[#746a60]">{student.class_label} - {student.subject}</p>
+                </div>
+                <span className="rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[10px] font-black text-[#0d7b51]">
+                  {copy.common.present}
+                </span>
+              </article>
+            ))
+          )}
+        </div>
+      </section>
+
+      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-[#fbf8f1] to-transparent px-4 py-3">
+        <button className="w-full rounded-xl bg-[#4930a8] py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)]" onClick={() => setShowForm(true)} type="button">
+          {copy.students.add}
         </button>
       </div>
     </div>

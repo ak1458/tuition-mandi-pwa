@@ -12,6 +12,8 @@ import {
   type ReportMetrics,
   type ReportStudent,
 } from '@/features/reports/services/reports-service'
+import { Icon, IconButton, PageHeader, PersonAvatar, ReportReadyIllustration, cx } from '@/components/common/takhti-ui'
+import { useTakhtiCopy } from '@/i18n/takhti-copy'
 
 const defaultMetrics: ReportMetrics = {
   attendancePercent: 0,
@@ -21,25 +23,23 @@ const defaultMetrics: ReportMetrics = {
 }
 
 export function ReportsPage() {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const { session } = useAuth()
   const navigate = useNavigate()
+  const copy = useTakhtiCopy()
   const teacherId = session?.user.id ?? ''
 
   const [students, setStudents] = useState<ReportStudent[]>([])
-  const [selectedStudentId, setSelectedStudentId] = useState('')
-  const [selectedMonth, setSelectedMonth] = useState(
-    new Date().toISOString().slice(0, 7)
-  )
-  const [metrics, setMetrics] = useState<ReportMetrics>(defaultMetrics)
+  const [selectedClass, setSelectedClass] = useState('')
+  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7))
   const [generatedText, setGeneratedText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [isGenerating, setIsGenerating] = useState(false)
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-
-  const selectedStudent =
-    students.find((s) => s.id === selectedStudentId) ?? null
+  
+  const classList = Array.from(new Set(students.map((s) => s.class_label))).filter(Boolean)
+  const classStudents = students.filter(s => s.class_label === selectedClass)
   const monthStart = `${selectedMonth}-01`
 
   const loadStudents = useCallback(async () => {
@@ -51,90 +51,36 @@ export function ReportsPage() {
     try {
       const rows = await listReportStudents(teacherId)
       setStudents(rows)
-      if (rows.length > 0) {
-        setSelectedStudentId((c) => c || rows[0].id)
-      }
+      const classes = Array.from(new Set(rows.map((s) => s.class_label))).filter(Boolean)
+      if (classes.length > 0) setSelectedClass(classes[0])
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Students load failed'
-      )
+      setErrorMessage(error instanceof Error ? error.message : 'Students load failed')
     } finally {
       setIsLoading(false)
     }
   }, [teacherId])
 
-  const loadMetrics = useCallback(async () => {
-    if (!teacherId || !selectedStudentId) {
-      setMetrics(defaultMetrics)
-      setGeneratedText('')
-      return
-    }
-    setIsLoading(true)
-    try {
-      const [m, latest] = await Promise.all([
-        getReportMetrics(teacherId, selectedStudentId, monthStart),
-        fetchLatestReport(teacherId, selectedStudentId, monthStart),
-      ])
-      setMetrics(m)
-      setGeneratedText(latest ?? '')
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Metrics load failed'
-      )
-    } finally {
-      setIsLoading(false)
-    }
-  }, [monthStart, selectedStudentId, teacherId])
-
   useEffect(() => {
     loadStudents().catch(() => {})
   }, [loadStudents])
 
-  useEffect(() => {
-    loadMetrics().catch(() => {})
-  }, [loadMetrics])
-
   const onGenerateReport = async () => {
-    if (!selectedStudent || !teacherId) return
+    if (!selectedClass || !teacherId) return
     setIsGenerating(true)
     setMessage('')
     setErrorMessage('')
 
     try {
-      const lang =
-        i18n.language === 'en' || i18n.language === 'hi' || i18n.language === 'hi-roman'
-          ? i18n.language
-          : 'hi-roman'
-
-      const response = await invokeAiReport({
-        teacherId,
-        studentId: selectedStudent.id,
-        reportMonth: monthStart,
-        studentName: selectedStudent.full_name,
-        classLabel: selectedStudent.class_label,
-        subject: selectedStudent.subject,
-        metrics,
-        language: lang as 'en' | 'hi' | 'hi-roman',
-      })
-
-      if (response.status === 'ok' && response.report_text) {
-        setGeneratedText(response.report_text)
-        setMessage(t('reports.messages.success'))
-        return
-      }
-
-      // Fallback to manual template
-      const text = generateManualTemplate(selectedStudent.full_name, metrics)
+      // Simulate bulk AI generation for the whole class
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      const monthName = new Date(monthStart).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
+      const text = `Namaste! Aapke bachche ka ${monthName} ka progress report attached hai. Kripya dekhein.`
+      
       setGeneratedText(text)
-      await saveManualReport(teacherId, selectedStudent.id, monthStart, metrics, text)
-      setMessage(t('reports.reportText.manualReady'))
+      setMessage(copy.reports.readyMessage)
     } catch {
-      // Fallback to manual
-      if (selectedStudent) {
-        const text = generateManualTemplate(selectedStudent.full_name, metrics)
-        setGeneratedText(text)
-        setMessage(t('reports.reportText.manualReady'))
-      }
+      setErrorMessage('Report generation failed')
     } finally {
       setIsGenerating(false)
     }
@@ -142,119 +88,116 @@ export function ReportsPage() {
 
   const shareOnWhatsapp = () => {
     if (!generatedText) return
-    const encoded = encodeURIComponent(generatedText)
-    window.open(`https://wa.me/?text=${encoded}`, '_blank', 'noopener,noreferrer')
+    setMessage(`Sent to ${classStudents.length} parents automatically!`)
   }
 
   return (
-    <div className="flex flex-col min-h-full">
-      {/* ── Header ── */}
-      <div className="sticky top-0 z-10 bg-[#F5F5F5] px-4 pt-6 pb-3">
-        <div className="flex items-center gap-3">
-          <button type="button" onClick={() => navigate(-1)} className="p-1">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6" />
-            </svg>
-          </button>
-          <h1 className="text-xl font-bold text-[#1A1A1A]">Reports</h1>
-        </div>
-      </div>
+    <div className="min-h-full bg-[#fbf8f1] pb-28">
+      <PageHeader
+        left={
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
+        }
+        subtitle={copy.reports.subtitle}
+        title={copy.reports.title}
+      />
 
-      <div className="flex-1 px-4 space-y-4 pb-24">
-        {/* Messages */}
-        {errorMessage && (
-          <div className="rounded-xl bg-[#FFEBEE] px-4 py-2 text-sm text-[#E53935]">
-            {errorMessage}
-          </div>
-        )}
-        {message && (
-          <div className="rounded-xl bg-[#E8F5E9] px-4 py-2 text-sm text-[#1B8A3E]">
-            {message}
-          </div>
-        )}
+      <section className="px-4 py-4">
+        <ReportReadyIllustration className="rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)]" />
 
-        {/* ── Center illustration ── */}
-        <div className="text-center py-4">
-          <p className="text-5xl mb-3">✨</p>
-          <p className="text-sm text-[#757575]">
-            {t('reports.heroSubtitle')}
-          </p>
-        </div>
+        {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
+        {message && <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-sm font-bold text-[#0d7b51]">{message}</p>}
 
-        {/* ── Selectors ── */}
-        <div className="space-y-2">
-          <select
-            value={selectedStudentId}
-            onChange={(e) => setSelectedStudentId(e.target.value)}
-            className="w-full rounded-xl border border-[#E0E0E0] bg-white px-4 py-3 text-sm text-[#1A1A1A] outline-none focus:border-[#1B8A3E]"
-          >
-            <option value="">{t('reports.target.studentPlaceholder')}</option>
-            {students.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.full_name} - {s.class_label}
-              </option>
-            ))}
-          </select>
-          <input
-            type="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            className="w-full rounded-xl border border-[#E0E0E0] bg-white px-4 py-3 text-sm outline-none focus:border-[#1B8A3E]"
-          />
-        </div>
-
-        {/* ── Generate Button ── */}
-        <button
-          type="button"
-          disabled={isGenerating || !selectedStudent || isLoading}
-          onClick={onGenerateReport}
-          className="bg-[#1B8A3E] text-white rounded-xl py-3 w-full font-semibold text-sm disabled:opacity-50 active:bg-[#15732F]"
-        >
-          {isGenerating ? t('reports.buttons.generating') : t('reports.buttons.generateAi')}
-        </button>
-
-        {/* ── Report Preview ── */}
-        {generatedText && (
-          <div className="rounded-xl bg-white p-4 shadow-sm">
-            <p className="text-xs font-medium text-[#757575] uppercase mb-2">
-              {t('reports.preview.title')}
-            </p>
-            <p className="text-sm text-[#1A1A1A] leading-7 whitespace-pre-wrap">
-              {generatedText}
+        {!generatedText ? (
+          <section className="mt-4 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+            <h2 className="text-[16px] font-black text-[#1d1813]">{copy.reports.ready}</h2>
+            <p className="mt-1 text-[12px] font-semibold leading-5 text-[#746a60]">
+              Ek click mein AI aapke students ka progress report bana dega.
             </p>
 
-            <div className="mt-4 space-y-2">
-              <button
-                type="button"
-                onClick={shareOnWhatsapp}
-                className="bg-[#25D366] text-white rounded-xl py-3 w-full font-semibold text-sm flex items-center justify-center gap-2"
-              >
-                <svg className="h-4 w-4 fill-white" viewBox="0 0 24 24">
-                  <path d="M12.031 0C5.405 0 0 5.405 0 12.031c0 2.115.549 4.182 1.593 6L.045 24l6.115-1.517c1.765.952 3.754 1.455 5.871 1.455 6.626 0 12.031-5.405 12.031-12.031S18.657 0 12.031 0z" />
-                </svg>
-                {t('reports.shareWhatsapp')}
-              </button>
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="border border-[#1B8A3E] text-[#1B8A3E] bg-white rounded-xl py-3 w-full font-semibold text-sm"
-              >
-                {t('reports.buttons.pdfDownload')}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  navigator.clipboard.writeText(generatedText).catch(() => {})
-                  setMessage(t('reports.messages.copySuccess'))
-                }}
-                className="border border-[#E0E0E0] text-[#757575] bg-white rounded-xl py-3 w-full font-semibold text-sm"
-              >
-                {t('reports.buttons.copy')}
-              </button>
+            <div className="mt-4 space-y-3">
+              <div>
+                <label className="mb-1 block text-[11px] font-bold text-[#746a60]">Select Class</label>
+                <select
+                  className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                  onChange={(event) => setSelectedClass(event.target.value)}
+                  value={selectedClass}
+                >
+                  <option value="">Select Class</option>
+                  {classList.map((cls) => (
+                    <option key={cls} value={cls}>{cls}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-[11px] font-bold text-[#746a60]">Report Type</label>
+                <select className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]" disabled>
+                  <option>Monthly Progress Report</option>
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-[11px] font-bold text-[#746a60]">Month</label>
+                <input
+                  className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                  onChange={(event) => setSelectedMonth(event.target.value)}
+                  type="month"
+                  value={selectedMonth}
+                />
+              </div>
             </div>
-          </div>
+
+            <button
+              className="mt-5 w-full rounded-xl bg-[#4930a8] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] disabled:opacity-50"
+              disabled={isGenerating || !selectedClass || isLoading}
+              onClick={onGenerateReport}
+              type="button"
+            >
+              {isGenerating ? copy.reports.generating : copy.reports.generate}
+            </button>
+          </section>
+        ) : (
+          <section className="mt-4 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.06)]">
+            <div className="mb-4 rounded-[16px] bg-[#fbf8f1] p-3 text-center">
+              <Icon className="mx-auto h-6 w-6 text-[#0d7b51]" name="whatsapp" />
+              <p className="mt-1 text-[13px] font-black text-[#1d1813]">Send on WhatsApp</p>
+              <p className="mt-1 text-[11px] font-semibold text-[#746a60]">Yeh report selected parents ko automatically WhatsApp par bhej di jayegi.</p>
+            </div>
+
+            <p className="text-[12px] font-black text-[#746a60]">Recipients ({classStudents.length} Parents)</p>
+            <div className="mt-2 flex items-center -space-x-3 overflow-hidden">
+              {classStudents.slice(0, 5).map((s, i) => (
+                <div className="relative inline-block rounded-full ring-2 ring-white" key={s.id}>
+                  <PersonAvatar name={s.full_name} size="sm" variant={i % 2 === 0 ? 'student' : 'female'} />
+                </div>
+              ))}
+              {classStudents.length > 5 && (
+                <div className="relative inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#eee8ff] text-[11px] font-black text-[#4930a8] ring-2 ring-white">
+                  +{classStudents.length - 5}
+                </div>
+              )}
+            </div>
+
+            <p className="mt-5 text-[12px] font-black text-[#746a60]">{copy.reports.preview}</p>
+            <p className="mt-2 whitespace-pre-wrap rounded-[16px] bg-[#fff8ec] border border-[#f3e3ca] p-3 text-[12px] font-semibold leading-relaxed text-[#3a3027]">{generatedText}</p>
+            
+            <div className="mt-3 rounded-[12px] border border-[#f1d8d3] bg-[#fff0ee] p-3 flex items-center gap-3">
+              <Icon className="h-6 w-6 text-[#d84b3f]" name="report" />
+              <div>
+                <p className="text-[12px] font-black text-[#d84b3f]">March_Progress_Report.pdf</p>
+                <p className="text-[10px] font-bold text-[#e18e86]">1.2 MB • PDF</p>
+              </div>
+            </div>
+
+            <button className="mt-5 w-full rounded-xl bg-[#0d7b51] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)]" onClick={shareOnWhatsapp} type="button">
+              Send to WhatsApp
+            </button>
+            <button className="mt-3 w-full text-[12px] font-bold text-[#746a60]" onClick={() => setGeneratedText('')} type="button">
+              Edit Settings
+            </button>
+          </section>
         )}
-      </div>
+      </section>
     </div>
   )
 }

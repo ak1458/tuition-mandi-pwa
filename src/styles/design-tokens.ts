@@ -6,58 +6,58 @@
 
 // ── Colors ──────────────────────────────────────────────
 export const colors = {
-  primary: '#1B8A3E',
-  primaryContainer: '#15863b',
-  primaryLight: '#E8F5E9',
+  primary: '#0d7b51',
+  primaryContainer: '#0b6845',
+  primaryLight: '#eaf7ef',
   onPrimary: '#ffffff',
 
-  danger: '#E53935',
-  dangerLight: '#FFEBEE',
+  danger: '#d84b3f',
+  dangerLight: '#fff0ee',
 
-  warning: '#E65100',
-  warningLight: '#FFF3E0',
+  warning: '#c87b22',
+  warningLight: '#fff4df',
 
   whatsapp: '#25D366',
 
-  bgPage: '#F5F5F5',
+  bgPage: '#fbf8f1',
   bgCard: '#FFFFFF',
 
-  textPrimary: '#1A1A1A',
-  textSecondary: '#757575',
+  textPrimary: '#1d1813',
+  textSecondary: '#746a60',
 
-  border: '#E0E0E0',
-  borderLight: '#F0F0F0',
+  border: '#eadfcd',
+  borderLight: '#f3eadc',
 
-  navActive: '#1B8A3E',
-  navInactive: '#9E9E9E',
+  navActive: '#0d7b51',
+  navInactive: '#9a8f83',
 } as const
 
 // ── Component class presets ─────────────────────────────
 export const btn = {
   primary:
-    'bg-[#1B8A3E] text-white rounded-xl py-3 w-full font-semibold text-sm active:bg-[#15732F] disabled:opacity-50',
+    'bg-[#0d7b51] text-white rounded-xl py-3 w-full font-semibold text-sm active:bg-[#0b6845] disabled:opacity-50',
   whatsapp:
     'bg-[#25D366] text-white rounded-xl py-3 w-full font-semibold text-sm flex items-center justify-center gap-2',
   secondary:
-    'border border-[#1B8A3E] text-[#1B8A3E] bg-white rounded-xl py-3 w-full font-semibold text-sm',
+    'border border-[#0d7b51] text-[#0d7b51] bg-white rounded-xl py-3 w-full font-semibold text-sm',
   danger:
-    'bg-[#E53935] text-white rounded-xl py-3 w-full font-semibold text-sm',
+    'bg-[#d84b3f] text-white rounded-xl py-3 w-full font-semibold text-sm',
 } as const
 
 export const pill = {
-  paid: 'bg-[#E8F5E9] text-[#1B8A3E] rounded-full px-3 py-1 text-xs font-medium',
-  pending: 'bg-[#FFF3E0] text-[#E65100] rounded-full px-3 py-1 text-xs font-medium',
-  partial: 'bg-[#FFF3E0] text-[#E65100] rounded-full px-3 py-1 text-xs font-medium',
-  absent: 'bg-[#FFEBEE] text-[#E53935] rounded-full px-3 py-1 text-xs font-medium',
-  present: 'bg-[#E8F5E9] text-[#1B8A3E] rounded-full px-3 py-1 text-xs font-medium',
+  paid: 'bg-[#eaf7ef] text-[#0d7b51] rounded-full px-3 py-1 text-xs font-medium',
+  pending: 'bg-[#fff4df] text-[#c87b22] rounded-full px-3 py-1 text-xs font-medium',
+  partial: 'bg-[#fff4df] text-[#c87b22] rounded-full px-3 py-1 text-xs font-medium',
+  absent: 'bg-[#fff0ee] text-[#d84b3f] rounded-full px-3 py-1 text-xs font-medium',
+  present: 'bg-[#eaf7ef] text-[#0d7b51] rounded-full px-3 py-1 text-xs font-medium',
 } as const
 
 export const card = 'rounded-xl shadow-sm bg-white p-4' as const
 
 // ── Avatar color palette (cycle through for student initials) ──
 export const avatarColors = [
-  '#1B8A3E',
-  '#E65100',
+  '#0d7b51',
+  '#c87b22',
   '#1565C0',
   '#6A1B9A',
   '#00838F',

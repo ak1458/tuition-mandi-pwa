@@ -51,7 +51,7 @@ export function useAiReportCount(teacherId: string): AiReportCountState {
 
       setCount(dbCount ?? 0)
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'AI report count load failed')
+      setErrorMessage(error instanceof Error ? error.message : 'Report count load failed')
     } finally {
       setIsLoading(false)
     }

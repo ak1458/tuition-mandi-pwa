@@ -9,13 +9,10 @@ import {
   type AttendanceEntry,
   type AttendanceMutationPayload,
 } from '@/features/attendance/services/attendance-service'
-import {
-  enqueueMutation,
-  flushQueuedMutations,
-  type OfflineMutation,
-} from '@/lib/offline/mutation-queue'
+import { enqueueMutation, flushQueuedMutations, type OfflineMutation } from '@/lib/offline/mutation-queue'
 import type { AttendanceStatus, Batch } from '@/types/domain'
-import { getAvatarColor } from '@/styles/design-tokens'
+import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
+import { useTakhtiCopy } from '@/i18n/takhti-copy'
 
 interface AttendanceStudent {
   id: string
@@ -28,30 +25,8 @@ function isNetworkError(error: unknown): boolean {
   return message.includes('network') || message.includes('fetch')
 }
 
-/** Build week days around a date */
-function getWeekDays(dateStr: string) {
-  const d = new Date(dateStr + 'T00:00:00')
-  const dayOfWeek = d.getDay()
-  const monday = new Date(d)
-  monday.setDate(d.getDate() - ((dayOfWeek + 6) % 7))
-
-  const days: Array<{ label: string; date: string; dayNum: number }> = []
-  const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-  for (let i = 0; i < 7; i++) {
-    const curr = new Date(monday)
-    curr.setDate(monday.getDate() + i)
-    days.push({
-      label: labels[i],
-      date: curr.toISOString().slice(0, 10),
-      dayNum: curr.getDate(),
-    })
-  }
-  return days
-}
-
 function formatDate(dateStr: string) {
-  const d = new Date(dateStr + 'T00:00:00')
-  return d.toLocaleDateString('en-IN', {
+  return new Date(`${dateStr}T00:00:00`).toLocaleDateString('en-IN', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -61,23 +36,18 @@ function formatDate(dateStr: string) {
 export function AttendancePage() {
   const { session } = useAuth()
   const navigate = useNavigate()
+  const copy = useTakhtiCopy()
   const teacherId = session?.user.id ?? ''
 
   const [batches, setBatches] = useState<Batch[]>([])
   const [selectedBatchId, setSelectedBatchId] = useState('')
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().slice(0, 10)
-  )
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10))
   const [students, setStudents] = useState<AttendanceStudent[]>([])
-  const [statusMap, setStatusMap] = useState<Record<string, AttendanceStatus>>(
-    {}
-  )
+  const [statusMap, setStatusMap] = useState<Record<string, AttendanceStatus>>({})
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-
-  const weekDays = useMemo(() => getWeekDays(selectedDate), [selectedDate])
 
   const loadBatches = useCallback(async () => {
     if (!teacherId) {
@@ -89,13 +59,9 @@ export function AttendancePage() {
     try {
       const data = await getAttendanceBatches(teacherId)
       setBatches(data)
-      if (!selectedBatchId && data.length > 0) {
-        setSelectedBatchId(data[0].id)
-      }
+      if (!selectedBatchId && data.length > 0) setSelectedBatchId(data[0].id)
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Batch load failed'
-      )
+      setErrorMessage(error instanceof Error ? error.message : 'Batch load failed')
     } finally {
       setIsLoading(false)
     }
@@ -121,28 +87,19 @@ export function AttendancePage() {
       }
       setStatusMap(defaultMap)
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Attendance load failed'
-      )
+      setErrorMessage(error instanceof Error ? error.message : 'Attendance load failed')
     } finally {
       setIsLoading(false)
     }
   }, [selectedBatchId, selectedDate, teacherId])
 
-  const processAttendanceMutation = useCallback(
-    async (mutation: OfflineMutation) => {
-      const payload = mutation.payload as AttendanceMutationPayload
-      await saveAttendanceMutation(payload)
-    },
-    []
-  )
+  const processAttendanceMutation = useCallback(async (mutation: OfflineMutation) => {
+    await saveAttendanceMutation(mutation.payload as AttendanceMutationPayload)
+  }, [])
 
   const syncQueuedAttendance = useCallback(async () => {
     if (!navigator.onLine) return
-    const count = await flushQueuedMutations(
-      'attendance',
-      processAttendanceMutation
-    )
+    const count = await flushQueuedMutations('attendance', processAttendanceMutation)
     if (count > 0) {
       setMessage(`${count} queued attendance sync ho gaya.`)
       await loadAttendance()
@@ -158,23 +115,17 @@ export function AttendancePage() {
   }, [loadAttendance])
 
   useEffect(() => {
-    const listener = () => {
-      syncQueuedAttendance().catch(() => {})
-    }
+    const listener = () => syncQueuedAttendance().catch(() => {})
     window.addEventListener('online', listener)
-    return () => {
-      window.removeEventListener('online', listener)
-    }
+    return () => window.removeEventListener('online', listener)
   }, [syncQueuedAttendance])
 
   const entries = useMemo<AttendanceEntry[]>(
-    () =>
-      students.map((student) => ({
-        studentId: student.id,
-        status: statusMap[student.id] ?? 'present',
-      })),
-    [statusMap, students]
+    () => students.map((student) => ({ studentId: student.id, status: statusMap[student.id] ?? 'present' })),
+    [statusMap, students],
   )
+
+  const presentCount = entries.filter((entry) => entry.status === 'present').length
 
   const onToggleStatus = (studentId: string, status: AttendanceStatus) => {
     setStatusMap((prev) => ({ ...prev, [studentId]: status }))
@@ -182,7 +133,7 @@ export function AttendancePage() {
 
   const onSave = async () => {
     if (!teacherId || !selectedBatchId) {
-      setErrorMessage('Batch select karein.')
+      setErrorMessage(copy.attendance.selectBatchError)
       return
     }
     setIsSaving(true)
@@ -197,19 +148,17 @@ export function AttendancePage() {
     try {
       if (!navigator.onLine) {
         await enqueueMutation('attendance', payload)
-        setMessage('Offline: attendance queue me save ho gaya.')
+        setMessage(copy.attendance.saved)
       } else {
         await saveAttendanceMutation(payload)
-        setMessage('Attendance save ho gaya ✓')
+        setMessage(copy.attendance.saved)
       }
     } catch (error) {
       if (isNetworkError(error)) {
         await enqueueMutation('attendance', payload)
-        setMessage('Network issue. Queue me dala gaya.')
+        setMessage(copy.attendance.saved)
       } else {
-        setErrorMessage(
-          error instanceof Error ? error.message : 'Attendance save failed'
-        )
+        setErrorMessage(error instanceof Error ? error.message : 'Attendance save failed')
       }
     } finally {
       setIsSaving(false)
@@ -217,154 +166,99 @@ export function AttendancePage() {
   }
 
   return (
-    <div className="flex flex-col min-h-full">
-      {/* ── Header ── */}
-      <div className="sticky top-0 z-10 bg-[#F5F5F5] px-4 pt-6 pb-3">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button type="button" onClick={() => navigate(-1)} className="p-1">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#1A1A1A"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
-            </button>
-            <h1 className="text-xl font-bold text-[#1A1A1A]">Attendance</h1>
+    <div className="min-h-full bg-[#fbf8f1] pb-28">
+      <PageHeader
+        left={
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
+        }
+        right={
+          <input
+            className="max-w-[128px] rounded-xl border border-[#eadfcd] bg-white px-2 py-2 text-xs font-bold text-[#1d1813]"
+            onChange={(event) => setSelectedDate(event.target.value)}
+            type="date"
+            value={selectedDate}
+          />
+        }
+        subtitle={formatDate(selectedDate)}
+        title={copy.attendance.title}
+      />
+
+      <section className="px-4 py-4">
+        <div className="rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[12px] font-bold text-[#746a60]">{copy.attendance.subtitle}</p>
+              <p className="mt-1 text-[28px] font-black text-[#0d7b51]">{presentCount}/{students.length || 0}</p>
+            </div>
+            <select
+              className="max-w-[150px] rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-xs font-bold text-[#1d1813]"
+              onChange={(event) => setSelectedBatchId(event.target.value)}
+              value={selectedBatchId}
+            >
+              <option value="">{copy.attendance.selectBatch}</option>
+              {batches.map((batch) => (
+                <option key={batch.id} value={batch.id}>
+                  {batch.name}
+                </option>
+              ))}
+            </select>
           </div>
-          {/* Batch selector */}
-          <select
-            value={selectedBatchId}
-            onChange={(e) => setSelectedBatchId(e.target.value)}
-            className="rounded-lg border border-[#E0E0E0] bg-white px-2 py-1 text-xs text-[#1A1A1A] max-w-[120px]"
-          >
-            <option value="">Batch chunein</option>
-            {batches.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.name}
-              </option>
-            ))}
-          </select>
         </div>
 
-        {/* Date display */}
-        <p className="mt-2 text-center text-sm font-medium text-[#1A1A1A]">
-          {formatDate(selectedDate)}
-        </p>
+        {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
+        {message && <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-sm font-bold text-[#0d7b51]">{message}</p>}
 
-        {/* ── Week Strip ── */}
-        <div className="mt-3 flex items-center justify-between">
-          {weekDays.map((day) => {
-            const isActive = day.date === selectedDate
-            return (
-              <button
-                key={day.date}
-                type="button"
-                onClick={() => setSelectedDate(day.date)}
-                className="flex flex-col items-center gap-1"
-              >
-                <span className="text-[10px] text-[#757575]">{day.label}</span>
-                <span
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold ${
-                    isActive
-                      ? 'bg-[#1B8A3E] text-white'
-                      : 'text-[#1A1A1A]'
-                  }`}
-                >
-                  {day.dayNum}
-                </span>
-              </button>
-            )
-          })}
+        <div className="mt-4 space-y-3">
+          {isLoading ? (
+            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-sm font-bold text-[#746a60]">{copy.attendance.loading}</div>
+          ) : students.length === 0 ? (
+            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-6 text-center text-sm font-bold text-[#746a60]">{copy.attendance.empty}</div>
+          ) : (
+            students.map((student, index) => {
+              const status = statusMap[student.id] ?? 'present'
+              return (
+                <article className="flex items-center gap-3 rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-sm" key={student.id}>
+                  <PersonAvatar name={student.full_name} size="sm" variant={index % 2 ? 'female' : 'student'} />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[13px] font-black text-[#1d1813]">{student.full_name}</p>
+                    <p className="text-[11px] font-semibold text-[#746a60]">{student.class_label}</p>
+                  </div>
+                  <div className="flex rounded-xl bg-[#fbf8f1] p-1">
+                    {(['present', 'absent'] as const).map((option) => (
+                      <button
+                        className={cx(
+                          'rounded-lg px-3 py-1.5 text-[11px] font-black',
+                          status === option
+                            ? option === 'present'
+                              ? 'bg-[#eaf7ef] text-[#0d7b51]'
+                              : 'bg-[#fff0ee] text-[#d84b3f]'
+                            : 'text-[#9a8f83]',
+                        )}
+                        key={option}
+                        onClick={() => onToggleStatus(student.id, option)}
+                        type="button"
+                      >
+                        {option === 'present' ? copy.common.present : copy.common.absent}
+                      </button>
+                    ))}
+                  </div>
+                </article>
+              )
+            })
+          )}
         </div>
-      </div>
+      </section>
 
-      {/* ── Messages ── */}
-      {errorMessage && (
-        <div className="mx-4 mb-2 rounded-xl bg-[#FFEBEE] px-4 py-2 text-sm text-[#E53935]">
-          {errorMessage}
-        </div>
-      )}
-      {message && (
-        <div className="mx-4 mb-2 rounded-xl bg-[#E8F5E9] px-4 py-2 text-sm text-[#1B8A3E]">
-          {message}
-        </div>
-      )}
-
-      {/* ── Student Rows ── */}
-      <div className="flex-1 px-4 space-y-2 pb-32">
-        {isLoading ? (
-          <div className="rounded-xl bg-white p-4 text-sm text-[#757575]">
-            Loading...
-          </div>
-        ) : students.length === 0 ? (
-          <div className="rounded-xl bg-white p-6 text-center text-sm text-[#757575]">
-            Is batch me koi student nahi hai.
-          </div>
-        ) : (
-          students.map((student, index) => {
-            const status = statusMap[student.id] ?? 'present'
-            const initial = student.full_name.charAt(0).toUpperCase()
-
-            return (
-              <div
-                key={student.id}
-                className="flex items-center gap-3 rounded-xl bg-white p-3 shadow-sm"
-              >
-                <div
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white text-xs font-bold"
-                  style={{ backgroundColor: getAvatarColor(index) }}
-                >
-                  {initial}
-                </div>
-                <p className="flex-1 text-sm font-semibold text-[#1A1A1A] truncate">
-                  {student.full_name}
-                </p>
-                <div className="flex gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => onToggleStatus(student.id, 'present')}
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${
-                      status === 'present'
-                        ? 'bg-[#E8F5E9] text-[#1B8A3E]'
-                        : 'border border-[#E0E0E0] text-[#9E9E9E]'
-                    }`}
-                  >
-                    Present
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onToggleStatus(student.id, 'absent')}
-                    className={`rounded-full px-3 py-1 text-xs font-medium ${
-                      status === 'absent'
-                        ? 'bg-[#FFEBEE] text-[#E53935]'
-                        : 'border border-[#E0E0E0] text-[#9E9E9E]'
-                    }`}
-                  >
-                    Absent
-                  </button>
-                </div>
-              </div>
-            )
-          })
-        )}
-      </div>
-
-      {/* ── Save Button ── */}
-      <div className="fixed bottom-16 inset-x-0 px-4 py-3 bg-gradient-to-t from-[#F5F5F5] to-transparent z-30">
+      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-[#fbf8f1] to-transparent px-4 py-3">
         <button
-          type="button"
+          className="w-full rounded-xl bg-[#0d7b51] py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)] disabled:opacity-50"
           disabled={isSaving || students.length === 0}
           onClick={onSave}
-          className="bg-[#1B8A3E] text-white rounded-xl py-3 w-full font-semibold text-sm disabled:opacity-50 active:bg-[#15732F]"
+          type="button"
         >
-          {isSaving ? 'Saving...' : 'Attendance Save Karein'}
+          {isSaving ? copy.attendance.saving : copy.attendance.save}
         </button>
       </div>
     </div>

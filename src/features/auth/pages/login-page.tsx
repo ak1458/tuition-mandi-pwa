@@ -3,8 +3,17 @@ import { useLocation, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import { isLocalMode } from '@/lib/env'
-import { LoginAnimatedLogo } from '@/components/common/login-animated-logo'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
+import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import {
+  Icon,
+  IconButton,
+  PageShell,
+  PrimaryButton,
+  TakhtiLogo,
+  TeacherWelcomeIllustration,
+  cx,
+} from '@/components/common/takhti-ui'
 
 type LoginMode = 'phone' | 'email'
 
@@ -31,8 +40,9 @@ function sanitizeIndianMobileInput(value: string) {
 }
 
 export function LoginPage() {
-  const { requestPhoneOtp, verifyPhoneOtp, signInWithEmailPassword } = useAuth()
+  const { requestPhoneOtp, signInWithEmailPassword, verifyPhoneOtp } = useAuth()
   const { t } = useTranslation()
+  const copy = useTakhtiCopy()
   const navigate = useNavigate()
   const location = useLocation()
   const state = location.state as LocationState | null
@@ -57,9 +67,7 @@ export function LoginPage() {
       setOtpCooldown((value) => (value > 0 ? value - 1 : 0))
     }, 1000)
 
-    return () => {
-      window.clearInterval(intervalId)
-    }
+    return () => window.clearInterval(intervalId)
   }, [otpCooldown])
 
   const sendOtp = async (event?: FormEvent) => {
@@ -77,7 +85,7 @@ export function LoginPage() {
       await requestPhoneOtp(phoneNumberE164)
       setOtpRequested(true)
       setOtpCooldown(OTP_RESEND_SECONDS)
-      setInfoMessage(t('login.otpSentTo', { phone: phoneNumberE164 }))
+      setInfoMessage(isLocalMode ? copy.login.demoOtp : t('login.otpSentTo', { phone: phoneNumberE164 }))
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : t('login.otpSendFailed'))
     } finally {
@@ -118,151 +126,167 @@ export function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(145deg,#f7f0e3_0%,#ede3cc_60%,#e7dcc4_100%)] px-4 py-8">
-      <div className="mx-auto w-full max-w-[440px] rounded-[28px] border border-[#e5dbc4] bg-white p-6 shadow-[0_20px_50px_rgba(28,27,53,0.12)]">
-        <div className="mb-2 flex justify-end">
+    <PageShell>
+      <section className="min-h-screen px-5 pb-6 pt-5">
+        <div className="flex items-start justify-between">
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate('/')}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
           <LanguageSwitcher />
         </div>
-        <div className="mb-6 flex flex-col items-center justify-center">
-          <LoginAnimatedLogo className="h-16 w-auto" />
-        </div>
-        <div className="text-center">
-          <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-saffron">{t('app.name')}</p>
-          <h1 className="mt-1 font-display text-3xl text-ink">{t('login.title')}</h1>
-          <p className="mt-2 text-sm text-muted">{t('login.subtitle')}</p>
+
+        <div className="mt-4">
+          <TakhtiLogo tagline={copy.brandTagline} />
         </div>
 
-        {isLocalMode && (
-          <p className="mt-4 rounded-xl bg-saffron/15 px-3 py-2 text-sm text-ink">{t('login.demoMode')}</p>
-        )}
+        <TeacherWelcomeIllustration className="mt-6 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)]" />
 
-        <div className="mt-5 grid grid-cols-2 rounded-xl bg-cream p-1">
-          <button
-            className={`rounded-lg px-3 py-2 text-sm font-semibold ${mode === 'phone' ? 'bg-white text-ink' : 'text-muted'}`}
-            onClick={() => setMode('phone')}
-            type="button"
-          >
-            {t('login.phoneTab')}
-          </button>
-          <button
-            className={`rounded-lg px-3 py-2 text-sm font-semibold ${mode === 'email' ? 'bg-white text-ink' : 'text-muted'}`}
-            onClick={() => setMode('email')}
-            type="button"
-          >
-            {t('login.emailTab')}
-          </button>
+        <div className="mt-6 text-center">
+          <h1 className="text-[24px] font-black leading-tight text-[#1d1813]">{copy.login.title}</h1>
+          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-[#5d544c]">
+            {copy.login.subtitle}
+          </p>
         </div>
 
-        {mode === 'phone' && !otpRequested && (
-          <form className="mt-5 space-y-3" onSubmit={sendOtp}>
-            <label className="block text-sm font-semibold text-ink" htmlFor="phone">
-              {t('login.phoneLabelIndia')}
-            </label>
-            <div className="flex w-full overflow-hidden rounded-xl border border-[#dfd4bc] bg-white outline-none ring-saffron/30 focus-within:ring">
-              <span className="flex items-center border-r border-[#dfd4bc] bg-[#faf7f1] px-3 text-sm font-semibold text-ink">
-                +91
-              </span>
-              <input
-                className="w-full px-3 py-2 text-sm outline-none"
-                id="phone"
-                inputMode="numeric"
-                maxLength={10}
-                onChange={(event) => setPhoneDigits(sanitizeIndianMobileInput(event.target.value))}
-                pattern="[0-9]*"
-                placeholder={t('login.phonePlaceholderIndia')}
-                type="tel"
-                value={phoneDigits}
-              />
-            </div>
-            <button
-              className="w-full rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
-              disabled={isSubmitting}
-              type="submit"
-            >
-              {isSubmitting ? t('login.sendingOtp') : t('login.sendOtp')}
-            </button>
-          </form>
-        )}
-
-        {mode === 'phone' && otpRequested && (
-          <form className="mt-5 space-y-3" onSubmit={verifyOtp}>
-            <p className="rounded-xl bg-cream px-3 py-2 text-xs text-muted">
-              {t('login.otpSentTo', { phone: phoneNumberE164 })}
-            </p>
-            <label className="block text-sm font-semibold text-ink" htmlFor="otp">
-              {t('login.otpLabel')}
-            </label>
-            <input
-              className="w-full rounded-xl border border-[#dfd4bc] px-3 py-2 text-sm outline-none ring-saffron/30 focus:ring"
-              id="otp"
-              maxLength={6}
-              onChange={(event) => setOtpCode(event.target.value)}
-              placeholder={t('login.otpPlaceholder')}
-              value={otpCode}
-            />
-            <div className="grid grid-cols-2 gap-2">
+        <section className="mt-5 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+          <div className="grid grid-cols-2 rounded-xl bg-[#fbf8f1] p-1">
+            {[
+              ['phone', copy.common.mobile],
+              ['email', copy.common.email],
+            ].map(([value, label]) => (
               <button
-                className="rounded-xl border border-[#dfd4bc] px-4 py-2.5 text-sm font-semibold text-muted"
-                onClick={() => setOtpRequested(false)}
+                className={cx(
+                  'rounded-lg px-3 py-2 text-sm font-black',
+                  mode === value ? 'bg-white text-[#4930a8] shadow-sm' : 'text-[#746a60]',
+                )}
+                key={value}
+                onClick={() => {
+                  setMode(value as LoginMode)
+                  setErrorMessage('')
+                  setInfoMessage('')
+                }}
                 type="button"
               >
-                {t('nav.back')}
+                {label}
               </button>
+            ))}
+          </div>
+
+          {mode === 'phone' && !otpRequested && (
+            <form className="mt-4 space-y-3" onSubmit={sendOtp}>
+              <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="phone">
+                {copy.login.mobileNumber}
+              </label>
+              <div className="flex overflow-hidden rounded-xl border border-[#eadfcd] bg-[#fffdf8] focus-within:border-[#4930a8]">
+                <span className="grid w-14 place-items-center border-r border-[#eadfcd] text-sm font-black text-[#4930a8]">+91</span>
+                <input
+                  className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold outline-none"
+                  id="phone"
+                  inputMode="numeric"
+                  maxLength={10}
+                  onChange={(event) => setPhoneDigits(sanitizeIndianMobileInput(event.target.value))}
+                  placeholder="9876543210"
+                  value={phoneDigits}
+                />
+              </div>
+              <PrimaryButton disabled={isSubmitting} type="submit">
+                {isSubmitting ? copy.login.sendingOtp : copy.login.continueMobile}
+              </PrimaryButton>
+            </form>
+          )}
+
+          {mode === 'phone' && otpRequested && (
+            <form className="mt-4 space-y-3" onSubmit={verifyOtp}>
+              <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="otp">
+                OTP
+              </label>
+              <input
+                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                id="otp"
+                inputMode="numeric"
+                maxLength={6}
+                onChange={(event) => setOtpCode(event.target.value)}
+                placeholder="1234"
+                value={otpCode}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  className="rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#746a60]"
+                  onClick={() => setOtpRequested(false)}
+                  type="button"
+                >
+                  {copy.common.back}
+                </button>
+                <PrimaryButton disabled={isSubmitting} type="submit">
+                  {isSubmitting ? copy.login.verifying : copy.login.login}
+                </PrimaryButton>
+              </div>
               <button
-                className="rounded-xl bg-saffron px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
-                disabled={isSubmitting}
-                type="submit"
+                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-4 py-3 text-sm font-bold text-[#4930a8] disabled:opacity-50"
+                disabled={otpCooldown > 0 || isSubmitting}
+                onClick={sendOtp}
+                type="button"
               >
-                {isSubmitting ? t('login.verifying') : t('login.verifyOtp')}
+                {otpCooldown > 0 ? copy.login.resendIn.replace('{{seconds}}', String(otpCooldown)) : copy.login.resendOtp}
               </button>
-            </div>
-            <button
-              className="w-full rounded-xl border border-[#dfd4bc] px-4 py-2.5 text-sm font-semibold text-muted disabled:cursor-not-allowed disabled:opacity-60"
-              disabled={otpCooldown > 0 || isSubmitting}
-              onClick={sendOtp}
-              type="button"
-            >
-              {otpCooldown > 0 ? t('login.resendIn', { seconds: otpCooldown }) : t('login.resendOtp')}
-            </button>
-          </form>
-        )}
+            </form>
+          )}
 
-        {mode === 'email' && (
-          <form className="mt-5 space-y-3" onSubmit={signInWithEmail}>
-            <label className="block text-sm font-semibold text-ink" htmlFor="email">
-              {t('login.emailLabel')}
-            </label>
-            <input
-              className="w-full rounded-xl border border-[#dfd4bc] px-3 py-2 text-sm outline-none ring-saffron/30 focus:ring"
-              id="email"
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder={t('login.emailPlaceholder')}
-              type="email"
-              value={email}
-            />
-            <label className="block text-sm font-semibold text-ink" htmlFor="password">
-              {t('login.passwordLabel')}
-            </label>
-            <input
-              className="w-full rounded-xl border border-[#dfd4bc] px-3 py-2 text-sm outline-none ring-saffron/30 focus:ring"
-              id="password"
-              onChange={(event) => setPassword(event.target.value)}
-              type="password"
-              value={password}
-            />
-            <button
-              className="w-full rounded-xl bg-ink px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
-              disabled={isSubmitting}
-              type="submit"
-            >
-              {isSubmitting ? t('login.signingIn') : t('login.signIn')}
-            </button>
-          </form>
-        )}
+          {mode === 'email' && (
+            <form className="mt-4 space-y-3" onSubmit={signInWithEmail}>
+              <input
+                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="teacher@example.com"
+                type="email"
+                value={email}
+              />
+              <input
+                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder={copy.common.password}
+                type="password"
+                value={password}
+              />
+              <PrimaryButton disabled={isSubmitting} type="submit">
+                {isSubmitting ? copy.login.loginLoading : copy.login.login}
+              </PrimaryButton>
+            </form>
+          )}
 
-        {infoMessage && <p className="mt-4 rounded-xl bg-sage/10 px-3 py-2 text-sm text-sage">{infoMessage}</p>}
-        {errorMessage && <p className="mt-4 rounded-xl bg-rose/10 px-3 py-2 text-sm text-rose">{errorMessage}</p>}
-      </div>
-    </main>
+          <button
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#1d1813]"
+            onClick={async () => {
+              setErrorMessage('')
+              setInfoMessage('')
+              setIsSubmitting(true)
+              try {
+                await signInWithEmailPassword('demo@takhti.local', 'demo1234')
+                navigate(redirectTo, { replace: true })
+              } catch (error) {
+                setErrorMessage(error instanceof Error ? error.message : copy.login.googleError)
+              } finally {
+                setIsSubmitting(false)
+              }
+            }}
+            type="button"
+          >
+            <span className="grid h-5 w-5 place-items-center rounded-full border border-[#eadfcd] text-[12px] font-black text-[#d84b3f]">G</span>
+            {copy.login.google}
+          </button>
+
+          {infoMessage && <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-sm font-bold text-[#0d7b51]">{infoMessage}</p>}
+          {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
+        </section>
+
+        <button
+          className="mt-5 w-full text-center text-[13px] font-black text-[#0d7b51]"
+          onClick={() => navigate('/search')}
+          type="button"
+        >
+          {copy.login.loginAsParent}
+        </button>
+      </section>
+    </PageShell>
   )
 }

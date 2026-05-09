@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import { isLocalMode } from '@/lib/env'
@@ -35,22 +35,22 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
     const [processing, setProcessing] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
-    useEffect(() => {
+    const loadBoost = useCallback(async () => {
         if (!teacherId) return
-        loadBoost()
-    }, [teacherId])
-
-    async function loadBoost() {
         setLoading(true)
         try {
-            const boost = await getActiveBoost(teacherId!)
+            const boost = await getActiveBoost(teacherId)
             setActiveBoost(boost)
         } catch (err: unknown) {
             console.error('Failed to load boost', err)
         } finally {
             setLoading(false)
         }
-    }
+    }, [teacherId])
+
+    useEffect(() => {
+        loadBoost()
+    }, [loadBoost])
 
     async function handlePurchase(option: typeof BOOST_OPTIONS[0]) {
         if (!teacherId) return

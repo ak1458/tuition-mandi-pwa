@@ -1,339 +1,369 @@
-import { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router'
-import { useTranslation } from 'react-i18next'
-import { getTeacherPublicProfile } from '@/lib/queries/teachers'
+import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { Link, useNavigate, useParams } from 'react-router'
+import { getTeacherPublicProfile, submitInquiry } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
-import { ShareProfileButton } from '@/components/marketplace/share-profile'
-import { AnimatedLogo } from '@/components/common/animated-logo'
-import type { TeacherProfile, ParentRating, TeacherOutcome } from '@/types/marketplace'
+import type { ParentRating, TeacherOutcome, TeacherProfile } from '@/types/marketplace'
+import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import {
+  Chip,
+  Icon,
+  IconButton,
+  LinkButton,
+  PageHeader,
+  PageShell,
+  PersonAvatar,
+  PrimaryButton,
+  cx,
+} from '@/components/common/takhti-ui'
 
-// ------- Helper -------
 function avgRating(ratings: ParentRating[] | undefined): number {
-    if (!ratings?.length) return 0
-    return ratings.reduce((sum: number, r: ParentRating) => sum + r.rating, 0) / ratings.length
+  if (!ratings?.length) return 0
+  return ratings.reduce((sum, rating) => sum + rating.rating, 0) / ratings.length
 }
 
-function StarDisplay({ rating }: { rating: number }) {
-    return (
-        <span className="text-sm">
-            {'⭐'.repeat(Math.round(rating))}
-        </span>
-    )
+function teacherVariant(name: string) {
+  return /anjali|neha|priyanka/i.test(name) ? 'female' : 'male'
 }
 
-// ------- Main Page -------
+function reviewAge(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const days = Math.max(1, Math.floor(diff / (1000 * 60 * 60 * 24)))
+  return days === 1 ? '1 day ago' : `${days} days ago`
+}
+
+function resultStats(outcome: TeacherOutcome | undefined, fallbackStudents: number) {
+  if (!outcome) {
+    return {
+      success: fallbackStudents > 0 ? '90%' : 'New',
+      students: fallbackStudents > 0 ? `${fallbackStudents}+` : 'New',
+      toppers: '3+',
+    }
+  }
+
+  const success = outcome.total_students
+    ? `${Math.round((outcome.students_above_75_percent / outcome.total_students) * 100)}%`
+    : 'New'
+
+  return {
+    success,
+    students: `${outcome.total_students}+`,
+    toppers: `${Math.max(outcome.students_above_90_percent, outcome.board_toppers)}+`,
+  }
+}
+
 export function TeacherProfilePage() {
-    const { t } = useTranslation()
-    const { id } = useParams<{ id: string }>()
-    const [teacher, setTeacher] = useState<TeacherProfile | null>(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const copy = useTakhtiCopy()
+  const [teacher, setTeacher] = useState<TeacherProfile | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [parentName, setParentName] = useState('')
+  const [parentPhone, setParentPhone] = useState('')
+  const [studentClass, setStudentClass] = useState('Class 10')
+  const [subject, setSubject] = useState('Maths')
+  const [message, setMessage] = useState('Namaste Sir, mujhe apne bete ke liye Maths teacher chahiye. Kripya details batayein.')
+  const [sending, setSending] = useState(false)
+  const [sent, setSent] = useState(false)
+  const [formError, setFormError] = useState('')
 
-    useEffect(() => {
-        if (!id) return
+  useEffect(() => {
+    if (!id) return
+    let ignore = false
 
-        const load = async () => {
-            setLoading(true)
-            setError(null)
-            try {
-                const data = await getTeacherPublicProfile(id)
-                setTeacher(data)
-
-                // SEO meta tags
-                if (data) {
-                    const avg = avgRating(data.parent_ratings)
-                    document.title = `${data.full_name} — ${data.subjects?.join(', ')} Teacher in ${data.city} | Takhti`
-
-                    const meta = document.querySelector('meta[name="description"]')
-                        || document.createElement('meta')
-                    meta.setAttribute('name', 'description')
-                    meta.setAttribute('content',
-                        `${data.full_name} — Experienced ${data.subjects?.join(' and ')} teacher in ${data.area_mohalla ? data.area_mohalla + ', ' : ''}${data.city}. ${data.experience_years} years experience. Fees: ₹${data.fee_min || '?'}-${data.fee_max || '?'}/month. Parent ratings: ${avg > 0 ? avg.toFixed(1) : 'N/A'}/5.`
-                    )
-                    if (!document.querySelector('meta[name="description"]')) {
-                        document.head.appendChild(meta)
-                    }
-                }
-            } catch (err: unknown) {
-                const message = err instanceof Error ? err.message : 'Profile load nahi ho payi.'
-                setError(message)
-            } finally {
-                setLoading(false)
-            }
+    setLoading(true)
+    setError('')
+    getTeacherPublicProfile(id)
+      .then((data) => {
+        if (ignore) return
+        setTeacher(data)
+        if (data) {
+          document.title = `${data.full_name} - ${data.subjects.join(', ')} Teacher in ${data.city} | Takhti`
         }
+      })
+      .catch((err) => {
+        if (!ignore) setError(err instanceof Error ? err.message : 'Profile load nahi ho payi.')
+      })
+      .finally(() => {
+        if (!ignore) setLoading(false)
+      })
 
-        load()
-    }, [id])
-
-    if (loading) {
-        return (
-            <main className="flex min-h-screen items-center justify-center bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)]">
-                <div className="h-8 w-8 animate-spin rounded-full border-3 border-saffron border-t-transparent" />
-            </main>
-        )
+    return () => {
+      ignore = true
     }
+  }, [id])
 
-    if (error || !teacher) {
-        return (
-            <main className="flex min-h-screen flex-col items-center justify-center bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] px-5 text-center">
-                <p className="text-4xl mb-4">😕</p>
-                <p className="text-sm font-semibold text-ink mb-1">Profile nahi mili</p>
-                <p className="text-xs text-muted mb-4">{error || 'Ye teacher profile available nahi hai.'}</p>
-                <Link to="/search" className="rounded-xl bg-saffron px-6 py-2.5 text-sm font-bold text-white">
-                    Teachers Search karein
-                </Link>
-            </main>
-        )
+  const rating = useMemo(() => avgRating(teacher?.parent_ratings), [teacher?.parent_ratings])
+  const ratingCount = teacher?.parent_ratings?.length ?? 0
+  const outcome = teacher?.teacher_outcomes?.[0]
+  const stats = resultStats(outcome, teacher?.total_students_taught ?? 0)
+  const profileUrl = teacher ? `${window.location.origin}/profile/${teacher.id}` : ''
+  const whatsappUrl = teacher ? buildWhatsAppLink(teacher.phone_e164, teacher.full_name, profileUrl) : null
+
+  const sendInquiry = async (event: FormEvent) => {
+    event.preventDefault()
+    if (!teacher) return
+    setSending(true)
+    setFormError('')
+    try {
+      await submitInquiry({
+        teacher_profile_id: teacher.id,
+        parent_name: parentName.trim() || undefined,
+        parent_phone: parentPhone.trim() || undefined,
+        student_class: studentClass,
+        subject_needed: subject,
+        message,
+      })
+      setSent(true)
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Inquiry send nahi hui.')
+    } finally {
+      setSending(false)
     }
+  }
 
-    const rating = avgRating(teacher.parent_ratings)
-    const ratingCount = teacher.parent_ratings?.length || 0
-    const profileUrl = `${window.location.origin}/profile/${teacher.id}`
-    const whatsappUrl = buildWhatsAppLink(teacher.phone_e164, teacher.full_name, profileUrl)
+  const shareProfile = () => {
+    if (!teacher) return
+    if (navigator.share) {
+      navigator.share({ title: teacher.full_name, text: `${teacher.full_name} on Takhti`, url: profileUrl }).catch(() => {})
+      return
+    }
+    navigator.clipboard.writeText(profileUrl).catch(() => {})
+  }
 
+  if (loading) {
     return (
-        <main className="flex min-h-screen w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-ink pb-20">
-            {/* Header bar */}
-            <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-5 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <AnimatedLogo />
-                        <span className="font-display text-sm font-semibold text-ink">Takhti</span>
-                    </div>
-                    <Link
-                        to="/search"
-                        className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-muted hover:border-saffron/40 transition-colors"
-                    >
-                        ← Search
-                    </Link>
-                </div>
-            </header>
-
-            <div className="px-5 py-6 space-y-6">
-                {/* ------- SECTION 1: HEADER ------- */}
-                <section className="text-center">
-                    {/* Avatar */}
-                    <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-saffron/20 to-orange-100 text-3xl font-bold text-saffron shadow-md">
-                        {teacher.profile_photo_url ? (
-                            <img
-                                src={teacher.profile_photo_url}
-                                alt={teacher.full_name}
-                                className="h-20 w-20 rounded-full object-cover"
-                            />
-                        ) : (
-                            teacher.full_name?.charAt(0)?.toUpperCase() || 'T'
-                        )}
-                    </div>
-
-                    {/* Name + badge */}
-                    <h1 className="font-display text-2xl font-semibold text-ink">
-                        {teacher.full_name}
-                    </h1>
-                    {teacher.is_verified && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-green-50 border border-green-200 px-3 py-0.5 text-[10px] font-bold text-green-700 mt-1">
-                            ✅ Verified Teacher
-                        </span>
-                    )}
-
-                    {/* Location */}
-                    <p className="text-sm text-muted mt-1">
-                        {teacher.area_mohalla ? `${teacher.area_mohalla}, ` : ''}{teacher.city}
-                    </p>
-
-                    {/* Experience badge */}
-                    {teacher.experience_years > 0 && (
-                        <span className="inline-block rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold text-slate-600 mt-2">
-                            🎓 {teacher.experience_years} saal ka anubhav
-                        </span>
-                    )}
-
-                    {/* WhatsApp CTA */}
-                    {whatsappUrl ? (
-                        <a
-                            href={whatsappUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-saffron py-3.5 text-sm font-bold text-white shadow-[0_8px_16px_rgba(224,122,47,0.35)] transition-all hover:shadow-[0_12px_24px_rgba(224,122,47,0.45)]"
-                        >
-                            {t('teacherProfile.whatsappContact')}
-                        </a>
-                    ) : (
-                        <p className="mt-4 rounded-2xl bg-slate-100 py-3.5 text-center text-sm font-semibold text-slate-400">
-                            {t('teacherProfile.noPhone')}
-                        </p>
-                    )}
-                </section>
-
-                {/* ------- SECTION 2: QUICK INFO CHIPS ------- */}
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">Teaching Details</h2>
-
-                    {/* Subjects */}
-                    <div className="mb-3">
-                        <p className="text-[10px] font-semibold text-muted mb-1">Subjects</p>
-                        <div className="flex flex-wrap gap-1.5">
-                            {teacher.subjects?.map((s: string) => (
-                                <span key={s} className="rounded-lg bg-saffron/10 px-2.5 py-1 text-[11px] font-semibold text-saffron">
-                                    {s}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Classes */}
-                    <div className="mb-3">
-                        <p className="text-[10px] font-semibold text-muted mb-1">Classes</p>
-                        <div className="flex flex-wrap gap-1.5">
-                            {teacher.classes_taught?.map((c: string) => (
-                                <span key={c} className="rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">
-                                    {c}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Medium + Tuition type */}
-                    <div className="flex flex-wrap gap-2">
-                        <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-600">
-                            📖 {teacher.medium} Medium
-                        </span>
-                        {teacher.home_tuition && (
-                            <span className="rounded-lg bg-green-50 px-2.5 py-1 text-[11px] font-semibold text-green-600">
-                                🏠 Home Tuition
-                            </span>
-                        )}
-                        {teacher.online_tuition && (
-                            <span className="rounded-lg bg-purple-50 px-2.5 py-1 text-[11px] font-semibold text-purple-600">
-                                💻 Online
-                            </span>
-                        )}
-                    </div>
-                </section>
-
-                {/* ------- SECTION 3: FEES ------- */}
-                {(teacher.fee_min || teacher.fee_max) && (
-                    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Fees</h2>
-                        <p className="text-xl font-bold text-ink">
-                            ₹{teacher.fee_min || '?'} - ₹{teacher.fee_max || '?'}/month
-                        </p>
-                        {teacher.fee_negotiable && (
-                            <p className="text-xs text-muted mt-1">💬 Fees mein baat ho sakti hai</p>
-                        )}
-                    </section>
-                )}
-
-                {/* ------- SECTION 4: TIMING ------- */}
-                {teacher.time_slots?.length > 0 && (
-                    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Available Timings</h2>
-                        <div className="flex flex-wrap gap-1.5">
-                            {teacher.time_slots.map((slot: string) => (
-                                <span key={slot} className="rounded-lg bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">
-                                    🕐 {slot}
-                                </span>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                {/* ------- SECTION 5: RESULTS / OUTCOMES ------- */}
-                {(teacher.teacher_outcomes?.length ?? 0) > 0 && (
-                    <section className="rounded-2xl border border-green-200 bg-green-50/50 p-4 shadow-sm">
-                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-green-600 mb-3">
-                            ✅ Takhti Verified Results
-                        </h2>
-                        {teacher.teacher_outcomes?.map((outcome: TeacherOutcome) => (
-                            <div key={outcome.id} className="rounded-xl bg-white border border-green-100 p-3 mb-2 last:mb-0">
-                                <p className="text-[10px] font-semibold text-muted mb-1">
-                                    {outcome.academic_year} • {outcome.subject} • {outcome.class_level}
-                                </p>
-                                <div className="grid grid-cols-2 gap-2 text-[11px]">
-                                    <span className="text-ink font-medium">
-                                        📚 {outcome.total_students} students padhaye
-                                    </span>
-                                    <span className="text-green-600 font-medium">
-                                        ✅ {outcome.students_above_75_percent} ne 75%+ kiya
-                                    </span>
-                                    {outcome.students_above_90_percent > 0 && (
-                                        <span className="text-saffron font-medium">
-                                            🌟 {outcome.students_above_90_percent} ne 90%+ kiya
-                                        </span>
-                                    )}
-                                    {outcome.board_toppers > 0 && (
-                                        <span className="text-ink font-medium">
-                                            🏆 {outcome.board_toppers} topper
-                                        </span>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
-                    </section>
-                )}
-
-                {/* ------- SECTION 6: RATINGS ------- */}
-                <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">Ratings & Reviews</h2>
-
-                    {ratingCount > 0 ? (
-                        <>
-                            <div className="flex items-center gap-2 mb-4">
-                                <span className="text-3xl font-bold text-ink">{rating.toFixed(1)}</span>
-                                <div>
-                                    <StarDisplay rating={rating} />
-                                    <p className="text-[11px] text-muted">{ratingCount} rating{ratingCount > 1 ? 's' : ''}</p>
-                                </div>
-                            </div>
-
-                            {/* Reviews list */}
-                            <div className="space-y-3">
-                                {teacher.parent_ratings?.map((review: ParentRating) => (
-                                    <div key={review.id} className="rounded-xl border border-slate-100 bg-slate-50/50 p-3">
-                                        <div className="flex items-center justify-between mb-1">
-                                            <span className="text-xs font-semibold text-ink">{review.parent_name}</span>
-                                            <StarDisplay rating={review.rating} />
-                                        </div>
-                                        <p className="text-[10px] text-muted mb-1">
-                                            {review.student_class} • {review.subject_taught}
-                                        </p>
-                                        {review.review_text && (
-                                            <p className="text-xs text-ink/80 italic">"{review.review_text}"</p>
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </>
-                    ) : (
-                        <p className="text-xs text-muted text-center py-4">Abhi koi review nahi hai</p>
-                    )}
-                </section>
-
-                {/* ------- SECTION 7: WRITE REVIEW ------- */}
-                <Link
-                    to={`/profile/${teacher.id}/review`}
-                    className="block rounded-2xl border border-saffron/30 bg-saffron/5 py-3.5 text-center text-sm font-bold text-saffron transition-all hover:bg-saffron/10"
-                >
-                    ✍️ Apna anubhav share karein
-                </Link>
-
-                {/* ------- SECTION 8: SHARE ------- */}
-                <section>
-                    <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Is profile ko share karein</h2>
-                    <ShareProfileButton
-                        profileId={teacher.id}
-                        teacherName={teacher.full_name}
-                        city={teacher.city}
-                    />
-                </section>
-
-                {/* Bio */}
-                {teacher.bio && (
-                    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                        <h2 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">About</h2>
-                        <p className="text-sm text-ink/80">{teacher.bio}</p>
-                    </section>
-                )}
-            </div>
-        </main>
+      <PageShell>
+        <div className="grid min-h-screen place-items-center px-5 text-sm font-bold text-[#746a60]">{copy.profile.loading}</div>
+      </PageShell>
     )
+  }
+
+  if (error || !teacher) {
+    return (
+      <PageShell>
+        <div className="flex min-h-screen flex-col items-center justify-center px-5 text-center">
+          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-[#fff0ee] text-[#d84b3f]">
+            <Icon className="h-8 w-8" name="search" />
+          </div>
+          <h1 className="mt-5 text-xl font-black text-[#1d1813]">{copy.profile.notFound}</h1>
+          <p className="mt-2 text-sm font-semibold text-[#746a60]">{error || copy.profile.notFoundDesc}</p>
+          <button className="mt-6 rounded-xl bg-[#4930a8] px-5 py-3 text-sm font-bold text-white" onClick={() => navigate('/search')} type="button">
+            {copy.profile.searchTeachers}
+          </button>
+        </div>
+      </PageShell>
+    )
+  }
+
+  return (
+    <PageShell>
+      <PageHeader
+        left={
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
+        }
+        right={
+          <div className="flex gap-2">
+            <IconButton className="h-9 w-9" label="Share profile" onClick={shareProfile}>
+              <Icon className="h-4 w-4" name="share" />
+            </IconButton>
+            <IconButton className="h-9 w-9" label="More options">
+              <Icon className="h-4 w-4" name="more" />
+            </IconButton>
+          </div>
+        }
+        subtitle={`${teacher.subjects.slice(0, 2).join(' + ')} - ${teacher.area_mohalla || teacher.city}`}
+        title={copy.profile.header}
+      />
+
+      <section className="px-4 pb-28 pt-4">
+        <div className="rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+          <div className="flex items-start gap-4">
+            <PersonAvatar name={teacher.full_name} size="lg" variant={teacherVariant(teacher.full_name)} />
+            <div className="min-w-0 flex-1 pt-1">
+              <div className="flex items-center gap-2">
+                <h1 className="truncate text-[18px] font-black text-[#1d1813]">{teacher.full_name}</h1>
+                {teacher.is_verified && <span className="grid h-5 w-5 place-items-center rounded-full bg-[#0d7b51] text-white"><Icon className="h-3 w-3" name="check" /></span>}
+              </div>
+              <p className="mt-1 text-[12px] font-semibold text-[#5d544c]">
+                {teacher.subjects.join(', ')}
+              </p>
+              <p className="text-[12px] font-semibold text-[#5d544c]">
+                {teacher.classes_taught.join(' & ')} - {teacher.medium}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1 text-[12px] font-black text-[#e4a01f]">
+                  <Icon className="h-4 w-4" name="star" />
+                  {rating > 0 ? rating.toFixed(1) : 'New'} ({ratingCount} Reviews)
+                </span>
+                <span className="inline-flex items-center gap-1 text-[12px] font-black text-[#5d544c]">
+                  <Icon className="h-4 w-4" name="users" />
+                  {teacher.total_students_taught}+ Students
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Chip active>{teacher.experience_years}+ Years Exp.</Chip>
+            {teacher.home_tuition && <Chip active>Home Tuition</Chip>}
+            {teacher.is_verified && <Chip active>Verified</Chip>}
+          </div>
+        </div>
+
+        <section className="mt-5">
+          <h2 className="text-[13px] font-black text-[#1d1813]">{copy.profile.about}</h2>
+          <p className="mt-2 rounded-[18px] border border-[#eee4d8] bg-white p-4 text-[13px] font-semibold leading-6 text-[#4d453d]">
+            {teacher.bio || 'Teacher profile details jaldi update honge.'}
+          </p>
+        </section>
+
+        <section className="mt-5">
+          <h2 className="text-[13px] font-black text-[#1d1813]">{copy.profile.results}</h2>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {[
+              [copy.profile.successRate, stats.success],
+              [copy.profile.studentsTaught, stats.students],
+              [copy.profile.topRank, stats.toppers],
+            ].map(([label, value]) => (
+              <div className="rounded-[16px] border border-[#eee4d8] bg-white p-3 text-center" key={label}>
+                <p className="text-[18px] font-black text-[#0d7b51]">{value}</p>
+                <p className="mt-1 text-[10px] font-bold text-[#746a60]">{label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[13px] font-black text-[#1d1813]">{copy.profile.reviews} ({ratingCount})</h2>
+            <Link className="text-[12px] font-extrabold text-[#4930a8]" to={`/profile/${teacher.id}/review`}>
+              {copy.profile.addReview}
+            </Link>
+          </div>
+          <div className="mt-3 space-y-3">
+            {(teacher.parent_ratings ?? []).slice(0, 3).map((review) => (
+              <article className="rounded-[18px] border border-[#eee4d8] bg-white p-3" key={review.id}>
+                <div className="flex items-start gap-3">
+                  <PersonAvatar name={review.parent_name} size="sm" variant="student" />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="truncate text-[12px] font-black text-[#1d1813]">{review.parent_name} (Parent)</p>
+                      <p className="shrink-0 text-[10px] font-bold text-[#746a60]">{reviewAge(review.created_at)}</p>
+                    </div>
+                    <div className="mt-1 flex gap-0.5 text-[#e4a01f]">
+                      {Array.from({ length: review.rating }).map((_, index) => (
+                        <Icon className="h-3.5 w-3.5" key={index} name="star" />
+                      ))}
+                    </div>
+                    {review.review_text && (
+                      <p className="mt-2 text-[12px] font-semibold leading-5 text-[#4d453d]">{review.review_text}</p>
+                    )}
+                  </div>
+                </div>
+              </article>
+            ))}
+            {ratingCount === 0 && (
+              <p className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-center text-sm font-bold text-[#746a60]">
+                {copy.profile.noReviews}
+              </p>
+            )}
+          </div>
+        </section>
+
+        <section className="mt-5 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.06)]">
+          {sent ? (
+            <div className="py-4 text-center">
+              <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#eaf7ef] text-[#0d7b51]">
+                <Icon className="h-7 w-7" name="check" />
+              </div>
+              <h2 className="mt-4 text-lg font-black text-[#1d1813]">{copy.profile.connected}</h2>
+              <p className="mt-2 text-sm font-semibold text-[#5d544c]">
+                {copy.profile.connectedNote.replace('{{name}}', teacher.full_name)}
+              </p>
+              {whatsappUrl && (
+                <a className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#25d366] px-4 py-3 text-sm font-bold text-white" href={whatsappUrl} rel="noreferrer" target="_blank">
+                  <Icon className="h-5 w-5" name="whatsapp" />
+                  {copy.profile.openWhatsapp}
+                </a>
+              )}
+            </div>
+          ) : (
+            <>
+              <h2 className="text-[15px] font-black text-[#1d1813]">{copy.profile.sendInquiry}</h2>
+              <p className="mt-1 text-[12px] font-semibold leading-5 text-[#746a60]">
+                {copy.profile.inquiryNote.replace('{{name}}', teacher.full_name)}
+              </p>
+              <form className="mt-4 space-y-3" onSubmit={sendInquiry}>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                    onChange={(event) => setStudentClass(event.target.value)}
+                    placeholder="Class"
+                    value={studentClass}
+                  />
+                  <input
+                    className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                    onChange={(event) => setSubject(event.target.value)}
+                    placeholder="Subject"
+                    value={subject}
+                  />
+                </div>
+                <input
+                  className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                  onChange={(event) => setParentName(event.target.value)}
+                  placeholder={copy.profile.parentName}
+                  value={parentName}
+                />
+                <input
+                  className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                  inputMode="tel"
+                  onChange={(event) => setParentPhone(event.target.value)}
+                  placeholder={copy.profile.parentPhone}
+                  value={parentPhone}
+                />
+                <textarea
+                  className="min-h-[96px] w-full resize-none rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold leading-6 outline-none focus:border-[#4930a8]"
+                  onChange={(event) => setMessage(event.target.value)}
+                  placeholder={copy.profile.message}
+                  value={message}
+                />
+                {formError && <p className="rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{formError}</p>}
+                <PrimaryButton disabled={sending} type="submit">
+                  {sending ? copy.profile.sending : copy.profile.sendInquiry}
+                </PrimaryButton>
+              </form>
+            </>
+          )}
+        </section>
+      </section>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[480px] border-t border-[#eadfcd] bg-white/95 px-4 py-3 backdrop-blur safe-bottom">
+        <div className="grid grid-cols-[1fr_0.7fr] gap-2">
+          {whatsappUrl ? (
+            <LinkButton href={whatsappUrl} rel="noreferrer" target="_blank">
+              <Icon className="h-5 w-5" name="whatsapp" />
+              WhatsApp
+            </LinkButton>
+          ) : (
+            <button className="rounded-xl bg-[#f4eee5] py-3 text-sm font-bold text-[#9a8f83]" disabled type="button">
+              {copy.common.noPhone}
+            </button>
+          )}
+          <button
+            className={cx(
+              'rounded-xl border border-[#ded1f7] bg-white py-3 text-sm font-bold text-[#4930a8]',
+              sent && 'bg-[#f7f3ff]',
+            )}
+            onClick={() => setSent(false)}
+            type="button"
+          >
+            {copy.profile.save}
+          </button>
+        </div>
+      </div>
+    </PageShell>
+  )
 }

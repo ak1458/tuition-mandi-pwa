@@ -190,7 +190,7 @@
   },
   "reports": {
     "title": "Reports",
-    "demoMode": "Local demo mode active. AI reports OpenRouter key se direct generate ho rahe hain.",
+    "demoMode": "Local demo mode active. Reports smart report service se ban rahe hain.",
     "heroSubtitle": "Hindi report banaiye aur parents ko bhejiye.",
     "target": {
       "title": "Report Target",

@@ -1,204 +1,178 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { isLocalMode } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 import type { ParentInquiry } from '@/types/marketplace'
+import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
+import { useTakhtiCopy } from '@/i18n/takhti-copy'
 
-const STATUS_COLORS: Record<string, string> = {
-    new: 'bg-blue-50 text-blue-700 border-blue-200',
-    contacted: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-    enrolled: 'bg-green-50 text-green-700 border-green-200',
-    not_interested: 'bg-slate-100 text-slate-500 border-slate-200',
+const statusLabels: Record<string, string> = {
+  new: 'New',
+  contacted: 'Contacted',
+  enrolled: 'Enrolled',
+  not_interested: 'Not Interested',
 }
 
-const STATUS_LABELS: Record<string, string> = {
-    new: '🆕 New',
-    contacted: '📞 Contacted',
-    enrolled: '✅ Enrolled',
-    not_interested: '❌ Not Interested',
+const statusOptions = ['new', 'contacted', 'enrolled', 'not_interested'] as const
+
+function statusClass(status: string) {
+  if (status === 'enrolled') return 'bg-[#eaf7ef] text-[#0d7b51]'
+  if (status === 'contacted') return 'bg-[#fff4df] text-[#c87b22]'
+  if (status === 'not_interested') return 'bg-[#f4eee5] text-[#746a60]'
+  return 'bg-[#f1edff] text-[#4930a8]'
 }
 
-const STATUS_OPTIONS = ['new', 'contacted', 'enrolled', 'not_interested']
+function timeAgo(dateStr: string) {
+  const diff = Date.now() - new Date(dateStr).getTime()
+  const mins = Math.floor(diff / 60000)
+  if (mins < 60) return `${Math.max(mins, 1)} min ago`
+  const hours = Math.floor(mins / 60)
+  if (hours < 24) return `${hours} hr ago`
+  return `${Math.floor(hours / 24)} days ago`
+}
 
 export function InquiriesPage() {
-    const { session } = useAuth()
-    const [inquiries, setInquiries] = useState<ParentInquiry[]>([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+  const { session } = useAuth()
+  const navigate = useNavigate()
+  const copy = useTakhtiCopy()
+  const [inquiries, setInquiries] = useState<ParentInquiry[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
-    const loadInquiries = useCallback(async () => {
-        if (!session?.user?.id) return
+  const loadInquiries = useCallback(async () => {
+    if (!session?.user?.id) return
+    setLoading(true)
+    setError('')
 
-        setLoading(true)
-        setError(null)
-
-        // In local mode, inquiries are a V2 marketplace feature — show empty state
-        if (isLocalMode) {
-            const existing = localStorage.getItem('takhti_local_inquiries')
-            const localInqs = existing ? JSON.parse(existing) : []
-            setInquiries(localInqs)
-            setLoading(false)
-            return
-        }
-
-        try {
-            const { data, error: err } = await supabase
-                .from('parent_inquiries')
-                .select('*')
-                .order('created_at', { ascending: false })
-
-            if (err) throw err
-            setInquiries((data || []) as ParentInquiry[])
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : 'Inquiries load nahi ho payein.'
-            setError(message)
-        } finally {
-            setLoading(false)
-        }
-    }, [session?.user?.id])
-
-    useEffect(() => {
-        loadInquiries()
-    }, [loadInquiries])
-
-    async function updateStatus(inquiryId: string, newStatus: string) {
-        if (isLocalMode) {
-            const existing = localStorage.getItem('takhti_local_inquiries')
-            if (existing) {
-                const inqs = JSON.parse(existing) as ParentInquiry[]
-                const updated = inqs.map((inq) =>
-                    inq.id === inquiryId ? { ...inq, status: newStatus as ParentInquiry['status'] } : inq
-                )
-                localStorage.setItem('takhti_local_inquiries', JSON.stringify(updated))
-                setInquiries(updated)
-            }
-            return
-        }
-
-        try {
-            const { error: err } = await supabase
-                .from('parent_inquiries')
-                .update({ status: newStatus })
-                .eq('id', inquiryId)
-
-            if (err) throw err
-
-            setInquiries((prev) =>
-                prev.map((inq) =>
-                    inq.id === inquiryId ? { ...inq, status: newStatus as ParentInquiry['status'] } : inq
-                )
-            )
-        } catch (err: unknown) {
-            const message = err instanceof Error ? err.message : 'Status update failed.'
-            alert(message)
-        }
+    if (isLocalMode) {
+      const existing = localStorage.getItem('takhti_local_inquiries')
+      setInquiries(existing ? (JSON.parse(existing) as ParentInquiry[]) : [])
+      setLoading(false)
+      return
     }
 
-    function buildReplyLink(inquiry: ParentInquiry) {
-        if (!inquiry.parent_phone) return null
-        const cleanPhone = inquiry.parent_phone.replace(/\D/g, '')
-        const message = `Namaste ${inquiry.parent_name || ''} Ji,\n\nAapki Takhti pe di gayi inquiry mili. Main ${inquiry.subject_needed || ''} padhata/padhati hun.\n\nKya aap baat karna chahenge?`
-        return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
+    try {
+      const { data, error: err } = await supabase
+        .from('parent_inquiries')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (err) throw err
+      setInquiries((data || []) as ParentInquiry[])
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Inquiries load nahi ho payein.')
+    } finally {
+      setLoading(false)
+    }
+  }, [session?.user?.id])
+
+  useEffect(() => {
+    loadInquiries().catch(() => {})
+  }, [loadInquiries])
+
+  async function updateStatus(inquiryId: string, newStatus: string) {
+    if (isLocalMode) {
+      const updated = inquiries.map((inquiry) =>
+        inquiry.id === inquiryId ? { ...inquiry, status: newStatus as ParentInquiry['status'] } : inquiry,
+      )
+      localStorage.setItem('takhti_local_inquiries', JSON.stringify(updated))
+      setInquiries(updated)
+      return
     }
 
-    function timeAgo(dateStr: string) {
-        const diff = Date.now() - new Date(dateStr).getTime()
-        const mins = Math.floor(diff / 60000)
-        if (mins < 60) return `${mins}m ago`
-        const hours = Math.floor(mins / 60)
-        if (hours < 24) return `${hours}h ago`
-        const days = Math.floor(hours / 24)
-        return `${days}d ago`
+    const { error: err } = await supabase.from('parent_inquiries').update({ status: newStatus }).eq('id', inquiryId)
+    if (err) {
+      setError(err.message)
+      return
     }
-
-    return (
-        <div className="space-y-4">
-            <h2 className="font-display text-lg font-semibold text-ink">📩 Parent Inquiries</h2>
-
-            {loading && (
-                <div className="flex items-center justify-center py-12">
-                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-saffron border-t-transparent" />
-                </div>
-            )}
-
-            {error && (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                    {error}
-                </div>
-            )}
-
-            {!loading && inquiries.length === 0 && (
-                <div className="text-center py-12">
-                    <p className="text-3xl mb-2">📭</p>
-                    <p className="text-sm text-muted">Abhi koi inquiry nahi aayi hai.</p>
-                    <p className="text-xs text-muted mt-1">Jab parents aapka profile dekhenge, tab inquiries yahan dikheingi.</p>
-                </div>
-            )}
-
-            {!loading && inquiries.length > 0 && (
-                <div className="space-y-3">
-                    {inquiries.map((inq) => {
-                        const replyLink = buildReplyLink(inq)
-                        return (
-                            <div
-                                key={inq.id}
-                                className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-                            >
-                                {/* Header row */}
-                                <div className="flex items-start justify-between mb-2">
-                                    <div>
-                                        <p className="text-sm font-semibold text-ink">
-                                            {inq.parent_name || 'Unknown Parent'}
-                                        </p>
-                                        <p className="text-[10px] text-muted">
-                                            {inq.student_class && `${inq.student_class} • `}
-                                            {inq.subject_needed && `${inq.subject_needed} • `}
-                                            {timeAgo(inq.created_at)}
-                                        </p>
-                                    </div>
-                                    <span className={`rounded-full border px-2.5 py-0.5 text-[9px] font-bold ${STATUS_COLORS[inq.status] || ''}`}>
-                                        {STATUS_LABELS[inq.status] || inq.status}
-                                    </span>
-                                </div>
-
-                                {/* Message */}
-                                {inq.message && (
-                                    <p className="text-xs text-ink/80 italic mb-3 bg-slate-50 rounded-lg p-2">
-                                        "{inq.message}"
-                                    </p>
-                                )}
-
-                                {/* Actions */}
-                                <div className="flex items-center gap-2">
-                                    {replyLink && (
-                                        <a
-                                            href={replyLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="rounded-lg bg-green-500 px-3 py-1.5 text-[10px] font-bold text-white transition-all hover:bg-green-600"
-                                        >
-                                            💬 Reply
-                                        </a>
-                                    )}
-
-                                    {/* Status dropdown */}
-                                    <select
-                                        value={inq.status}
-                                        onChange={(e) => updateStatus(inq.id, e.target.value)}
-                                        className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-[10px] font-semibold text-ink focus:border-saffron focus:outline-none"
-                                    >
-                                        {STATUS_OPTIONS.map((s) => (
-                                            <option key={s} value={s}>
-                                                {STATUS_LABELS[s]}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                        )
-                    })}
-                </div>
-            )}
-        </div>
+    setInquiries((current) =>
+      current.map((inquiry) =>
+        inquiry.id === inquiryId ? { ...inquiry, status: newStatus as ParentInquiry['status'] } : inquiry,
+      ),
     )
+  }
+
+  function replyLink(inquiry: ParentInquiry) {
+    if (!inquiry.parent_phone) return null
+    const cleanPhone = inquiry.parent_phone.replace(/\D/g, '')
+    const text = `Namaste ${inquiry.parent_name || ''} Ji,\n\nAapki Takhti inquiry mili. ${inquiry.subject_needed || 'Tuition'} ke liye baat kar sakte hain.`
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
+  }
+
+  return (
+    <div className="min-h-full bg-[#fbf8f1] pb-24">
+      <PageHeader
+        left={
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
+        }
+        subtitle={copy.inquiries.subtitle}
+        title={copy.inquiries.title}
+      />
+
+      <section className="px-4 py-4">
+        {error && <p className="rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{error}</p>}
+
+        {loading ? (
+          <div className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-sm font-bold text-[#746a60]">{copy.inquiries.loading}</div>
+        ) : inquiries.length === 0 ? (
+          <div className="rounded-[22px] border border-[#eee4d8] bg-white p-8 text-center shadow-sm">
+            <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#f1edff] text-[#4930a8]">
+              <Icon className="h-7 w-7" name="message" />
+            </div>
+            <p className="mt-4 text-sm font-black text-[#1d1813]">{copy.inquiries.emptyTitle}</p>
+            <p className="mt-1 text-xs font-semibold text-[#746a60]">{copy.inquiries.emptySubtitle}</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {inquiries.map((inquiry, index) => {
+              const waLink = replyLink(inquiry)
+              return (
+                <article className="rounded-[20px] border border-[#eee4d8] bg-white p-4 shadow-[0_12px_26px_rgba(53,38,22,0.06)]" key={inquiry.id}>
+                  <div className="flex items-start gap-3">
+                    <PersonAvatar name={inquiry.parent_name || 'Parent'} size="sm" variant={index % 2 ? 'female' : 'student'} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="truncate text-[13px] font-black text-[#1d1813]">{inquiry.parent_name || copy.inquiries.unknownParent}</p>
+                        <span className={cx('shrink-0 rounded-full px-2 py-1 text-[10px] font-black', statusClass(inquiry.status))}>
+                          {copy.inquiries.statuses[inquiry.status] || statusLabels[inquiry.status] || inquiry.status}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-[11px] font-semibold text-[#746a60]">
+                        {inquiry.student_class || copy.inquiries.classLabel} - {inquiry.subject_needed || copy.inquiries.subjectLabel} - {timeAgo(inquiry.created_at)}
+                      </p>
+                      {inquiry.message && (
+                        <p className="mt-3 rounded-[14px] bg-[#fff8ec] p-3 text-[12px] font-semibold leading-5 text-[#4d453d]">{inquiry.message}</p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-3 flex gap-2">
+                    {waLink && (
+                      <a className="inline-flex flex-1 items-center justify-center gap-1 rounded-xl bg-[#25d366] px-3 py-2 text-[12px] font-black text-white" href={waLink} rel="noreferrer" target="_blank">
+                        <Icon className="h-4 w-4" name="whatsapp" />
+                        {copy.common.reply}
+                      </a>
+                    )}
+                    <select
+                      className="flex-1 rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-2 text-[12px] font-black text-[#1d1813]"
+                      onChange={(event) => updateStatus(inquiry.id, event.target.value)}
+                      value={inquiry.status}
+                    >
+                      {statusOptions.map((status) => (
+                        <option key={status} value={status}>
+                          {copy.inquiries.statuses[status]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </section>
+    </div>
+  )
 }

@@ -25,6 +25,32 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+@media (min-width: 480px) {
+  input,
+  select,
+  textarea {
+    font-size: 14px;
+  }
+}
+
 /* ── Devanagari ligature fix ── */
 html[lang="hi"],
 html[lang="hi"] * {
