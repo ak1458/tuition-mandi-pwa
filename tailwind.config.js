@@ -12,15 +12,17 @@ export default {
         muted: 'var(--text-muted)',
       },
       fontFamily: {
-        body: [
-          '-apple-system',
-          'BlinkMacSystemFont',
-          'Segoe UI',
-          'Roboto',
-          'Helvetica Neue',
-          'Arial',
-          'sans-serif',
-        ],
+        body: ['var(--font-stack-latin)'],
+        deva: ['var(--font-stack-devanagari)'],
+      },
+      keyframes: {
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        'fade-in-up': 'fade-in-up 200ms ease-out both',
       },
     },
   },

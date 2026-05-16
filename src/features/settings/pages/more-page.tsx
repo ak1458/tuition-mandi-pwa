@@ -322,6 +322,7 @@ export function MorePage() {
         {/* Support */}
         <Section title="Support">
           <Row icon="phone" iconTone="green" label={copy.more.help} hint="WhatsApp / Email Takhti team" onClick={() => navigate('/help')} />
+          <Row icon="star" iconTone="orange" label={copy.demo.moreSettingsTitle} hint={copy.demo.moreSettingsHint} />
           <Row icon="settings" iconTone="paper" label="About Takhti" hint="Version 1.0 - Your Digital Register" />
           <Row divider={false} icon="check" iconTone="purple" label="Privacy & Terms" hint="View Takhti policies" onClick={() => navigate('/help')} />
         </Section>
