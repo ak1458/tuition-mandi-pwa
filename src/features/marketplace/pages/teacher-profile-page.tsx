@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { getTeacherPublicProfile, submitInquiry } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
+import { isTeacherSaved, onSavedTeachersChange, toggleSavedTeacher } from '@/lib/saved-teachers'
 import type { ParentRating, TeacherOutcome, TeacherProfile } from '@/types/marketplace'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 import {
@@ -66,6 +67,14 @@ export function TeacherProfilePage() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [formError, setFormError] = useState('')
+  const [isSaved, setIsSaved] = useState(false)
+
+  useEffect(() => {
+    if (!id) return
+    setIsSaved(isTeacherSaved(id))
+    const unsub = onSavedTeachersChange(() => setIsSaved(isTeacherSaved(id)))
+    return () => unsub()
+  }, [id])
 
   useEffect(() => {
     if (!id) return
@@ -129,6 +138,12 @@ export function TeacherProfilePage() {
       return
     }
     navigator.clipboard.writeText(profileUrl).catch(() => {})
+  }
+
+  const onToggleSave = () => {
+    if (!teacher) return
+    const nowSaved = toggleSavedTeacher(teacher)
+    setIsSaved(nowSaved)
   }
 
   if (loading) {
@@ -354,13 +369,15 @@ export function TeacherProfilePage() {
           )}
           <button
             className={cx(
-              'rounded-xl border border-[#ded1f7] bg-white py-3 text-sm font-bold text-[#4930a8]',
-              sent && 'bg-[#f7f3ff]',
+              'rounded-xl border py-3 text-sm font-bold',
+              isSaved
+                ? 'border-[#ded1f7] bg-[#4930a8] text-white'
+                : 'border-[#ded1f7] bg-white text-[#4930a8]',
             )}
-            onClick={() => setSent(false)}
+            onClick={onToggleSave}
             type="button"
           >
-            {copy.profile.save}
+            {isSaved ? '★ Saved' : copy.profile.save}
           </button>
         </div>
       </div>

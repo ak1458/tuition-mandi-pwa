@@ -4,6 +4,8 @@ import { searchTeachers } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import type { ParentRating, SearchFilters, TeacherProfile } from '@/types/marketplace'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useAuth } from '@/app/providers/auth-provider'
+import { NotificationsBell, NotificationsPanel } from '@/components/common/notifications-panel'
 import {
   Chip,
   Icon,
@@ -103,6 +105,8 @@ function TeacherResultCard({
 export function SearchPage() {
   const navigate = useNavigate()
   const copy = useTakhtiCopy()
+  const { session } = useAuth()
+  const userId = session?.user.id ?? 'parent'
   const [query, setQuery] = useState('')
   const [selectedSubject, setSelectedSubject] = useState<string | undefined>()
   const [selectedClass, setSelectedClass] = useState<string | undefined>()
@@ -111,6 +115,7 @@ export function SearchPage() {
   const [loading, setLoading] = useState(true)
   const [searched, setSearched] = useState(false)
   const [error, setError] = useState('')
+  const [showNotifications, setShowNotifications] = useState(false)
 
   const loadTeachers = useCallback(
     async (overrides?: Partial<SearchFilters> & { markSearched?: boolean }) => {
@@ -188,13 +193,15 @@ export function SearchPage() {
             <Icon name="arrow-left" />
           </IconButton>
         }
-        right={
-          <IconButton className="h-9 w-9" label="Notifications">
-            <Icon className="h-4 w-4" name="bell" />
-          </IconButton>
-        }
+        right={<NotificationsBell userId={userId} onOpen={() => setShowNotifications(true)} />}
         subtitle={copy.search.subtitle}
         title={copy.search.title}
+      />
+
+      <NotificationsPanel
+        onClose={() => setShowNotifications(false)}
+        open={showNotifications}
+        userId={userId}
       />
 
       <section className="px-4 pb-24 pt-4">

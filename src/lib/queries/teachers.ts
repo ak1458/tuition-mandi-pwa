@@ -436,6 +436,7 @@ export async function submitInquiry(data: {
             created_at: new Date().toISOString()
         })
         localStorage.setItem('takhti_local_inquiries', JSON.stringify(inquiries))
+        window.dispatchEvent(new CustomEvent('takhti:local-inquiries:change'))
         return
     }
     const { error } = await supabase
