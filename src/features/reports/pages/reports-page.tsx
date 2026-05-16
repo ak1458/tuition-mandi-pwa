@@ -1,29 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import {
-  fetchLatestReport,
-  generateManualTemplate,
-  getReportMetrics,
-  invokeAiReport,
   listReportStudents,
-  saveManualReport,
-  type ReportMetrics,
   type ReportStudent,
 } from '@/features/reports/services/reports-service'
-import { Icon, IconButton, PageHeader, PersonAvatar, ReportReadyIllustration, cx } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PersonAvatar, ReportReadyIllustration } from '@/components/common/takhti-ui'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 
-const defaultMetrics: ReportMetrics = {
-  attendancePercent: 0,
-  avgScore: 0,
-  testsDone: 0,
-  feePendingAmount: 0,
-}
-
 export function ReportsPage() {
-  const { i18n } = useTranslation()
   const { session } = useAuth()
   const navigate = useNavigate()
   const copy = useTakhtiCopy()
