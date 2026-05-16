@@ -12,12 +12,14 @@ import {
 import { enqueueMutation, flushQueuedMutations, type OfflineMutation } from '@/lib/offline/mutation-queue'
 import type { AttendanceStatus, Batch } from '@/types/domain'
 import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
+import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 
 interface AttendanceStudent {
   id: string
   full_name: string
   class_label: string
+  created_at?: string
 }
 
 function isNetworkError(error: unknown): boolean {
@@ -219,10 +221,16 @@ export function AttendancePage() {
             students.map((student, index) => {
               const status = statusMap[student.id] ?? 'present'
               return (
-                <article className="flex items-center gap-3 rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-sm" key={student.id}>
+                <article
+                  className="flex flex-wrap items-center gap-3 rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-sm"
+                  key={student.id}
+                >
                   <PersonAvatar name={student.full_name} size="sm" variant={index % 2 ? 'female' : 'student'} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-black text-[#1d1813]">{student.full_name}</p>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <p className="truncate text-[13px] font-extrabold text-[#1d1813]">{student.full_name}</p>
+                      <DemoTrialBadge createdAt={student.created_at} label={copy.demo.label} variant="compact" />
+                    </div>
                     <p className="text-[11px] font-semibold text-[#746a60]">{student.class_label}</p>
                   </div>
                   <div className="flex rounded-xl bg-[#fbf8f1] p-1">

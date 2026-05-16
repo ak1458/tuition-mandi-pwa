@@ -23,6 +23,8 @@ import {
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 import { getLocalState } from '@/lib/local-data'
 import { pushNotification } from '@/lib/notifications'
+import { formatTrialMessage, getDemoTrialStatus } from '@/lib/demo-trial'
+import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
 
 const DEFAULT_METRICS: ReportMetrics = {
   attendancePercent: 0,
@@ -194,7 +196,13 @@ export function ReportsPage() {
     }
   }
 
-  const whatsappLink = buildWhatsAppLink(guardianPhone, reportText)
+  const trialStatus = selectedStudent ? getDemoTrialStatus(selectedStudent.created_at) : null
+  const trialAppendix =
+    trialStatus && trialStatus.isActive
+      ? `\n\n${formatTrialMessage(trialStatus, copy.demo.whatsappLine)}`
+      : ''
+  const whatsappText = reportText + trialAppendix
+  const whatsappLinkWithTrial = buildWhatsAppLink(guardianPhone, whatsappText)
   const monthName = new Date(monthStart).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
 
   return (
@@ -300,16 +308,19 @@ export function ReportsPage() {
             <div className="mb-3 flex items-center gap-3">
               <PersonAvatar name={selectedStudent.full_name} size="sm" variant="student" />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-black text-[#1d1813]">{selectedStudent.full_name}</p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="truncate text-[13px] font-extrabold text-[#1d1813]">{selectedStudent.full_name}</p>
+                  <DemoTrialBadge createdAt={selectedStudent.created_at} label={copy.demo.label} variant="compact" />
+                </div>
                 <p className="text-[11px] font-semibold text-[#746a60]">
-                  {monthName} - {selectedStudent.class_label}
+                  {monthName} · {selectedStudent.class_label}
                 </p>
               </div>
             </div>
 
             <p className="text-[12px] font-black text-[#746a60]">{copy.reports.preview}</p>
             <p className="mt-2 whitespace-pre-wrap rounded-[16px] border border-[#f3e3ca] bg-[#fff8ec] p-3 text-[12px] font-semibold leading-relaxed text-[#3a3027]">
-              {reportText}
+              {whatsappText}
             </p>
 
             <div className="mt-3 grid grid-cols-2 gap-2">
@@ -322,10 +333,10 @@ export function ReportsPage() {
               >
                 {isCopied ? '✓ Copied' : copy.common.copy}
               </button>
-              {whatsappLink ? (
+              {whatsappLinkWithTrial ? (
                 <a
                   className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#0d7b51] px-3 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)]"
-                  href={whatsappLink}
+                  href={whatsappLinkWithTrial}
                   rel="noreferrer"
                   target="_blank"
                 >

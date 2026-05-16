@@ -13,16 +13,50 @@
   padding: 0;
 }
 
+/* ── Typography ──
+ * Latin: Inter (loaded via index.html). Falls back to system stack if the
+ * webfont is still loading or fails (offline first run).
+ * Hindi: Noto Sans Devanagari for crisp Devanagari rendering.
+ * font-feature-settings: 'cv11' (single-storey 'a'), 'ss01' (open digits)
+ * for friendlier, less stuffy small UI text on 360-dp Android screens.
+ * text-rendering: optimizeLegibility kicks in kerning + ligatures so
+ * 13-px labels stop looking blurry on Pixel/Mi devices.
+ */
+
+:root {
+  --font-stack-latin: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-stack-devanagari: 'Noto Sans Devanagari', 'Inter', -apple-system,
+    BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-stack-latin);
   font-size: 14px;
   line-height: 1.5;
+  letter-spacing: -0.01em;
   color: var(--text-primary);
   background-color: var(--bg-page);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv11', 'ss01', 'kern';
+  font-synthesis: none;
+}
+
+/* Hindi (Devanagari) needs its own stack so 'पूछताछ' etc. render with
+ * proper conjunct shaping rather than falling back to a thin system face. */
+html[lang='hi'] body,
+html[lang='hi'] {
+  font-family: var(--font-stack-devanagari);
+  letter-spacing: 0;
+  font-feature-settings: 'kern', 'liga';
 }
 
 button,
@@ -30,6 +64,7 @@ input,
 select,
 textarea {
   font: inherit;
+  letter-spacing: inherit;
 }
 
 button,
@@ -37,6 +72,8 @@ a {
   touch-action: manipulation;
 }
 
+/* iOS Safari zooms when an input has font-size < 16px on focus. Keep inputs
+ * at 16px on small screens, scale down on tablets. */
 input,
 select,
 textarea {
@@ -51,10 +88,18 @@ textarea {
   }
 }
 
-/* ── Devanagari ligature fix ── */
-html[lang="hi"],
-html[lang="hi"] * {
-  letter-spacing: 0px !important;
+/* Heading defaults - tighter tracking, no unbalanced line breaks on phones. */
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+/* ── Devanagari ligature fix (preserves the original behaviour) ── */
+html[lang='hi'],
+html[lang='hi'] * {
   font-kerning: normal !important;
 }
 
@@ -70,4 +115,38 @@ html[lang="hi"] * {
 /* ── Safe area padding for notched devices ── */
 .safe-bottom {
   padding-bottom: max(env(safe-area-inset-bottom, 0px), 8px);
+}
+.safe-top {
+  padding-top: max(env(safe-area-inset-top, 0px), 0px);
+}
+
+/* ── Focus rings: visible only on keyboard navigation ── */
+:focus {
+  outline: none;
+}
+:focus-visible {
+  outline: 2px solid #4930a8;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Reduce motion for users who request it ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ── Constrain very wide screens so the mobile-first layout looks
+ *    intentional on a desktop preview rather than stretched. */
+.takhti-app-shell {
+  max-width: 480px;
+  margin-inline: auto;
+  min-height: 100vh;
+  background-color: var(--bg-page);
 }

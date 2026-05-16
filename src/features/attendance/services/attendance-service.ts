@@ -7,6 +7,7 @@ export interface AttendanceStudent {
   id: string
   full_name: string
   class_label: string
+  created_at?: string
 }
 
 export interface AttendanceEntry {
@@ -57,12 +58,13 @@ export async function getStudentsByBatch(teacherId: string, batchId: string): Pr
         id: student.id,
         full_name: student.full_name,
         class_label: student.class_label,
+        created_at: student.created_at,
       }))
   }
 
   const { data, error } = await supabase
     .from('batch_students')
-    .select('students!inner(id,full_name,class_label)')
+    .select('students!inner(id,full_name,class_label,created_at)')
     .eq('teacher_id', teacherId)
     .eq('batch_id', batchId)
 

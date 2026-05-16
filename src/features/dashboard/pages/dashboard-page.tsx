@@ -3,11 +3,13 @@ import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import { getDashboardSummary } from '@/features/dashboard/services/dashboard-service'
-import type { DashboardSummary } from '@/types/domain'
+import { listStudents } from '@/features/students/services/students-service'
+import type { DashboardSummary, Student } from '@/types/domain'
 import { Icon, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
 import { NotificationsBell, NotificationsPanel } from '@/components/common/notifications-panel'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 import { useLocalInquiries } from '@/hooks/use-local-inquiries'
+import { countActiveDemoTrials } from '@/lib/demo-trial'
 
 const defaultSummary: DashboardSummary = {
   teacher_id: '',
@@ -56,6 +58,7 @@ export function DashboardPage() {
 
   const [summary, setSummary] = useState<DashboardSummary>(defaultSummary)
   const [isLoading, setIsLoading] = useState(true)
+  const [students, setStudents] = useState<Student[]>([])
   const allInquiries = useLocalInquiries()
   const recentInquiries = allInquiries.slice(0, 3)
   const [showNotifications, setShowNotifications] = useState(false)
@@ -67,8 +70,12 @@ export function DashboardPage() {
     }
     setIsLoading(true)
     try {
-      const data = await getDashboardSummary(teacherId)
+      const [data, list] = await Promise.all([
+        getDashboardSummary(teacherId),
+        listStudents(teacherId).catch(() => [] as Student[]),
+      ])
       setSummary(data)
+      setStudents(list)
     } catch {
       setSummary(defaultSummary)
     } finally {
@@ -84,6 +91,7 @@ export function DashboardPage() {
   const presentToday = summary.present_today
   const feePendingCount = summary.fee_pending_count
   const inquiryCount = allInquiries.length
+  const activeTrialCount = countActiveDemoTrials(students)
 
   return (
     <div className="min-h-full bg-[#fbf8f1] pb-24">
@@ -168,6 +176,29 @@ export function DashboardPage() {
               <p className="mt-2 text-3xl font-black text-[#c87b22]">{feePendingCount}</p>
             </button>
           </div>
+          {activeTrialCount > 0 && (
+            <button
+              className="mt-3 flex w-full items-center gap-3 rounded-[18px] border border-[#f0dfc2] bg-gradient-to-br from-[#fff8e8] to-[#fff4df] p-4 text-left shadow-[0_8px_18px_rgba(200,123,34,0.06)]"
+              onClick={() => navigate('/students')}
+              type="button"
+            >
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-[#c87b22] shadow-sm">
+                <Icon className="h-5 w-5" name="star" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-[12px] font-extrabold uppercase tracking-wide text-[#9a5a14]">
+                  {copy.demo.dashboardCard}
+                </p>
+                <p className="mt-0.5 text-[18px] font-black leading-tight text-[#1d1813]">
+                  {activeTrialCount} {activeTrialCount === 1 ? 'student' : 'students'}
+                </p>
+                <p className="mt-0.5 truncate text-[11px] font-semibold text-[#7a5d2c]">
+                  {copy.demo.dashboardHint.replace('{{count}}', String(activeTrialCount))}
+                </p>
+              </div>
+              <Icon className="h-4 w-4 shrink-0 text-[#9a5a14]" name="chevron-right" />
+            </button>
+          )}
         </section>
 
         <section className="mt-5">
