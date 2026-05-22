@@ -9,7 +9,7 @@ import {
   TakhtiLogo,
   cx,
 } from '@/components/common/takhti-ui'
-import { ContinuousLearningIllustration } from '@/components/common/illustrations'
+import { BookLoverIllustration } from '@/components/common/illustrations'
 
 function ChoiceCard({
   tone,
@@ -85,7 +85,7 @@ export function WelcomePage() {
         </div>
 
         <div className="my-auto flex flex-1 items-center justify-center py-4">
-          <ContinuousLearningIllustration className="w-full max-w-[280px] xs:max-w-[320px] md:max-w-[360px] h-auto" />
+          <BookLoverIllustration className="w-full max-w-[280px] xs:max-w-[320px] md:max-w-[360px] h-auto" />
         </div>
 
         <div className="mt-4">
