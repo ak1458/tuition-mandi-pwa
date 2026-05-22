@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { InstallPrompt } from '@/features/pwa/install-prompt'
 import {
-  FamilyStudyIllustration,
+  TeacherWelcomeIllustration,
   Icon,
   PageShell,
   TakhtiLogo,
@@ -45,8 +46,8 @@ function ChoiceCard({
         <Icon className="h-7 w-7" name={icon} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[15px] font-extrabold text-[#1d1813]">{title}</span>
-        <span className="mt-1 block text-[12px] font-medium leading-5 text-[#5e554c]">{subtitle}</span>
+        <span className="block text-[16px] font-bold leading-tight text-[#1d1813]">{title}</span>
+        <span className="mt-1 block text-[12.5px] font-medium leading-[1.45] text-[#5e554c]">{subtitle}</span>
       </span>
       <span
         className={cx(
@@ -74,16 +75,20 @@ export function WelcomePage() {
         </div>
 
         <div className="mt-8">
-          <h1 className="max-w-[280px] text-[27px] font-black leading-tight text-[#15120f]">
+          <h1 className="font-display max-w-[300px] text-[30px] font-extrabold leading-[1.1] tracking-[-0.025em] text-[#15120f]">
             {copy.welcome.titleBefore} <span className="text-[#4930a8]">{copy.welcome.titleHighlight}</span>{' '}
             {copy.welcome.titleAfter}
           </h1>
-          <p className="mt-4 max-w-[270px] text-[13px] font-semibold leading-6 text-[#302820]">
+          <p className="mt-4 max-w-[290px] text-[14px] font-medium leading-[1.55] text-[#3a3128]">
             {copy.welcome.subtitle}
           </p>
         </div>
 
-        <FamilyStudyIllustration className="mt-5 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)]" />
+        <TeacherWelcomeIllustration className="mt-5 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)]" />
+
+        <div className="mt-4">
+          <InstallPrompt />
+        </div>
 
         <div className="mt-auto space-y-3 pt-5">
           <ChoiceCard

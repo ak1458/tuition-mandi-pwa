@@ -2,6 +2,14 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/profile/setup",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/profile/:id/review",
+      "destination": "/index.html"
+    },
+    {
       "source": "/profile/:id",
       "destination": "/api/og?id=:id"
     },

@@ -307,20 +307,33 @@ export function Icon({ name, className, ...props }: IconProps) {
 
 export function TakhtiLogo({ compact = false, tagline = 'Your Digital Register' }: { compact?: boolean; tagline?: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex h-10 w-10 items-center justify-center rounded-[14px] border border-[#ecd7ab] bg-[#fff8ea] shadow-[0_8px_18px_rgba(122,78,25,0.12)]">
+    <div className="flex items-center gap-2.5">
+      <div className="flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#ecd7ab] bg-[linear-gradient(160deg,#fff8ea_0%,#fceeca_100%)] shadow-[0_8px_18px_rgba(122,78,25,0.14)]">
         <svg className="h-7 w-7" viewBox="0 0 48 48" aria-hidden="true">
-          <rect x="8" y="7" width="32" height="34" rx="5" fill="#f1b65d" />
-          <rect x="12" y="11" width="24" height="26" rx="3" fill="#fff7e7" />
-          <path d="M18 16v17m12-17v17" stroke="#2f251c" strokeWidth="1.7" />
-          <path d="M16 18c4-1.6 7-.7 8 1.5 1-2.2 4-3.1 8-1.5M16 24c4-1.4 7-.5 8 1.2 1-1.7 4-2.6 8-1.2" fill="none" stroke="#2f251c" strokeWidth="1.7" strokeLinecap="round" />
-          <path d="M7 14 4 16m37-2 3 2M7 34l-3 2m37-2 3 2" stroke="#d9852c" strokeWidth="2" strokeLinecap="round" />
+          {/* Slate / takhti body */}
+          <rect x="7" y="7" width="34" height="34" rx="6" fill="#1f1812" />
+          <rect x="9" y="9" width="30" height="30" rx="5" fill="#2a201a" />
+          {/* Wooden inner frame */}
+          <rect x="11" y="11" width="26" height="26" rx="4" fill="#f5b860" />
+          <rect x="12.5" y="12.5" width="23" height="23" rx="3" fill="#fff7e7" />
+          {/* Devanagari-style "T" mark in chalk */}
+          <path
+            d="M17 18.5h14M24 18.5v13"
+            stroke="#1f1812"
+            strokeWidth="2.4"
+            strokeLinecap="round"
+          />
+          {/* Soft chalk dust glow */}
+          <circle cx="17" cy="32.5" r="1.2" fill="#1f1812" opacity="0.55" />
+          <circle cx="31" cy="32.5" r="1.2" fill="#1f1812" opacity="0.55" />
         </svg>
       </div>
       {!compact && (
         <div>
-          <p className="font-serif text-[32px] font-bold leading-none text-[#17120d]">Takhti</p>
-          <p className="mt-1 text-[12px] font-medium text-[#574e46]">{tagline}</p>
+          <p className="font-display text-[26px] font-extrabold leading-none tracking-[-0.03em] text-[#17120d]">
+            Takhti
+          </p>
+          <p className="mt-1 text-[11px] font-medium tracking-wide text-[#7a6f64]">{tagline}</p>
         </div>
       )}
     </div>
@@ -498,55 +511,359 @@ export function PageHeader({
 
 export function FamilyStudyIllustration({ className }: { className?: string }) {
   return (
-    <svg className={cx('w-full', className)} viewBox="0 0 360 210" role="img" aria-label="Parent, student and teacher studying">
-      <rect width="360" height="210" rx="22" fill="#fff2df" />
-      <path d="M28 176c46-16 102-14 145-3 66 17 110 18 158-4v41H28Z" fill="#f4d9b9" />
-      <rect x="210" y="68" width="74" height="72" rx="8" fill="#f9e8cf" />
-      <path d="M238 46v30M252 58v18M224 60v16" stroke="#e5caa8" strokeWidth="6" strokeLinecap="round" />
-      <g transform="translate(36 68)">
-        <foreignObject width="96" height="96">
-          <PersonAvatar name="Parent" variant="female" size="lg" />
-        </foreignObject>
-      </g>
-      <g transform="translate(136 86)">
-        <foreignObject width="96" height="96">
-          <PersonAvatar name="Student" variant="student" size="lg" />
-        </foreignObject>
-      </g>
-      <g transform="translate(238 56)">
-        <foreignObject width="96" height="96">
-          <PersonAvatar name="Teacher" variant="male" size="lg" />
-        </foreignObject>
-      </g>
-      <rect x="72" y="164" width="218" height="24" rx="7" fill="#f3c98f" />
-      <path d="M88 165c20-12 43-12 68 0M178 165c23-12 47-12 72 0" fill="none" stroke="#fff9ee" strokeWidth="4" strokeLinecap="round" />
-      <path d="M313 136c10 17 14 35 8 54M331 126c-11 18-14 40-10 64" stroke="#82a85d" strokeWidth="7" strokeLinecap="round" />
-      <circle cx="327" cy="118" r="10" fill="#9abb6d" />
-      <circle cx="309" cy="128" r="9" fill="#9abb6d" />
+    <svg
+      className={cx('w-full', className)}
+      viewBox="0 0 400 320"
+      role="img"
+      aria-label="Parent and child studying together at a warm home study desk"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <linearGradient id="familySky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fff5e2" />
+          <stop offset="55%" stopColor="#fffaf0" />
+          <stop offset="100%" stopColor="#ffffff" />
+        </linearGradient>
+        <radialGradient id="familyHalo" cx="50%" cy="36%" r="55%">
+          <stop offset="0%" stopColor="#ffe8b8" stopOpacity="0.85" />
+          <stop offset="100%" stopColor="#ffe8b8" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="deskWood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f0d9b6" />
+          <stop offset="100%" stopColor="#d9b27e" />
+        </linearGradient>
+        <linearGradient id="bookOpen" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#ffffff" />
+          <stop offset="100%" stopColor="#f4eddc" />
+        </linearGradient>
+      </defs>
+
+      {/* Background */}
+      <rect width="400" height="320" rx="24" fill="url(#familySky)" />
+      <ellipse cx="200" cy="118" rx="160" ry="92" fill="url(#familyHalo)" />
+
+      {/* Decorative star / dot / heart floating cues */}
+      <path
+        d="M156 38l3 7 7 .7-5.3 4.7 1.6 7-6.3-3.7-6.3 3.7 1.6-7-5.3-4.7 7-.7z"
+        fill="#f3c64d"
+      />
+      <circle cx="244" cy="42" r="4" fill="#7da8ee" />
+      <path
+        d="M205 56c-4-6-12-3-12 3 0 7 12 13 12 13s12-6 12-13c0-6-8-9-12-3z"
+        fill="#f4a3a3"
+      />
+
+      {/* Left bookshelf hint */}
+      <rect x="22" y="92" width="48" height="98" rx="4" fill="#f4e2c4" />
+      <rect x="28" y="100" width="36" height="6" rx="2" fill="#d8b986" />
+      <rect x="28" y="112" width="28" height="6" rx="2" fill="#c89a6a" />
+      <rect x="28" y="124" width="34" height="6" rx="2" fill="#b07e58" />
+      <rect x="28" y="136" width="22" height="6" rx="2" fill="#d8b986" />
+      <rect x="28" y="148" width="30" height="6" rx="2" fill="#c89a6a" />
+
+      {/* Right potted plant */}
+      <path
+        d="M348 196c-6-18-2-44 8-58M362 196c4-22 16-38 28-46M334 196c-2-14 4-30 14-40"
+        stroke="#82a85d"
+        strokeWidth="6"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <ellipse cx="368" cy="148" rx="14" ry="9" fill="#9fc179" />
+      <ellipse cx="356" cy="158" rx="11" ry="7" fill="#9fc179" />
+      <ellipse cx="346" cy="168" rx="10" ry="7" fill="#b3d18d" />
+      <path d="M338 198h44l-4 28h-36z" fill="#d09060" />
+
+      {/* Photo frame on wall */}
+      <rect x="288" y="58" width="42" height="36" rx="4" fill="#ffffff" stroke="#e0c69b" strokeWidth="2" />
+      <path d="M294 86l8-10 6 6 8-12 8 16z" fill="#cfe2bd" />
+      <circle cx="318" cy="68" r="3" fill="#f3c64d" />
+
+      {/* Desk */}
+      <rect x="32" y="244" width="336" height="20" rx="6" fill="url(#deskWood)" />
+      <rect x="50" y="264" width="6" height="38" fill="#b08454" />
+      <rect x="344" y="264" width="6" height="38" fill="#b08454" />
+
+      {/* Open book between them */}
+      <path
+        d="M158 220c14-10 36-10 50 0v22c-14-8-36-8-50 0z"
+        fill="url(#bookOpen)"
+        stroke="#d8b986"
+        strokeWidth="1.5"
+      />
+      <path d="M183 220v22" stroke="#d8b986" strokeWidth="1.5" />
+      <path d="M168 226h12M168 232h10M196 226h12M196 232h10" stroke="#caa66f" strokeWidth="1.5" strokeLinecap="round" />
+
+      {/* Stack of books on left */}
+      <rect x="56" y="226" width="40" height="8" rx="2" fill="#3f7bc7" />
+      <rect x="60" y="234" width="38" height="8" rx="2" fill="#f3c64d" />
+      <rect x="58" y="242" width="40" height="6" rx="2" fill="#e07c4d" />
+
+      {/* Coffee mug right */}
+      <rect x="316" y="222" width="22" height="22" rx="4" fill="#f3eddc" stroke="#d8b986" strokeWidth="1.5" />
+      <path d="M338 226h6a4 4 0 0 1 0 8h-6" fill="none" stroke="#d8b986" strokeWidth="1.5" />
+      <path d="M324 218c0-3 2-3 2-6M330 218c0-3 2-3 2-6" stroke="#caa66f" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+
+      {/* PARENT (mother) — left figure */}
+      {/* Hair back */}
+      <path
+        d="M88 122c0-30 18-48 42-48 26 0 42 20 42 50v52c-12 6-72 6-84 0z"
+        fill="#1c1411"
+      />
+      {/* Face */}
+      <ellipse cx="130" cy="134" rx="22" ry="25" fill="#e2a987" />
+      {/* Hair front */}
+      <path
+        d="M108 116c4-22 18-32 36-30s28 14 28 30c-6-2-14 0-22 4-2-6-10-10-22-4-8 4-16 4-20 0z"
+        fill="#1c1411"
+      />
+      {/* Eyes */}
+      <ellipse cx="121" cy="134" rx="1.6" ry="2" fill="#1f1612" />
+      <ellipse cx="139" cy="134" rx="1.6" ry="2" fill="#1f1612" />
+      {/* Smile */}
+      <path d="M124 144c2 3 8 4 12 0" stroke="#7a4938" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      {/* Cardigan body */}
+      <path
+        d="M76 240c0-32 18-58 54-58s54 26 54 58H76z"
+        fill="#7466c8"
+      />
+      {/* Inner shirt */}
+      <path d="M114 188c10 8 22 8 32 0v20c-10 6-22 6-32 0z" fill="#fcfcfc" />
+      {/* Arm reaching to book */}
+      <path
+        d="M152 218c10-4 16-2 24 6"
+        stroke="#7466c8"
+        strokeWidth="14"
+        strokeLinecap="round"
+        fill="none"
+      />
+      <ellipse cx="178" cy="226" rx="6" ry="5" fill="#e2a987" />
+      {/* Pen in hand */}
+      <path d="M180 230l8 6" stroke="#1f1612" strokeWidth="2.2" strokeLinecap="round" />
+
+      {/* CHILD — middle figure */}
+      <ellipse cx="200" cy="160" rx="18" ry="20" fill="#e8b18a" />
+      {/* Hair */}
+      <path d="M184 152c2-16 12-22 24-20s16 12 14 22c-6-2-12 0-18 4-2-4-10-8-20-6z" fill="#231811" />
+      {/* Eyes */}
+      <ellipse cx="193" cy="160" rx="1.6" ry="2" fill="#1f1612" />
+      <ellipse cx="207" cy="160" rx="1.6" ry="2" fill="#1f1612" />
+      {/* Smile */}
+      <path d="M196 168c2 3 6 3 8 0" stroke="#7a4938" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      {/* Body / orange shirt */}
+      <path d="M178 240c0-26 12-46 22-46s22 20 22 46h-44z" fill="#e87149" />
+      {/* Collar */}
+      <path d="M192 196l8 8 8-8" fill="none" stroke="#b85432" strokeWidth="2" strokeLinecap="round" />
+      {/* Arms / writing */}
+      <path d="M188 220c0-8 4-12 12-12s12 4 12 12" stroke="#e8b18a" strokeWidth="10" strokeLinecap="round" fill="none" />
+      <path d="M204 224l8 8" stroke="#1f1612" strokeWidth="2" strokeLinecap="round" />
+
+      {/* PARENT (father) — right figure */}
+      {/* Hair */}
+      <path d="M252 110c0-22 14-36 32-36s32 14 32 36v8c-10-6-54-6-64 0z" fill="#1d130f" />
+      {/* Face */}
+      <ellipse cx="284" cy="132" rx="22" ry="24" fill="#cf9472" />
+      {/* Beard */}
+      <path
+        d="M262 138c0 14 10 24 22 24s22-10 22-24c-4 6-12 8-22 8s-18-2-22-8z"
+        fill="#231811"
+      />
+      {/* Glasses */}
+      <circle cx="274" cy="130" r="6.5" fill="none" stroke="#1f1612" strokeWidth="1.6" />
+      <circle cx="294" cy="130" r="6.5" fill="none" stroke="#1f1612" strokeWidth="1.6" />
+      <path d="M280.5 130h7" stroke="#1f1612" strokeWidth="1.6" />
+      {/* Eyes inside glasses */}
+      <circle cx="274" cy="130" r="1.6" fill="#1f1612" />
+      <circle cx="294" cy="130" r="1.6" fill="#1f1612" />
+      {/* Smile */}
+      <path d="M278 144c4 3 8 3 12 0" stroke="#7a4938" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      {/* Green shirt */}
+      <path d="M232 240c0-32 22-58 52-58s52 26 52 58h-104z" fill="#2e8b58" />
+      {/* Collar shadow */}
+      <path d="M278 188c4 4 10 4 14 0v8c-4 3-10 3-14 0z" fill="#236b44" />
+      {/* Buttons */}
+      <circle cx="285" cy="200" r="1.5" fill="#1d4d31" />
+      <circle cx="285" cy="212" r="1.5" fill="#1d4d31" />
+      <circle cx="285" cy="224" r="1.5" fill="#1d4d31" />
+      {/* Arm reaching */}
+      <path d="M252 220c-10-2-18 2-24 10" stroke="#2e8b58" strokeWidth="14" strokeLinecap="round" fill="none" />
+      <ellipse cx="226" cy="232" rx="6" ry="5" fill="#cf9472" />
     </svg>
   )
 }
 
 export function TeacherWelcomeIllustration({ className }: { className?: string }) {
   return (
-    <svg className={cx('w-full', className)} viewBox="0 0 320 230" role="img" aria-label="Teacher with notebook">
-      <rect width="320" height="230" rx="28" fill="#fff3df" />
-      <path d="M32 187c47-18 86-8 123-2 56 8 93 2 133-15v60H32Z" fill="#f2d7b7" />
-      <g transform="translate(112 52)">
-        <foreignObject width="96" height="96">
-          <PersonAvatar name="Suresh" variant="male" size="lg" />
-        </foreignObject>
+    <svg
+      className={cx('w-full', className)}
+      viewBox="0 0 360 320"
+      role="img"
+      aria-label="Teacher in glasses holding a notebook with floating schedule, students and progress cards"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <linearGradient id="teacherSky" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#fff5e2" />
+          <stop offset="55%" stopColor="#fffaf0" />
+          <stop offset="100%" stopColor="#ffffff" />
+        </linearGradient>
+        <radialGradient id="teacherHalo" cx="38%" cy="42%" r="55%">
+          <stop offset="0%" stopColor="#ffe8b8" stopOpacity="0.7" />
+          <stop offset="100%" stopColor="#ffe8b8" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="bookCover" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#f8eed5" />
+          <stop offset="100%" stopColor="#e8d4a8" />
+        </linearGradient>
+      </defs>
+
+      {/* Background */}
+      <rect width="360" height="320" rx="24" fill="url(#teacherSky)" />
+      <ellipse cx="160" cy="150" rx="170" ry="120" fill="url(#teacherHalo)" />
+
+      {/* Soft city silhouette in background */}
+      <g opacity="0.18">
+        <rect x="40" y="178" width="20" height="60" fill="#a99072" />
+        <rect x="62" y="158" width="14" height="80" fill="#a99072" />
+        <rect x="80" y="170" width="22" height="68" fill="#a99072" />
+        <rect x="240" y="160" width="18" height="78" fill="#a99072" />
+        <rect x="262" y="180" width="14" height="58" fill="#a99072" />
+        <rect x="280" y="168" width="20" height="70" fill="#a99072" />
       </g>
-      <path d="M102 170c22-34 88-34 111 0v22H102Z" fill="#13704b" />
-      <rect x="84" y="143" width="58" height="40" rx="5" fill="#f8f0df" stroke="#e7d5b9" strokeWidth="3" />
-      <path d="M94 153h36M94 162h26M94 171h31" stroke="#caa66f" strokeWidth="3" strokeLinecap="round" />
-      <rect x="212" y="47" width="44" height="38" rx="8" fill="#fffaf0" stroke="#e8d7bc" strokeWidth="3" />
-      <path d="M223 39v15m22-15v15M221 63h26" stroke="#caa66f" strokeWidth="4" strokeLinecap="round" />
-      <rect x="236" y="111" width="48" height="42" rx="9" fill="#fffaf0" stroke="#e8d7bc" strokeWidth="3" />
-      <path d="M247 139v-13m13 13v-21m13 21v-29" stroke="#8cb36f" strokeWidth="5" strokeLinecap="round" />
-      <path d="M58 150c8 14 9 28 6 43M74 136c-12 17-15 37-11 57" stroke="#8cb36f" strokeWidth="7" strokeLinecap="round" />
-      <circle cx="74" cy="130" r="9" fill="#9fc179" />
-      <circle cx="56" cy="143" r="8" fill="#9fc179" />
+
+      {/* Decorative blob behind the teacher */}
+      <path
+        d="M76 64c44-22 110-18 142 18 28 30 28 84 4 130-26 48-92 64-148 38-58-26-78-90-46-138 14-22 28-36 48-48z"
+        fill="#fceeca"
+        opacity="0.55"
+      />
+
+      {/* Tiny leaf bottom-left */}
+      <path
+        d="M28 248c0-22 12-36 28-40-2 18-12 30-28 40z"
+        fill="#9fc179"
+      />
+      <path d="M40 222c0-10 6-16 14-18-2 12-6 18-14 18z" fill="#b3d18d" />
+      <rect x="22" y="248" width="32" height="22" rx="4" fill="#e3c79a" />
+
+      {/* ── TEACHER ── */}
+      {/* Body / shirt */}
+      <path
+        d="M104 280c0-46 28-78 76-78s76 32 76 78v40H104z"
+        fill="#1f7a55"
+      />
+      {/* Shirt placket */}
+      <path d="M174 230v76M186 230v76" stroke="#155e3f" strokeWidth="1.6" />
+      <circle cx="180" cy="244" r="2" fill="#155e3f" />
+      <circle cx="180" cy="262" r="2" fill="#155e3f" />
+      <circle cx="180" cy="280" r="2" fill="#155e3f" />
+      {/* Collar */}
+      <path d="M158 218l22 18 22-18-22-12z" fill="#1f7a55" />
+      <path d="M180 236l-12-18M180 236l12-18" stroke="#155e3f" strokeWidth="1.5" fill="none" />
+
+      {/* Neck */}
+      <ellipse cx="180" cy="200" rx="14" ry="10" fill="#cf9472" />
+
+      {/* Head */}
+      <ellipse cx="180" cy="158" rx="42" ry="46" fill="#cf9472" />
+      {/* Hair */}
+      <path
+        d="M138 138c0-30 18-50 42-50s42 20 42 50v6c-12-8-20-12-30-10-2-12-12-18-22-16-12 2-22 12-32 20z"
+        fill="#1d130f"
+      />
+      {/* Sideburns */}
+      <path d="M142 162c-2 14 0 26 6 36" stroke="#1d130f" strokeWidth="6" strokeLinecap="round" fill="none" />
+      <path d="M218 162c2 14 0 26-6 36" stroke="#1d130f" strokeWidth="6" strokeLinecap="round" fill="none" />
+      {/* Beard */}
+      <path
+        d="M146 168c0 30 16 44 34 44s34-14 34-44c-6 14-22 18-34 18s-28-4-34-18z"
+        fill="#231811"
+      />
+      {/* Glasses */}
+      <circle cx="166" cy="158" r="11" fill="#fffdf6" stroke="#1f1612" strokeWidth="2.2" />
+      <circle cx="194" cy="158" r="11" fill="#fffdf6" stroke="#1f1612" strokeWidth="2.2" />
+      <path d="M177 158h6" stroke="#1f1612" strokeWidth="2.2" strokeLinecap="round" />
+      {/* Eyes */}
+      <circle cx="166" cy="159" r="2.4" fill="#1f1612" />
+      <circle cx="194" cy="159" r="2.4" fill="#1f1612" />
+      <circle cx="167" cy="158" r="0.8" fill="#fff" />
+      <circle cx="195" cy="158" r="0.8" fill="#fff" />
+      {/* Smile (subtle, behind the beard) */}
+      <path d="M172 184c4 4 12 4 16 0" stroke="#7a4938" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+
+      {/* Arm + book held in hand */}
+      <path
+        d="M148 248c-8 8-12 22-8 36 4 14 16 22 28 22"
+        stroke="#1f7a55"
+        strokeWidth="22"
+        strokeLinecap="round"
+        fill="none"
+      />
+      {/* Hand */}
+      <ellipse cx="172" cy="304" rx="11" ry="9" fill="#cf9472" />
+      {/* Notebook */}
+      <rect
+        x="138"
+        y="262"
+        width="80"
+        height="52"
+        rx="6"
+        fill="url(#bookCover)"
+        stroke="#caa66f"
+        strokeWidth="2"
+      />
+      <path d="M178 262v52" stroke="#caa66f" strokeWidth="1.5" />
+      <path
+        d="M148 276h22M148 286h18M148 296h22M188 276h22M188 286h18M188 296h22"
+        stroke="#caa66f"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      {/* Bookmark */}
+      <path d="M200 262v18l4-4 4 4v-18z" fill="#e87149" />
+
+      {/* ── FLOATING CARDS — calendar / students / chart ── */}
+      {/* Calendar card */}
+      <g>
+        <rect x="248" y="46" width="76" height="64" rx="14" fill="#fffdf6" stroke="#ecdcc0" strokeWidth="1.5" />
+        <rect x="258" y="58" width="56" height="10" rx="3" fill="#a8893f" opacity="0.18" />
+        <path d="M268 54v8M278 54v8M288 54v8M298 54v8" stroke="#a8893f" strokeWidth="2" strokeLinecap="round" />
+        <circle cx="266" cy="78" r="2.2" fill="#a8893f" />
+        <circle cx="276" cy="78" r="2.2" fill="#a8893f" />
+        <circle cx="286" cy="78" r="2.2" fill="#a8893f" />
+        <circle cx="296" cy="78" r="2.2" fill="#a8893f" />
+        <circle cx="266" cy="88" r="2.2" fill="#a8893f" />
+        <circle cx="276" cy="88" r="2.2" fill="#a8893f" />
+        <circle cx="286" cy="88" r="2.2" fill="#1f7a55" />
+        <circle cx="296" cy="88" r="2.2" fill="#a8893f" />
+        <circle cx="266" cy="98" r="2.2" fill="#a8893f" />
+        <circle cx="276" cy="98" r="2.2" fill="#a8893f" />
+      </g>
+
+      {/* Students card */}
+      <g>
+        <rect x="262" y="124" width="74" height="62" rx="14" fill="#fffdf6" stroke="#ecdcc0" strokeWidth="1.5" />
+        <circle cx="287" cy="148" r="9" fill="none" stroke="#5b8e3a" strokeWidth="2.4" />
+        <path d="M275 174c2-9 8-13 12-13s10 4 12 13" stroke="#5b8e3a" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+        <circle cx="307" cy="146" r="7" fill="none" stroke="#5b8e3a" strokeWidth="2.4" />
+        <path d="M299 172c1-7 5-10 10-10s10 4 11 10" stroke="#5b8e3a" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      </g>
+
+      {/* Chart card */}
+      <g>
+        <rect x="248" y="200" width="76" height="64" rx="14" fill="#fffdf6" stroke="#ecdcc0" strokeWidth="1.5" />
+        <path
+          d="M260 250l8-10 8 4 8-14 8 6 8-18"
+          stroke="#5b8e3a"
+          strokeWidth="2.6"
+          fill="none"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path d="M260 252v-30" stroke="#caa66f" strokeWidth="1.5" strokeLinecap="round" />
+        <path d="M260 252h44" stroke="#caa66f" strokeWidth="1.5" strokeLinecap="round" />
+        <circle cx="300" cy="222" r="3" fill="#5b8e3a" />
+      </g>
     </svg>
   )
 }

@@ -1,0 +1,41 @@
+name: Supabase Keep-Alive
+
+# Pings the Supabase REST API on a 3-day cadence so the free-tier project
+# never crosses the 7-day inactivity threshold that auto-pauses it.
+#
+# Setup (one-time):
+#   GitHub repo -> Settings -> Secrets and variables -> Actions -> New repository secret
+#     SUPABASE_URL        = https://iqcnhgwrxijxylcctlsg.supabase.co
+#     SUPABASE_ANON_KEY   = <the public anon key>
+#
+# You can also trigger it manually from the Actions tab via "Run workflow".
+
+on:
+  schedule:
+    # 02:17 UTC every 3 days. Off-peak so it never collides with deploys.
+    - cron: '17 2 */3 * *'
+  workflow_dispatch:
+
+concurrency:
+  group: supabase-keepalive
+  cancel-in-progress: false
+
+jobs:
+  ping:
+    name: Ping Supabase REST API
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run keep-alive script
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/supabase-keepalive.mjs

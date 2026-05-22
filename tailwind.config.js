@@ -13,6 +13,7 @@ export default {
       },
       fontFamily: {
         body: ['var(--font-stack-latin)'],
+        display: ['var(--font-stack-display)'],
         deva: ['var(--font-stack-devanagari)'],
       },
       keyframes: {
