@@ -210,10 +210,10 @@ export function StudentsPage() {
                 {copy.students.noResult}
               </div>
             ) : (
-              <div className="rounded-[24px] border border-[#eee4d8] bg-white p-8 text-center shadow-[0_14px_32px_rgba(53,38,22,0.06)]">
-                <BookLoverIllustration className="mx-auto max-w-[220px] max-h-[170px]" />
-                <h3 className="mt-5 text-[16px] font-black text-[#1d1813]">{copy.students.empty}</h3>
-                <p className="mx-auto mt-2 max-w-[260px] text-[12.5px] font-semibold leading-relaxed text-[#746a60]">
+              <div className="py-8 text-center">
+                <BookLoverIllustration className="mx-auto w-full max-w-[200px] h-auto" />
+                <h3 className="mt-6 text-[16px] font-black text-[#1d1813]">{copy.students.empty}</h3>
+                <p className="mx-auto mt-2 max-w-[280px] text-[12.5px] font-semibold leading-relaxed text-[#746a60]">
                   {copy.welcome.teacherSubtitle}
                 </p>
               </div>

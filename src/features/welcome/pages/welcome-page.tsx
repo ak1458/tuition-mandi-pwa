@@ -84,7 +84,9 @@ export function WelcomePage() {
           </p>
         </div>
 
-        <ContinuousLearningIllustration className="mt-5 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)] max-h-[220px]" />
+        <div className="my-auto flex flex-1 items-center justify-center py-4">
+          <ContinuousLearningIllustration className="w-full max-w-[280px] xs:max-w-[320px] md:max-w-[360px] h-auto" />
+        </div>
 
         <div className="mt-4">
           <InstallPrompt />
