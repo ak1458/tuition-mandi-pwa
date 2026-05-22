@@ -6,6 +6,7 @@ import type { Student } from '@/types/domain'
 import { Icon, IconButton, PageHeader, PersonAvatar, PrimaryButton } from '@/components/common/takhti-ui'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { BookLoverIllustration } from '@/components/common/illustrations'
 import { countActiveDemoTrials, isInDemoTrial } from '@/lib/demo-trial'
 
 export function StudentsPage() {
@@ -204,9 +205,19 @@ export function StudentsPage() {
               {copy.students.loading}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-6 text-center text-sm font-bold text-[#746a60]">
-              {searchQuery ? copy.students.noResult : copy.students.empty}
-            </div>
+            searchQuery ? (
+              <div className="rounded-[18px] border border-[#eee4d8] bg-white p-6 text-center text-sm font-bold text-[#746a60]">
+                {copy.students.noResult}
+              </div>
+            ) : (
+              <div className="rounded-[24px] border border-[#eee4d8] bg-white p-8 text-center shadow-[0_14px_32px_rgba(53,38,22,0.06)]">
+                <BookLoverIllustration className="mx-auto max-w-[220px] max-h-[170px]" />
+                <h3 className="mt-5 text-[16px] font-black text-[#1d1813]">{copy.students.empty}</h3>
+                <p className="mx-auto mt-2 max-w-[260px] text-[12.5px] font-semibold leading-relaxed text-[#746a60]">
+                  {copy.welcome.teacherSubtitle}
+                </p>
+              </div>
+            )
           ) : (
             filtered.map((student, index) => {
               const inTrial = isInDemoTrial(student.created_at)

@@ -4,12 +4,12 @@ import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 import { InstallPrompt } from '@/features/pwa/install-prompt'
 import {
-  TeacherWelcomeIllustration,
   Icon,
   PageShell,
   TakhtiLogo,
   cx,
 } from '@/components/common/takhti-ui'
+import { ContinuousLearningIllustration } from '@/components/common/illustrations'
 
 function ChoiceCard({
   tone,
@@ -84,7 +84,7 @@ export function WelcomePage() {
           </p>
         </div>
 
-        <TeacherWelcomeIllustration className="mt-5 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)]" />
+        <ContinuousLearningIllustration className="mt-5 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)] max-h-[220px]" />
 
         <div className="mt-4">
           <InstallPrompt />

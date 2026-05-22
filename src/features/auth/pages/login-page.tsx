@@ -11,9 +11,9 @@ import {
   PageShell,
   PrimaryButton,
   TakhtiLogo,
-  TeacherWelcomeIllustration,
   cx,
 } from '@/components/common/takhti-ui'
+import { EducatorIllustration } from '@/components/common/illustrations'
 
 type LoginMode = 'phone' | 'email'
 
@@ -139,7 +139,7 @@ export function LoginPage() {
           <TakhtiLogo tagline={copy.brandTagline} />
         </div>
 
-        <TeacherWelcomeIllustration className="mt-6 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)]" />
+        <EducatorIllustration className="mt-6 rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)] max-h-[200px]" />
 
         <div className="mt-6 text-center">
           <h1 className="text-[24px] font-black leading-tight text-[#1d1813]">{copy.login.title}</h1>
