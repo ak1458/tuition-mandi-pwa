@@ -12,8 +12,8 @@ name: Supabase Keep-Alive
 
 on:
   schedule:
-    # 02:17 UTC every 3 days. Off-peak so it never collides with deploys.
-    - cron: '17 2 */3 * *'
+    # Daily at 02:17 UTC — extra safety margin against 7-day free-tier pause
+    - cron: '17 2 * * *'
   workflow_dispatch:
 
 concurrency:
