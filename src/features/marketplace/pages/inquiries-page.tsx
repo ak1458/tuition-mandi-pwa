@@ -54,9 +54,28 @@ export function InquiriesPage() {
     }
 
     try {
+      // First fetch the teacher's own teacher_profiles row(s), then fetch
+      // inquiries scoped to those profile IDs. RLS already enforces this on
+      // the server, but the explicit filter is defense-in-depth and also
+      // avoids a "select * across all rows" round-trip if RLS were ever
+      // mis-configured.
+      const { data: profiles, error: profileErr } = await supabase
+        .from('teacher_profiles')
+        .select('id')
+        .eq('teacher_id', session.user.id)
+
+      if (profileErr) throw profileErr
+      const profileIds = (profiles ?? []).map((row) => row.id as string)
+
+      if (profileIds.length === 0) {
+        setInquiries([])
+        return
+      }
+
       const { data, error: err } = await supabase
         .from('parent_inquiries')
         .select('*')
+        .in('teacher_profile_id', profileIds)
         .order('created_at', { ascending: false })
 
       if (err) throw err

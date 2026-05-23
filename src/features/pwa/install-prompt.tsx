@@ -10,17 +10,24 @@ export function InstallPrompt() {
   const { t } = useTranslation()
   const [deferredPrompt, setDeferredPrompt] = useState<DeferredInstallPromptEvent | null>(null)
   const [isStandalone, setIsStandalone] = useState(() => {
+    if (typeof window === 'undefined') return false
     return (
       window.matchMedia('(display-mode: standalone)').matches ||
       (navigator as Navigator & { standalone?: boolean }).standalone === true
     )
   })
   const [isIOS] = useState(() => {
+    if (typeof navigator === 'undefined') return false
     const ua = navigator.userAgent
     return /iPad|iPhone|iPod/.test(ua) && !(window as unknown as { MSStream?: unknown }).MSStream
   })
   const [isDismissed, setIsDismissed] = useState(() => {
-    return localStorage.getItem('takhti-pwa-dismissed') === 'true'
+    if (typeof window === 'undefined') return false
+    try {
+      return window.localStorage.getItem('takhti-pwa-dismissed') === 'true'
+    } catch {
+      return false
+    }
   })
   const [showIOSModal, setShowIOSModal] = useState(false)
 
@@ -61,7 +68,11 @@ export function InstallPrompt() {
   }
 
   const handleDismiss = () => {
-    localStorage.setItem('takhti-pwa-dismissed', 'true')
+    try {
+      window.localStorage.setItem('takhti-pwa-dismissed', 'true')
+    } catch {
+      // ignore
+    }
     setIsDismissed(true)
   }
 

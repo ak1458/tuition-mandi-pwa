@@ -14,6 +14,13 @@
  * This function does NOT require the user's auth header (Razorpay doesn't have
  * one). Authenticity is established by HMAC-SHA256 of the raw body using the
  * webhook secret.
+ *
+ * Replay protection:
+ *   - HMAC signature verification (always)
+ *   - Idempotency on payment_id via plan_payment_receipts.payment_id UNIQUE
+ *   - Reject events whose `created_at` (epoch seconds) is older than
+ *     REPLAY_WINDOW_SECONDS, so a leaked secret can't replay a 6-month-old
+ *     event with stale pricing.
  */
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2'
@@ -24,6 +31,11 @@ const BILLING_PRICES: Record<BillingCycle, number> = {
   monthly: 19900,
   yearly: 149900,
 }
+
+// Razorpay's documented webhook delivery window is at most a few hours
+// (with retries up to 24h). Reject anything claiming to be older than
+// 48 hours — that's our replay window.
+const REPLAY_WINDOW_SECONDS = 48 * 60 * 60
 
 function inferCycleFromAmount(amountPaise: number): BillingCycle | null {
   if (amountPaise === BILLING_PRICES.monthly) return 'monthly'
@@ -109,6 +121,7 @@ Deno.serve(async (request) => {
 
   let payload: {
     event?: string
+    created_at?: number
     payload?: {
       payment?: {
         entity?: {
@@ -117,6 +130,7 @@ Deno.serve(async (request) => {
           currency?: string
           status?: string
           captured?: boolean
+          created_at?: number
           notes?: { teacher_id?: string }
         }
       }
@@ -126,6 +140,29 @@ Deno.serve(async (request) => {
     payload = JSON.parse(rawBody)
   } catch {
     return new Response('Bad JSON', { status: 400 })
+  }
+
+  // ---- Replay-window check ----
+  // Razorpay sends `created_at` as Unix seconds at the event level, and again
+  // on the payment entity. Use the most recent of the two if both are present.
+  const eventCreatedAt = Number(payload.created_at ?? 0)
+  const paymentCreatedAt = Number(payload.payload?.payment?.entity?.created_at ?? 0)
+  const effectiveCreatedAt = Math.max(eventCreatedAt, paymentCreatedAt)
+  const nowSeconds = Math.floor(Date.now() / 1000)
+
+  if (effectiveCreatedAt > 0) {
+    const ageSeconds = nowSeconds - effectiveCreatedAt
+    if (ageSeconds > REPLAY_WINDOW_SECONDS) {
+      // Older than our replay window — reject without modifying state.
+      // 200 so Razorpay stops retrying.
+      console.warn('[razorpay-webhook] rejecting stale event', { ageSeconds, eventCreatedAt, paymentCreatedAt })
+      return new Response('Stale event ignored', { status: 200 })
+    }
+    // Tiny clock-skew tolerance for "future" timestamps: allow up to 5 min.
+    if (ageSeconds < -300) {
+      console.warn('[razorpay-webhook] rejecting future-dated event', { ageSeconds })
+      return new Response('Invalid event timestamp', { status: 400 })
+    }
   }
 
   // We only act on payment.captured. Acknowledge everything else to avoid
@@ -143,6 +180,11 @@ Deno.serve(async (request) => {
   if (!paymentId || !teacherId || currency !== 'INR') {
     // Unverifiable - 200 so Razorpay stops retrying; we just don't act.
     return new Response('Ignored - missing fields', { status: 200 })
+  }
+
+  // Validate teacher_id is a UUID before using it in DB queries.
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(teacherId)) {
+    return new Response('Ignored - invalid teacher_id', { status: 200 })
   }
 
   const cycle = inferCycleFromAmount(amountPaise)

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '@/app/providers/auth-provider'
+import { useAuth, TERMS_VERSION } from '@/app/providers/auth-provider'
 import { isLocalMode } from '@/lib/env'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
@@ -14,6 +14,7 @@ import {
   cx,
 } from '@/components/common/takhti-ui'
 import { EducatorIllustration } from '@/components/common/illustrations'
+import type { ConsentPayload } from '@/types/auth'
 
 type LoginMode = 'phone' | 'email'
 type EmailAction = 'login' | 'signup'
@@ -26,6 +27,7 @@ const OTP_RESEND_SECONDS = 30
 const INDIA_DIAL_CODE = '+91'
 const INDIA_MOBILE_DIGITS = 10
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const PASSWORD_MIN_LENGTH = 8
 
 function sanitizeIndianMobileInput(value: string) {
   let digits = value.replace(/\D/g, '')
@@ -54,6 +56,7 @@ export function LoginPage() {
   const [otpCode, setOtpCode] = useState('')
   const [otpRequested, setOtpRequested] = useState(false)
   const [otpCooldown, setOtpCooldown] = useState(0)
+  const [phoneIsSignup, setPhoneIsSignup] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [emailAction, setEmailAction] = useState<EmailAction>('login')
@@ -62,6 +65,10 @@ export function LoginPage() {
   const [errorMessage, setErrorMessage] = useState('')
   const [infoMessage, setInfoMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // DPDP / 18+ consent state — required for any new-account creation path.
+  const [agreeToTerms, setAgreeToTerms] = useState(false)
+  const [confirmAge, setConfirmAge] = useState(false)
 
   const redirectTo = useMemo(() => state?.from ?? '/dashboard', [state?.from])
   const phoneNumberE164 = useMemo(() => `${INDIA_DIAL_CODE}${phoneDigits}`, [phoneDigits])
@@ -74,6 +81,26 @@ export function LoginPage() {
 
     return () => window.clearInterval(intervalId)
   }, [otpCooldown])
+
+  function buildConsentPayload(): ConsentPayload {
+    return {
+      acceptedAt: new Date().toISOString(),
+      ageVerified: confirmAge,
+      termsVersion: TERMS_VERSION,
+    }
+  }
+
+  function ensureConsent(): boolean {
+    if (!agreeToTerms) {
+      setErrorMessage('Privacy Policy aur Terms ko accept karna zaroori hai.')
+      return false
+    }
+    if (!confirmAge) {
+      setErrorMessage('Aapki umar 18 saal ya zyada honi chahiye.')
+      return false
+    }
+    return true
+  }
 
   const sendOtp = async (event?: FormEvent) => {
     event?.preventDefault()
@@ -102,11 +129,19 @@ export function LoginPage() {
     event.preventDefault()
     setErrorMessage('')
     setInfoMessage('')
+
+    // For first-time phone users, require consent before completing OTP verify.
+    if (phoneIsSignup && !ensureConsent()) return
+
     setIsSubmitting(true)
 
     try {
-      await verifyPhoneOtp(phoneNumberE164, otpCode.trim())
-      navigate(redirectTo, { replace: true })
+      await verifyPhoneOtp(
+        phoneNumberE164,
+        otpCode.trim(),
+        phoneIsSignup ? buildConsentPayload() : undefined,
+      )
+      navigate(phoneIsSignup ? '/profile/setup' : redirectTo, { replace: true })
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : t('login.otpVerifyFailed'))
     } finally {
@@ -125,15 +160,17 @@ export function LoginPage() {
       return
     }
 
-    if (!password || password.length < 6) {
-      setErrorMessage('Password kam se kam 6 characters ka hona chahiye.')
+    if (!password || password.length < PASSWORD_MIN_LENGTH) {
+      setErrorMessage(`Password kam se kam ${PASSWORD_MIN_LENGTH} characters ka hona chahiye.`)
       return
     }
+
+    if (emailAction === 'signup' && !ensureConsent()) return
 
     setIsSubmitting(true)
     try {
       if (emailAction === 'signup') {
-        await signUpWithEmail(trimmedEmail, password)
+        await signUpWithEmail(trimmedEmail, password, buildConsentPayload())
         setInfoMessage('Account ban gaya! Confirmation email check karein aur link click karein.')
       } else {
         await signInWithEmailPassword(trimmedEmail, password)
@@ -171,9 +208,17 @@ export function LoginPage() {
   const handleGoogleLogin = async () => {
     setErrorMessage('')
     setInfoMessage('')
+
+    // For Google we cannot detect "first time" reliably client-side. Treat the
+    // consent boxes as required only if the user explicitly opened the signup
+    // tab on the email side, OR show them inline near the Google button. We
+    // always send consent metadata so handle_new_user trigger captures it for
+    // genuinely-new accounts; existing users' values just won't be overwritten.
+    if (!ensureConsent()) return
+
     setIsSubmitting(true)
     try {
-      await signInWithGoogle()
+      await signInWithGoogle(buildConsentPayload())
       // For OAuth, the redirect happens automatically — no manual navigate needed
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : copy.login.googleError)
@@ -181,6 +226,10 @@ export function LoginPage() {
       setIsSubmitting(false)
     }
   }
+
+  const showConsentBlock =
+    (mode === 'email' && emailAction === 'signup' && !showForgotPassword) ||
+    (mode === 'phone' && phoneIsSignup)
 
   return (
     <PageShell>
@@ -234,9 +283,20 @@ export function LoginPage() {
 
           {mode === 'phone' && !otpRequested && (
             <form className="mt-4 space-y-3" onSubmit={sendOtp}>
-              <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="phone">
-                {copy.login.mobileNumber}
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="phone">
+                  {copy.login.mobileNumber}
+                </label>
+                <label className="flex items-center gap-1 text-[10px] font-bold text-[#746a60]">
+                  <input
+                    checked={phoneIsSignup}
+                    className="h-3 w-3"
+                    onChange={(event) => setPhoneIsSignup(event.target.checked)}
+                    type="checkbox"
+                  />
+                  New account?
+                </label>
+              </div>
               <div className="flex overflow-hidden rounded-xl border border-[#eadfcd] bg-[#fffdf8] focus-within:border-[#4930a8]">
                 <span className="grid w-14 place-items-center border-r border-[#eadfcd] text-sm font-black text-[#4930a8]">+91</span>
                 <input
@@ -269,6 +329,15 @@ export function LoginPage() {
                 placeholder="1234"
                 value={otpCode}
               />
+
+              {phoneIsSignup && <ConsentBlock
+                agreeToTerms={agreeToTerms}
+                setAgreeToTerms={setAgreeToTerms}
+                confirmAge={confirmAge}
+                setConfirmAge={setConfirmAge}
+                navigate={navigate}
+              />}
+
               <div className="grid grid-cols-2 gap-2">
                 <button
                   className="rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#746a60]"
@@ -329,11 +398,21 @@ export function LoginPage() {
               <input
                 autoComplete={emailAction === 'signup' ? 'new-password' : 'current-password'}
                 className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                minLength={emailAction === 'signup' ? PASSWORD_MIN_LENGTH : undefined}
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder={emailAction === 'signup' ? 'Create password (min 6 chars)' : copy.common.password}
+                placeholder={emailAction === 'signup' ? `Create password (min ${PASSWORD_MIN_LENGTH} chars)` : copy.common.password}
                 type="password"
                 value={password}
               />
+
+              {emailAction === 'signup' && <ConsentBlock
+                agreeToTerms={agreeToTerms}
+                setAgreeToTerms={setAgreeToTerms}
+                confirmAge={confirmAge}
+                setConfirmAge={setConfirmAge}
+                navigate={navigate}
+              />}
+
               <PrimaryButton disabled={isSubmitting} type="submit">
                 {isSubmitting
                   ? copy.login.loginLoading
@@ -402,6 +481,13 @@ export function LoginPage() {
             {copy.login.google}
           </button>
 
+          {/* If user clicks Google but consent block not shown above, surface a hint */}
+          {!showConsentBlock && (
+            <p className="mt-2 text-center text-[10px] font-semibold text-[#9a8f83]">
+              Google se sign in karne par <button className="underline text-[#4930a8]" onClick={() => navigate('/privacy')} type="button">Privacy</button> aur <button className="underline text-[#4930a8]" onClick={() => navigate('/terms')} type="button">Terms</button> accept honge.
+            </p>
+          )}
+
           {infoMessage && <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-sm font-bold text-[#0d7b51]">{infoMessage}</p>}
           {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
         </section>
@@ -415,5 +501,50 @@ export function LoginPage() {
         </button>
       </section>
     </PageShell>
+  )
+}
+
+interface ConsentBlockProps {
+  agreeToTerms: boolean
+  setAgreeToTerms: (next: boolean) => void
+  confirmAge: boolean
+  setConfirmAge: (next: boolean) => void
+  navigate: (path: string) => void
+}
+
+function ConsentBlock({ agreeToTerms, setAgreeToTerms, confirmAge, setConfirmAge, navigate }: ConsentBlockProps) {
+  return (
+    <div className="space-y-2 rounded-xl border border-[#ded1f7] bg-[#f7f3ff] p-3">
+      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-[#5d544c]">
+        <input
+          checked={agreeToTerms}
+          className="mt-0.5 h-4 w-4 shrink-0"
+          onChange={(event) => setAgreeToTerms(event.target.checked)}
+          required
+          type="checkbox"
+        />
+        <span>
+          Maine{' '}
+          <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/privacy')} type="button">
+            Privacy Policy
+          </button>{' '}
+          aur{' '}
+          <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/terms')} type="button">
+            Terms
+          </button>{' '}
+          padhi hain aur accept karta hoon.
+        </span>
+      </label>
+      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-[#5d544c]">
+        <input
+          checked={confirmAge}
+          className="mt-0.5 h-4 w-4 shrink-0"
+          onChange={(event) => setConfirmAge(event.target.checked)}
+          required
+          type="checkbox"
+        />
+        <span>Meri umar 18 saal ya zyada hai aur agar main students ka data add karta hoon, toh main parent/guardian ka consent already le chuka hoon.</span>
+      </label>
+    </div>
   )
 }

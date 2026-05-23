@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "preview:host": "vite preview --host 0.0.0.0 --port 4173",
     "supabase:db:push": "npx supabase db push",
-    "supabase:functions:deploy": "npx supabase functions deploy generate-progress-report && npx supabase functions deploy upgrade-plan && npx supabase functions deploy razorpay-webhook",
+    "supabase:functions:deploy": "npx supabase functions deploy generate-progress-report && npx supabase functions deploy upgrade-plan && npx supabase functions deploy razorpay-webhook && npx supabase functions deploy account-deletion && npx supabase functions deploy data-export",
     "supabase:migrations:list": "npx supabase migration list",
     "supabase:keepalive": "node scripts/supabase-keepalive.mjs"
   },

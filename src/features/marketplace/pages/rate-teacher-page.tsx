@@ -18,6 +18,7 @@ export function RateTeacherPage() {
     const [error, setError] = useState<string | null>(null)
 
     const canSubmit = form.parent_name.trim() && form.parent_phone.trim() &&
+        /^[6-9]\d{9}$/.test(form.parent_phone.trim()) &&
         form.student_class.trim() && form.subject_taught.trim() && form.rating > 0
 
     async function handleSubmit(e: FormEvent) {
@@ -28,10 +29,11 @@ export function RateTeacherPage() {
         setError(null)
 
         try {
+            const sanitizedPhone = form.parent_phone.replace(/\D/g, '').slice(-10)
             await submitRating({
                 teacher_profile_id: id,
                 parent_name: form.parent_name.trim(),
-                parent_phone: form.parent_phone.trim(),
+                parent_phone: sanitizedPhone,
                 student_class: form.student_class.trim(),
                 subject_taught: form.subject_taught.trim(),
                 rating: form.rating,
@@ -129,10 +131,12 @@ export function RateTeacherPage() {
                         <input
                             type="tel"
                             value={form.parent_phone}
-                            onChange={(e) => setForm({ ...form, parent_phone: e.target.value })}
+                            onChange={(e) => setForm({ ...form, parent_phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
                             placeholder="9876543210"
                             required
+                            inputMode="numeric"
                             maxLength={10}
+                            pattern="[6-9][0-9]{9}"
                             className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
                         />
                     </div>

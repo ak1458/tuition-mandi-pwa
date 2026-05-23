@@ -29,6 +29,9 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+const RATE_LIMIT_MAX = 5
+
 function jsonResponse(payload: unknown, status = 200): Response {
   return new Response(JSON.stringify(payload), {
     status,
@@ -158,24 +161,26 @@ Deno.serve(async (request) => {
   const user = userData.user
   const teacherId = user.id
 
-  // Rate limit: max 5 upgrade attempts per hour per user
+  // Rate limit: max 5 upgrade attempts per hour per user.
+  // Fail-closed: if the rate-limit query itself fails, deny the request.
   const { count: recentCount, error: rlError } = await serviceClient
     .from('rate_limit_log')
     .select('id', { count: 'exact', head: true })
     .eq('action_type', 'upgrade_plan')
     .eq('fingerprint', teacherId)
-    .gte('created_at', new Date(Date.now() - 3600_000).toISOString())
+    .gte('created_at', new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString())
 
-  if (!rlError && (recentCount ?? 0) >= 5) {
+  if (rlError) {
+    // Rate-limit infrastructure is unavailable; refuse rather than fail open.
+    console.error('[upgrade-plan] rate_limit_log query failed:', rlError.message)
+    return errorResponse('Service temporarily unavailable. Try again shortly.', 503)
+  }
+
+  if ((recentCount ?? 0) >= RATE_LIMIT_MAX) {
     return errorResponse('Too many upgrade attempts. Please try again later.', 429)
   }
 
-  // Log this request for rate limiting
-  await serviceClient.from('rate_limit_log').insert({
-    action_type: 'upgrade_plan',
-    fingerprint: teacherId,
-  })
-
+  // ---- Validate the Razorpay payment BEFORE counting this against the limit ----
   const basicCredentials = btoa(`${razorpayKeyId}:${razorpayKeySecret}`)
   const paymentVerifyResponse = await fetch(`https://api.razorpay.com/v1/payments/${encodeURIComponent(paymentId)}`, {
     method: 'GET',
@@ -210,6 +215,13 @@ Deno.serve(async (request) => {
   if (paymentTeacherId && paymentTeacherId !== teacherId) {
     return errorResponse('Payment does not belong to this account.', 402)
   }
+
+  // Log this request for rate limiting AFTER validation succeeded — so users
+  // do not burn through their budget on garbage / failed-network attempts.
+  await serviceClient.from('rate_limit_log').insert({
+    action_type: 'upgrade_plan',
+    fingerprint: teacherId,
+  })
 
   const { error: receiptError } = await serviceClient.from('plan_payment_receipts').insert({
     teacher_id: teacherId,

@@ -210,8 +210,10 @@ export function ProfileSetupPage() {
         })
     }, [])
 
-    const canProceedStep1 = form.full_name.trim() && form.city.trim() && form.district.trim() && form.area_mohalla.trim()
-    const canProceedStep2 = form.subjects.length > 0 && form.classes_taught.length > 0
+    const canProceedStep1 = form.full_name.trim() && form.city.trim() && form.district.trim() && form.area_mohalla.trim() &&
+        (form.pincode === '' || /^[1-8]\d{5}$/.test(form.pincode))
+    const canProceedStep2 = form.subjects.length > 0 && form.classes_taught.length > 0 &&
+        (form.experience_years === '' || (Number(form.experience_years) >= 0 && Number(form.experience_years) <= 80))
 
     function handleNext() {
         if (step < TOTAL_STEPS) setStep(step + 1)
@@ -332,10 +334,13 @@ export function ProfileSetupPage() {
                                 <FormLabel>Pincode</FormLabel>
                                 <TextInput
                                     value={form.pincode}
-                                    onChange={(v) => setForm({ ...form, pincode: v })}
+                                    onChange={(v) => setForm({ ...form, pincode: v.replace(/\D/g, '').slice(0, 6) })}
                                     placeholder="271001"
                                     maxLength={6}
                                 />
+                                {form.pincode && !/^[1-8]\d{5}$/.test(form.pincode) && (
+                                    <p className="text-[10px] text-rose mt-1">6 digit valid pincode dalein.</p>
+                                )}
                             </div>
 
                             <div>
@@ -403,7 +408,13 @@ export function ProfileSetupPage() {
                                 <TextInput
                                     type="number"
                                     value={form.experience_years}
-                                    onChange={(v) => setForm({ ...form, experience_years: v })}
+                                    onChange={(v) => {
+                                        const n = v.replace(/\D/g, '').slice(0, 2)
+                                        const num = Number(n)
+                                        if (n === '' || (num >= 0 && num <= 80)) {
+                                            setForm({ ...form, experience_years: n })
+                                        }
+                                    }}
                                     placeholder="6"
                                 />
                             </div>

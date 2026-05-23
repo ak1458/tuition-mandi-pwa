@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AppRouter } from '@/app/router'
+import { StorageConsentBanner } from '@/components/common/storage-consent-banner'
 
 export function App() {
   const { i18n } = useTranslation()
@@ -9,6 +10,10 @@ export function App() {
     document.documentElement.lang = i18n.resolvedLanguage ?? i18n.language ?? 'en'
   }, [i18n.resolvedLanguage, i18n.language])
 
-  return <AppRouter />
+  return (
+    <>
+      <AppRouter />
+      <StorageConsentBanner />
+    </>
+  )
 }
-

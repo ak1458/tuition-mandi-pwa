@@ -16,6 +16,9 @@ interface GeminiResponse {
   }>
 }
 
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000 // 1 hour
+const RATE_LIMIT_MAX = 10
+
 function monthWindow(monthStart: string) {
   const start = new Date(monthStart)
   const end = new Date(start)
@@ -74,24 +77,14 @@ Deno.serve(async (request) => {
 
     const userId = userData.user.id
 
-    // Rate limit: max 10 report generations per hour per user
-    const { count: recentCount, error: rlError } = await serviceClient
-      .from('rate_limit_log')
-      .select('id', { count: 'exact', head: true })
-      .eq('action_type', 'generate_report')
-      .eq('fingerprint', userId)
-      .gte('created_at', new Date(Date.now() - 3600_000).toISOString())
-
-    if (!rlError && (recentCount ?? 0) >= 10) {
-      return errorResponse('AI_RATE_LIMIT', 'Bahut zyada requests ho gayi hain. Thodi der baad try karein.', 429, 300)
+    // Parse + validate request body BEFORE counting against rate limit.
+    let body: GenerateReportRequest
+    try {
+      body = (await request.json()) as GenerateReportRequest
+    } catch {
+      return errorResponse('VALIDATION_ERROR', 'Invalid request body.', 400)
     }
 
-    // Log this request for rate limiting
-    await serviceClient.from('rate_limit_log').insert({
-      action_type: 'generate_report',
-      fingerprint: userId,
-    })
-    const body = (await request.json()) as GenerateReportRequest
     const studentId = body.student_id
     const reportMonth = body.report_month
 
@@ -107,6 +100,29 @@ Deno.serve(async (request) => {
     const parsedDate = new Date(reportMonth)
     if (Number.isNaN(parsedDate.getTime())) {
       return errorResponse('VALIDATION_ERROR', 'Report month date invalid hai. Sahi date bhejein.', 400)
+    }
+
+    // Validate UUID shape on student_id (cheap pre-DB check, blocks SSRF).
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(studentId)) {
+      return errorResponse('VALIDATION_ERROR', 'Student id invalid hai.', 400)
+    }
+
+    // Rate limit: max 10 report generations per hour per user.
+    // Fail-closed: if the rate-limit query fails, deny.
+    const { count: recentCount, error: rlError } = await serviceClient
+      .from('rate_limit_log')
+      .select('id', { count: 'exact', head: true })
+      .eq('action_type', 'generate_report')
+      .eq('fingerprint', userId)
+      .gte('created_at', new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString())
+
+    if (rlError) {
+      console.error('[generate-progress-report] rate_limit_log query failed:', rlError.message)
+      return errorResponse('NETWORK_ERROR', 'Rate limit infrastructure unavailable. Try again shortly.', 503)
+    }
+
+    if ((recentCount ?? 0) >= RATE_LIMIT_MAX) {
+      return errorResponse('AI_RATE_LIMIT', 'Bahut zyada requests ho gayi hain. Thodi der baad try karein.', 429, 300)
     }
 
     const { data: student, error: studentError } = await serviceClient
@@ -268,6 +284,13 @@ Deno.serve(async (request) => {
       )
     }
 
+    // Log this attempt to rate_limit_log AFTER the AI call succeeded — we
+    // count successes against the budget, not failed validations.
+    await serviceClient.from('rate_limit_log').insert({
+      action_type: 'generate_report',
+      fingerprint: userId,
+    })
+
     const { data: insertData, error: insertError } = await serviceClient
       .from('progress_reports')
       .insert({
@@ -303,7 +326,8 @@ Deno.serve(async (request) => {
       avg_score: avgScore,
       tests_done: testsDone,
     })
-  } catch {
+  } catch (caught) {
+    console.error('[generate-progress-report] unhandled error:', caught)
     return errorResponse('NETWORK_ERROR', 'Internet connection weak hai. Connection check karke phir try karein.', 500)
   }
 })

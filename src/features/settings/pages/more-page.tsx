@@ -7,6 +7,8 @@ import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { Icon, PageHeader, PersonAvatar, cx, type IconName } from '@/components/common/takhti-ui'
 import { ConfirmDialog } from '@/components/common/confirm-dialog'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { hasSupabaseConfig, isLocalMode } from '@/lib/env'
+import { supabase } from '@/lib/supabase-client'
 import {
   DEFAULT_PREFS,
   getPreferences,
@@ -158,14 +160,29 @@ export function MorePage() {
     window.setTimeout(() => setToast(null), 1500)
   }
 
-  const exportData = () => {
+  const exportData = async () => {
     if (!teacherId) return
-    const state = getLocalState(teacherId)
+
+    const localState = getLocalState(teacherId)
+    let cloudData: unknown = null
+
+    // If we have a real Supabase session, also pull cloud data via the
+    // data-export edge function.
+    if (!isLocalMode && hasSupabaseConfig) {
+      try {
+        const { data, error } = await supabase.functions.invoke('data-export', { body: {} })
+        if (!error && data) cloudData = data
+      } catch {
+        // Non-fatal — local export still works.
+      }
+    }
+
     downloadJson(`takhti-export-${teacherId}.json`, {
       exported_at: new Date().toISOString(),
       teacher_id: teacherId,
       teacher_name: teacherName,
-      ...state,
+      local: localState,
+      cloud: cloudData,
     })
     setToast('Data export ho gaya.')
     window.setTimeout(() => setToast(null), 1800)
@@ -173,7 +190,7 @@ export function MorePage() {
 
   const handleDelete = async () => {
     if (teacherId) {
-      // Wipe all teacher data namespaces
+      // First wipe all teacher data namespaces in localStorage
       const prefixes = [
         `takhti_local_state_v1:${teacherId}`,
         `takhti_local_plan_v1:${teacherId}`,
@@ -181,6 +198,16 @@ export function MorePage() {
         `takhti_notifications_v1:${teacherId}`,
       ]
       prefixes.forEach((key) => localStorage.removeItem(key))
+
+      // Then ask the server to erase cloud data + auth.users row.
+      // Ignore errors — we still sign the user out locally.
+      if (!isLocalMode && hasSupabaseConfig) {
+        try {
+          await supabase.functions.invoke('account-deletion', { body: {} })
+        } catch {
+          // best-effort
+        }
+      }
     }
     await signOut()
     navigate('/', { replace: true })

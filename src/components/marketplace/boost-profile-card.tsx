@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import { isLocalMode } from '@/lib/env'
 import { openRazorpayCheckout } from '@/features/paywall/services/razorpay-service'
@@ -105,7 +105,13 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
                     <span className="text-xl">🚀</span>
                     <p className="text-sm font-bold text-saffron uppercase tracking-widest">{t('boostProfile.boostedTitle')}</p>
                 </div>
-                <p className="text-xs text-ink/80 mb-2" dangerouslySetInnerHTML={{ __html: t('boostProfile.boostedDescription', { date: expDate }) }} />
+                <p className="text-xs text-ink/80 mb-2">
+                    <Trans
+                        i18nKey="boostProfile.boostedDescription"
+                        values={{ date: expDate }}
+                        components={{ strong: <strong /> }}
+                    />
+                </p>
             </section>
         )
     }

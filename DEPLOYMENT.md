@@ -44,7 +44,7 @@ These are server-side only. They never touch the browser bundle.
 ```bash
 npx supabase secrets set \
   GEMINI_API_KEY=AIza... \
-  RAZORPAY_KEY_ID=rzp_test_SndxKahMWbGRNl \
+  RAZORPAY_KEY_ID=rzp_test_XXXXXXXXXXXX \
   RAZORPAY_KEY_SECRET=YOUR_RAZORPAY_TEST_SECRET \
   RAZORPAY_WEBHOOK_SECRET=$(openssl rand -hex 32)
 ```
@@ -65,13 +65,15 @@ auto-populated by Supabase for Edge Functions; do not set them manually.
 npm run supabase:functions:deploy
 ```
 
-This deploys three functions:
+This deploys five functions:
 
 | Function | Purpose |
 |---|---|
-| `generate-progress-report` | Calls Gemini Flash for AI reports. Enforces free-tier limit (1 report). |
-| `upgrade-plan` | Verifies a Razorpay payment and upgrades `profiles.plan='pro'`. Called from the browser after checkout success. |
-| `razorpay-webhook` | Defensive: even if the user closes the browser, Razorpay POSTs `payment.captured` here and the plan still upgrades. |
+| `generate-progress-report` | Calls Gemini Flash for AI reports. Enforces free-tier limit (1 report). Rate-limited (10/hour/user). |
+| `upgrade-plan` | Verifies a Razorpay payment and upgrades `profiles.plan='pro'`. Called from the browser after checkout success. Rate-limited (5 attempts/hour/user). |
+| `razorpay-webhook` | Defensive: even if the user closes the browser, Razorpay POSTs `payment.captured` here and the plan still upgrades. Rejects events older than 48h (replay protection). |
+| `account-deletion` | DPDP Act §17 erasure right. Deletes all user-scoped rows + the auth.users row. Triggered from the More page "Delete account & data" CTA. |
+| `data-export` | DPDP Act §11 access right. Returns a JSON archive of every cloud-side row belonging to the caller. Triggered from the More page "Export all data (JSON)" CTA. |
 
 **Verify:** Each function returns 200 or 401 (not 503) when curl'd:
 
@@ -117,7 +119,7 @@ Production):
 | `VITE_SUPABASE_URL` | `https://YOUR_PROJECT_REF.supabase.co` | Public |
 | `VITE_SUPABASE_ANON_KEY` | `eyJhbG...` | Public |
 | `VITE_SUPABASE_REDIRECT_URL` | `https://YOUR_DOMAIN.vercel.app` | Public |
-| `VITE_RAZORPAY_KEY` | `rzp_test_SndxKahMWbGRNl` | Public — the **Key ID**, not the secret |
+| `VITE_RAZORPAY_KEY` | `rzp_test_XXXXXXXXXXXX` | Public — the **Key ID**, not the secret |
 
 **Do NOT set `VITE_OPENROUTER_API_KEY`, `RAZORPAY_KEY_SECRET`, or
 `SUPABASE_SERVICE_ROLE_KEY` here.** Those are Edge Function secrets only.

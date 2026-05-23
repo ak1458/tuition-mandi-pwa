@@ -1,9 +1,11 @@
 /**
- * Vercel Edge Function: dynamic OpenGraph meta-tag injection for teacher profiles.
+ * Vercel Edge Function: dynamic OpenGraph + JSON-LD injection for teacher
+ * profiles.
  *
  * WhatsApp/Facebook crawlers don't run JS, so a normal SPA can't show link
  * previews. This function intercepts requests for /profile/<id> and rewrites
- * the index.html shell with profile-specific <title> and <meta og:*> tags.
+ * the index.html shell with profile-specific <title>, <meta og:*> and
+ * <script type="application/ld+json"> tags.
  *
  * Wired in vercel.json:
  *   - /profile/:id  -> /api/og?id=:id
@@ -21,10 +23,13 @@ interface TeacherSummary {
   bio: string | null
   city: string
   area_mohalla: string | null
+  state: string | null
   subjects: string[]
   classes_taught: string[]
   is_verified: boolean
   profile_photo_url: string | null
+  fee_min: number | null
+  fee_max: number | null
 }
 
 const ABSOLUTE_OG_IMAGE = 'https://takhti.app/og-image.png'
@@ -36,6 +41,36 @@ function escapeHtml(value: string): string {
     .replace(/'/g, '&#39;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+}
+
+/**
+ * Validate that a URL is safe to render in <meta og:image> / <link rel=icon>
+ * etc. Only accept http(s) and data:image/* URIs. Anything else (javascript:,
+ * file:, vbscript:, blob:, ftp:) is dropped to the fallback OG image.
+ */
+function safeImageUrl(value: string | null | undefined, fallback: string): string {
+  if (!value) return fallback
+  const trimmed = value.trim()
+  if (!trimmed) return fallback
+  if (trimmed.length > 2048) return fallback
+
+  // Quick scheme allow-list
+  if (/^https:\/\//i.test(trimmed)) {
+    try {
+      const url = new URL(trimmed)
+      if (url.protocol !== 'https:') return fallback
+      return trimmed
+    } catch {
+      return fallback
+    }
+  }
+
+  if (/^data:image\/(png|jpe?g|webp|gif);base64,/i.test(trimmed)) {
+    // Data URLs are fine for og:image but very large ones are dropped above.
+    return trimmed
+  }
+
+  return fallback
 }
 
 function buildSubtitle(teacher: TeacherSummary): string {
@@ -63,7 +98,7 @@ async function fetchTeacher(
   const url = new URL(`${supabaseUrl}/rest/v1/teacher_profiles`)
   url.searchParams.set(
     'select',
-    'full_name,bio,city,area_mohalla,subjects,classes_taught,is_verified,profile_photo_url',
+    'full_name,bio,city,area_mohalla,state,subjects,classes_taught,is_verified,profile_photo_url,fee_min,fee_max',
   )
   url.searchParams.set('id', `eq.${profileId}`)
   url.searchParams.set('is_active', 'eq.true')
@@ -84,18 +119,65 @@ async function fetchTeacher(
   return rows[0] ?? null
 }
 
+function buildTeacherJsonLd(teacher: TeacherSummary, pageUrl: string, image: string): string {
+  const subtitle = buildSubtitle(teacher)
+  const description = buildDescription(teacher)
+
+  // EducationalOrganization for the teacher as a tuition provider.
+  // Wrapped in Person + offering relationship for richer search results.
+  const data: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'EducationalOrganization',
+    name: teacher.full_name,
+    url: pageUrl,
+    description,
+    image,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: teacher.city,
+      addressRegion: teacher.state || 'Uttar Pradesh',
+      addressCountry: 'IN',
+    },
+    knowsAbout: teacher.subjects,
+    audience: {
+      '@type': 'EducationalAudience',
+      educationalRole: 'student',
+    },
+    keywords: [...teacher.subjects, ...teacher.classes_taught, teacher.city, subtitle].join(', '),
+  }
+
+  if (teacher.fee_min || teacher.fee_max) {
+    data.makesOffer = {
+      '@type': 'Offer',
+      priceCurrency: 'INR',
+      priceSpecification: {
+        '@type': 'PriceSpecification',
+        priceCurrency: 'INR',
+        minPrice: teacher.fee_min ?? undefined,
+        maxPrice: teacher.fee_max ?? undefined,
+      },
+    }
+  }
+
+  // Use JSON.stringify to escape HTML-unsafe chars; then close any </ that
+  // could break out of the script tag.
+  return JSON.stringify(data).replace(/</g, '\\u003c')
+}
+
 function injectMetaTags(html: string, teacher: TeacherSummary, pageUrl: string): string {
   const title = teacher.is_verified
     ? `${teacher.full_name} (Verified) - ${teacher.subjects.slice(0, 2).join(', ')} Teacher | Takhti`
     : `${teacher.full_name} - ${teacher.subjects.slice(0, 2).join(', ')} Teacher | Takhti`
 
   const description = buildDescription(teacher)
-  const image = teacher.profile_photo_url || ABSOLUTE_OG_IMAGE
+  const image = safeImageUrl(teacher.profile_photo_url, ABSOLUTE_OG_IMAGE)
 
   const safeTitle = escapeHtml(title)
   const safeDescription = escapeHtml(description)
   const safeImage = escapeHtml(image)
   const safeUrl = escapeHtml(pageUrl)
+
+  const jsonLd = buildTeacherJsonLd(teacher, pageUrl, image)
 
   const tags = [
     `<title>${safeTitle}</title>`,
@@ -105,16 +187,20 @@ function injectMetaTags(html: string, teacher: TeacherSummary, pageUrl: string):
     `<meta property="og:title" content="${safeTitle}" />`,
     `<meta property="og:description" content="${safeDescription}" />`,
     `<meta property="og:image" content="${safeImage}" />`,
+    `<meta property="og:image:width" content="1200" />`,
+    `<meta property="og:image:height" content="630" />`,
     `<meta property="og:url" content="${safeUrl}" />`,
     `<meta property="og:site_name" content="Takhti" />`,
+    `<meta property="og:locale" content="hi_IN" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${safeTitle}" />`,
     `<meta name="twitter:description" content="${safeDescription}" />`,
     `<meta name="twitter:image" content="${safeImage}" />`,
+    `<script type="application/ld+json">${jsonLd}</script>`,
   ].join('\n    ')
 
   // Replace any existing <title> + the description meta with the dynamic ones,
-  // and append OG tags inside <head>.
+  // and append OG/JSON-LD tags inside <head>.
   let next = html.replace(/<title>[^<]*<\/title>/i, '')
   next = next.replace(/<meta\s+name="description"[^>]*>/i, '')
   // Strip static OG/Twitter/canonical tags so we don't emit duplicates.
@@ -148,7 +234,10 @@ export default async function handler(request: Request): Promise<Response> {
 
   if (!profileId) {
     return new Response(html, {
-      headers: { 'content-type': 'text/html; charset=utf-8' },
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'public, max-age=0, s-maxage=300',
+      },
     })
   }
 
@@ -156,7 +245,10 @@ export default async function handler(request: Request): Promise<Response> {
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
   if (!UUID_RE.test(profileId)) {
     return new Response(html, {
-      headers: { 'content-type': 'text/html; charset=utf-8' },
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'public, max-age=0, s-maxage=60',
+      },
     })
   }
 
@@ -166,7 +258,10 @@ export default async function handler(request: Request): Promise<Response> {
   if (!supabaseUrl || !anonKey) {
     // Misconfigured - serve plain shell rather than crashing.
     return new Response(html, {
-      headers: { 'content-type': 'text/html; charset=utf-8' },
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'public, max-age=0, s-maxage=60',
+      },
     })
   }
 
@@ -184,6 +279,9 @@ export default async function handler(request: Request): Promise<Response> {
       'content-type': 'text/html; charset=utf-8',
       // Crawlers can cache for 5 min; users get fresh content via SPA hydration.
       'cache-control': 'public, max-age=0, s-maxage=300',
+      // Defense-in-depth: this response is always the SPA shell + meta, never
+      // user-private data, so it is safe to be served from a shared cache.
+      'x-robots-tag': 'index, follow, max-image-preview:large',
     },
   })
 }

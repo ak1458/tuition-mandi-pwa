@@ -9,6 +9,53 @@ interface State {
   error: Error | null
 }
 
+/**
+ * Optional error reporting endpoint. If set, ErrorBoundary will POST a JSON
+ * payload `{ message, stack, componentStack, url, ts }` to it. Add the URL
+ * via Vercel env var `VITE_ERROR_REPORTING_URL` — for example a Sentry tunnel,
+ * a LogSnag webhook, or a Supabase Edge Function that writes to a table.
+ *
+ * No PII or session tokens are included.
+ */
+const REPORTING_URL = import.meta.env.VITE_ERROR_REPORTING_URL ?? ''
+
+function reportError(error: Error, info: ErrorInfo) {
+  // Always log to console — useful in dev and as a no-op fallback.
+  console.error('Takhti app crashed:', error, info.componentStack)
+
+  if (!REPORTING_URL || typeof window === 'undefined') return
+
+  try {
+    const payload = JSON.stringify({
+      message: error.message,
+      stack: error.stack?.slice(0, 4000) ?? null,
+      componentStack: info.componentStack?.slice(0, 4000) ?? null,
+      url: window.location.href,
+      userAgent: navigator.userAgent,
+      ts: new Date().toISOString(),
+    })
+
+    // Use sendBeacon when available so the report leaves even on a hard crash
+    // / page-unload, with no `await` required.
+    if ('sendBeacon' in navigator) {
+      const blob = new Blob([payload], { type: 'application/json' })
+      navigator.sendBeacon(REPORTING_URL, blob)
+      return
+    }
+
+    fetch(REPORTING_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: payload,
+      keepalive: true,
+    }).catch(() => {
+      // ignore — we don't want the reporter to throw inside ErrorBoundary
+    })
+  } catch {
+    // Reporter must never itself throw.
+  }
+}
+
 export class ErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false, error: null }
 
@@ -17,10 +64,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // In production, hook this up to Sentry / LogSnag.
-    if (typeof window !== 'undefined') {
-      console.error('Takhti app crashed:', error, info.componentStack)
-    }
+    reportError(error, info)
   }
 
   handleRetry = () => {

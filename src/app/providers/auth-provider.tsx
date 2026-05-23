@@ -9,7 +9,7 @@ import {
   type PropsWithChildren,
 } from 'react'
 import type { Session } from '@supabase/supabase-js'
-import type { AppSession, AuthContextValue, AuthMethod } from '@/types/auth'
+import type { AppSession, AuthContextValue, AuthMethod, ConsentPayload } from '@/types/auth'
 import { hasSupabaseConfig, isLocalMode } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 
@@ -18,6 +18,10 @@ const AUTH_METHOD_KEY = 'takhti_auth_method'
 const LOCAL_SESSION_KEY = 'takhti_local_session'
 const INDIA_DIAL_CODE = '+91'
 const INDIA_MOBILE_DIGITS = 10
+
+// Bump this whenever Privacy Policy / Terms substantively change. Used to
+// detect when an existing user must re-consent.
+export const TERMS_VERSION = '2026-05-23'
 
 function mapSupabaseSession(session: Session | null): AppSession | null {
   if (!session) return null
@@ -45,7 +49,8 @@ function makeLocalSession(payload: { id: string; phone?: string; email?: string;
 }
 
 function readLocalSession(): AppSession | null {
-  const raw = localStorage.getItem(LOCAL_SESSION_KEY)
+  if (typeof window === 'undefined') return null
+  const raw = window.localStorage.getItem(LOCAL_SESSION_KEY)
   if (!raw) return null
   try {
     const parsed = JSON.parse(raw) as AppSession
@@ -57,11 +62,12 @@ function readLocalSession(): AppSession | null {
 }
 
 function writeLocalSession(session: AppSession | null) {
+  if (typeof window === 'undefined') return
   if (!session) {
-    localStorage.removeItem(LOCAL_SESSION_KEY)
+    window.localStorage.removeItem(LOCAL_SESSION_KEY)
     return
   }
-  localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(session))
+  window.localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(session))
 }
 
 function normalizeIndiaPhoneE164(input: string) {
@@ -84,10 +90,20 @@ function normalizeIndiaPhoneE164(input: string) {
   return `${INDIA_DIAL_CODE}${nationalNumber}`
 }
 
+function buildConsentMetadata(consent: ConsentPayload | undefined) {
+  if (!consent) return {}
+  return {
+    dpdp_consent_at: consent.acceptedAt,
+    is_age_verified: consent.ageVerified ? 'true' : 'false',
+    terms_version: consent.termsVersion,
+  }
+}
+
 export function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<AuthContextValue['session']>(null)
   const [authMethod, setAuthMethod] = useState<AuthMethod>(() => {
-    const stored = localStorage.getItem(AUTH_METHOD_KEY)
+    if (typeof window === 'undefined') return null
+    const stored = window.localStorage.getItem(AUTH_METHOD_KEY)
     if (stored === 'phone_otp' || stored === 'email_password' || stored === 'google_oauth') {
       return stored
     }
@@ -158,7 +174,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
-  const verifyPhoneOtp = useCallback(async (phoneNumber: string, otpCode: string) => {
+  const verifyPhoneOtp = useCallback(async (phoneNumber: string, otpCode: string, consent?: ConsentPayload) => {
     const normalizedPhone = normalizeIndiaPhoneE164(phoneNumber)
 
     if (isLocalMode || !hasSupabaseConfig) {
@@ -174,12 +190,12 @@ export function AuthProvider({ children }: PropsWithChildren) {
       })
       setSession(localSession)
       writeLocalSession(localSession)
-      localStorage.setItem(AUTH_METHOD_KEY, 'phone_otp')
+      window.localStorage.setItem(AUTH_METHOD_KEY, 'phone_otp')
       setAuthMethod('phone_otp')
       return
     }
 
-    const { error } = await supabase.auth.verifyOtp({
+    const { error, data } = await supabase.auth.verifyOtp({
       phone: normalizedPhone,
       token: otpCode,
       type: 'sms',
@@ -189,8 +205,25 @@ export function AuthProvider({ children }: PropsWithChildren) {
       throw new Error(error.message)
     }
 
-    localStorage.setItem(AUTH_METHOD_KEY, 'phone_otp')
+    window.localStorage.setItem(AUTH_METHOD_KEY, 'phone_otp')
     setAuthMethod('phone_otp')
+
+    // If consent was supplied (first-time signup) and the user is now signed
+    // in, persist it to the profile row.
+    if (consent && data.session) {
+      try {
+        await supabase
+          .from('profiles')
+          .update({
+            consent_accepted_at: consent.acceptedAt,
+            is_age_verified: consent.ageVerified,
+            terms_version: consent.termsVersion,
+          })
+          .eq('id', data.session.user.id)
+      } catch {
+        // Non-fatal: profile may not exist yet (trigger handles it on next visit)
+      }
+    }
   }, [])
 
   const signInWithEmailPassword = useCallback(async (email: string, password: string) => {
@@ -207,7 +240,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       })
       setSession(localSession)
       writeLocalSession(localSession)
-      localStorage.setItem(AUTH_METHOD_KEY, 'email_password')
+      window.localStorage.setItem(AUTH_METHOD_KEY, 'email_password')
       setAuthMethod('email_password')
       return
     }
@@ -217,11 +250,11 @@ export function AuthProvider({ children }: PropsWithChildren) {
       throw new Error(error.message)
     }
 
-    localStorage.setItem(AUTH_METHOD_KEY, 'email_password')
+    window.localStorage.setItem(AUTH_METHOD_KEY, 'email_password')
     setAuthMethod('email_password')
   }, [])
 
-  const signUpWithEmail = useCallback(async (email: string, password: string) => {
+  const signUpWithEmail = useCallback(async (email: string, password: string, consent?: ConsentPayload) => {
     if (isLocalMode || !hasSupabaseConfig) {
       // In local mode, sign-up works the same as sign-in
       const userId = `local-teacher-${email.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`
@@ -232,16 +265,22 @@ export function AuthProvider({ children }: PropsWithChildren) {
       })
       setSession(localSession)
       writeLocalSession(localSession)
-      localStorage.setItem(AUTH_METHOD_KEY, 'email_password')
+      window.localStorage.setItem(AUTH_METHOD_KEY, 'email_password')
       setAuthMethod('email_password')
       return
     }
+
+    const consentMeta = buildConsentMetadata(consent)
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        // After confirming email, send the user to the profile setup wizard
+        // (not the dashboard) — they're new and have no teacher_profile row.
+        emailRedirectTo: `${origin}/profile/setup`,
+        data: consentMeta,
       },
     })
 
@@ -260,8 +299,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
       return
     }
 
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+      redirectTo: `${origin}/auth/reset-password`,
     })
 
     if (error) {
@@ -280,7 +320,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
   }, [])
 
-  const signInWithGoogle = useCallback(async () => {
+  const signInWithGoogle = useCallback(async (consent?: ConsentPayload) => {
     if (isLocalMode || !hasSupabaseConfig) {
       // In local mode, create a mock Google session
       const localSession = makeLocalSession({
@@ -290,25 +330,49 @@ export function AuthProvider({ children }: PropsWithChildren) {
       })
       setSession(localSession)
       writeLocalSession(localSession)
-      localStorage.setItem(AUTH_METHOD_KEY, 'google_oauth')
+      window.localStorage.setItem(AUTH_METHOD_KEY, 'google_oauth')
       setAuthMethod('google_oauth')
       return
     }
 
+    // Remember intent BEFORE redirect — the lines after `await` may not run
+    // because supabase.auth.signInWithOAuth navigates the page away.
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(AUTH_METHOD_KEY, 'google_oauth')
+    }
+    setAuthMethod('google_oauth')
+
+    const origin = typeof window !== 'undefined' ? window.location.origin : ''
+    const consentMeta = buildConsentMetadata(consent)
+    const queryEntries = Object.entries(consentMeta).filter(([, v]) => Boolean(v))
+    const redirectQuery = queryEntries.length
+      ? `?${new URLSearchParams(Object.fromEntries(queryEntries)).toString()}`
+      : ''
+
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        // After OAuth, returning users go to /dashboard; new users will be
+        // bounced onward to /profile/setup by RouteGuard logic if no profile.
+        redirectTo: `${origin}/dashboard${redirectQuery}`,
+        queryParams: {
+          // Force account picker each sign-in so users can switch accounts.
+          prompt: 'select_account',
+        },
       },
     })
 
     if (error) {
+      // Roll back the optimistic localStorage write — sign-in didn't start.
+      if (typeof window !== 'undefined') {
+        window.localStorage.removeItem(AUTH_METHOD_KEY)
+      }
+      setAuthMethod(null)
       throw new Error(error.message)
     }
 
-    // The redirect will happen automatically; onAuthStateChange picks up the session on return.
-    localStorage.setItem(AUTH_METHOD_KEY, 'google_oauth')
-    setAuthMethod('google_oauth')
+    // The redirect happens automatically; onAuthStateChange picks up the
+    // session on return.
   }, [])
 
   const signOut = useCallback(async () => {
@@ -317,7 +381,16 @@ export function AuthProvider({ children }: PropsWithChildren) {
     }
 
     writeLocalSession(null)
-    localStorage.removeItem(AUTH_METHOD_KEY)
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(AUTH_METHOD_KEY)
+      // Tell the service worker to drop any cached navigations / shells so
+      // the next user on this device gets a clean app shell.
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then((reg) => {
+          reg?.active?.postMessage('SKIP_WAITING')
+        }).catch(() => {})
+      }
+    }
     setAuthMethod(null)
     setSession(null)
   }, [])
