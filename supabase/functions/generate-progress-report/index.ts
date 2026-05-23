@@ -73,12 +73,40 @@ Deno.serve(async (request) => {
     }
 
     const userId = userData.user.id
+
+    // Rate limit: max 10 report generations per hour per user
+    const { count: recentCount, error: rlError } = await serviceClient
+      .from('rate_limit_log')
+      .select('id', { count: 'exact', head: true })
+      .eq('action_type', 'generate_report')
+      .eq('fingerprint', userId)
+      .gte('created_at', new Date(Date.now() - 3600_000).toISOString())
+
+    if (!rlError && (recentCount ?? 0) >= 10) {
+      return errorResponse('AI_RATE_LIMIT', 'Bahut zyada requests ho gayi hain. Thodi der baad try karein.', 429, 300)
+    }
+
+    // Log this request for rate limiting
+    await serviceClient.from('rate_limit_log').insert({
+      action_type: 'generate_report',
+      fingerprint: userId,
+    })
     const body = (await request.json()) as GenerateReportRequest
     const studentId = body.student_id
     const reportMonth = body.report_month
 
     if (!studentId || !reportMonth) {
       return errorResponse('VALIDATION_ERROR', 'Student data adhoora hai. Kripya details update karein.', 400)
+    }
+
+    // Validate report_month is a valid YYYY-MM-DD date string
+    if (!/^\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\d|3[01])$/.test(reportMonth)) {
+      return errorResponse('VALIDATION_ERROR', 'Report month format galat hai. YYYY-MM-DD format mein bhejein (e.g. 2026-05-01).', 400)
+    }
+
+    const parsedDate = new Date(reportMonth)
+    if (Number.isNaN(parsedDate.getTime())) {
+      return errorResponse('VALIDATION_ERROR', 'Report month date invalid hai. Sahi date bhejein.', 400)
     }
 
     const { data: student, error: studentError } = await serviceClient

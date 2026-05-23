@@ -27,7 +27,7 @@ interface TeacherSummary {
   profile_photo_url: string | null
 }
 
-const ABSOLUTE_OG_IMAGE = 'https://takhti.app/icons/icon-512.svg'
+const ABSOLUTE_OG_IMAGE = 'https://takhti.app/og-image.png'
 
 function escapeHtml(value: string): string {
   return value
@@ -100,6 +100,7 @@ function injectMetaTags(html: string, teacher: TeacherSummary, pageUrl: string):
   const tags = [
     `<title>${safeTitle}</title>`,
     `<meta name="description" content="${safeDescription}" />`,
+    `<link rel="canonical" href="${safeUrl}" />`,
     `<meta property="og:type" content="profile" />`,
     `<meta property="og:title" content="${safeTitle}" />`,
     `<meta property="og:description" content="${safeDescription}" />`,
@@ -116,6 +117,10 @@ function injectMetaTags(html: string, teacher: TeacherSummary, pageUrl: string):
   // and append OG tags inside <head>.
   let next = html.replace(/<title>[^<]*<\/title>/i, '')
   next = next.replace(/<meta\s+name="description"[^>]*>/i, '')
+  // Strip static OG/Twitter/canonical tags so we don't emit duplicates.
+  next = next.replace(/<meta\s+property="og:[^"]*"[^>]*>/gi, '')
+  next = next.replace(/<meta\s+name="twitter:[^"]*"[^>]*>/gi, '')
+  next = next.replace(/<link\s+rel="canonical"[^>]*>/gi, '')
   next = next.replace('</head>', `    ${tags}\n  </head>`)
   return next
 }
@@ -142,6 +147,14 @@ export default async function handler(request: Request): Promise<Response> {
   }
 
   if (!profileId) {
+    return new Response(html, {
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    })
+  }
+
+  // Validate profileId is a valid UUID before querying the database
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (!UUID_RE.test(profileId)) {
     return new Response(html, {
       headers: { 'content-type': 'text/html; charset=utf-8' },
     })

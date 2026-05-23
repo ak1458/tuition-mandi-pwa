@@ -1,0 +1,165 @@
+import { useNavigate } from 'react-router'
+import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/takhti-ui'
+
+const LAST_UPDATED = '23 May 2026'
+const BUSINESS_NAME = 'Takhti'
+const BUSINESS_ADDRESS = 'Gonda, Uttar Pradesh, India'
+const SUPPORT_EMAIL = 'support@takhti.app'
+
+export function TermsPage() {
+  const navigate = useNavigate()
+
+  return (
+    <PageShell>
+      <PageHeader
+        left={
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
+        }
+        subtitle={`Last updated: ${LAST_UPDATED}`}
+        title="Terms & Conditions"
+      />
+
+      <article className="px-5 py-5 pb-20 space-y-6">
+        <Section title="1. Acceptance of Terms">
+          <p>
+            By accessing or using {BUSINESS_NAME} (&quot;the App&quot;), you agree to be bound by these Terms &
+            Conditions. If you do not agree, please do not use the App. These terms constitute a legally
+            binding agreement between you and {BUSINESS_NAME}, operated from {BUSINESS_ADDRESS}.
+          </p>
+        </Section>
+
+        <Section title="2. Description of Service">
+          <p>Takhti is a Progressive Web Application (PWA) that provides:</p>
+          <ul className="list-disc pl-4 space-y-2 mt-2">
+            <li><strong>For Teachers:</strong> Student management, attendance tracking, fee management, AI-powered progress reports, public marketplace profile, and parent inquiry management.</li>
+            <li><strong>For Parents:</strong> Search and discover local tuition teachers, view teacher profiles, submit inquiries via WhatsApp or in-app forms, and submit reviews.</li>
+          </ul>
+        </Section>
+
+        <Section title="3. Eligibility">
+          <p>
+            You must be at least 18 years old to create an account. By using Takhti, you represent that you
+            are of legal age. Teachers using the platform must hold valid qualifications for the subjects they
+            teach.
+          </p>
+        </Section>
+
+        <Section title="4. Account Registration & Security">
+          <ul className="list-disc pl-4 space-y-2">
+            <li>You may register using your Indian mobile number (via OTP) or email/password.</li>
+            <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+            <li>You must provide accurate and complete information during registration.</li>
+            <li>You must notify us immediately of any unauthorised use of your account.</li>
+            <li>We reserve the right to suspend or terminate accounts that violate these terms.</li>
+          </ul>
+        </Section>
+
+        <Section title="5. Free & Pro Plans">
+          <p><strong>Free Plan</strong> includes limited features (e.g., 1 AI progress report, limited student count).</p>
+          <p className="mt-2"><strong>Pro Plan</strong> unlocks unlimited students, unlimited AI reports, priority support, and advanced features.</p>
+          <ul className="list-disc pl-4 space-y-2 mt-2">
+            <li>Pro Plan pricing: ₹199/month or ₹1,499/year.</li>
+            <li>Payments are processed securely via Razorpay.</li>
+            <li>Pro Plan access is granted immediately upon successful payment capture.</li>
+            <li>See our <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/refund')} type="button">Refund Policy</button> for cancellation and refund terms.</li>
+          </ul>
+        </Section>
+
+        <Section title="6. User Obligations">
+          <p>You agree NOT to:</p>
+          <ul className="list-disc pl-4 space-y-2 mt-2">
+            <li>Use the App for any unlawful purpose or in violation of any applicable laws.</li>
+            <li>Upload false, misleading, or fraudulent information on teacher profiles.</li>
+            <li>Spam, harass, or abuse other users through the inquiry system.</li>
+            <li>Attempt to gain unauthorised access to other users&apos; data or accounts.</li>
+            <li>Reverse engineer, decompile, or otherwise attempt to extract the source code.</li>
+            <li>Submit fake reviews or ratings on teacher profiles.</li>
+            <li>Use automated bots or scripts to access the App.</li>
+          </ul>
+        </Section>
+
+        <Section title="7. Intellectual Property">
+          <p>
+            All content, design, code, trademarks, and intellectual property in the App are owned by {BUSINESS_NAME}
+            or its licensors. You may not reproduce, distribute, or create derivative works without prior written
+            consent. Teacher-created content (profiles, student records) remains the property of the respective teacher.
+          </p>
+        </Section>
+
+        <Section title="8. AI-Generated Content">
+          <p>
+            Progress reports generated by Takhti&apos;s AI (powered by Google Gemini) are for informational purposes
+            only. They are based on attendance and assessment data you provide and should be reviewed before sharing
+            with parents. {BUSINESS_NAME} does not guarantee the accuracy or completeness of AI-generated content.
+          </p>
+        </Section>
+
+        <Section title="9. Data & Privacy">
+          <p>
+            Your use of Takhti is also governed by our{' '}
+            <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/privacy')} type="button">Privacy Policy</button>,
+            which describes how we collect, use, and protect your personal data. By using the App, you consent
+            to our data practices as described therein.
+          </p>
+        </Section>
+
+        <Section title="10. Disclaimer of Warranties">
+          <p>
+            Takhti is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind, express or implied.
+            We do not warrant that the App will be uninterrupted, error-free, or secure. We do not endorse,
+            verify, or guarantee any teacher listed on the marketplace.
+          </p>
+        </Section>
+
+        <Section title="11. Limitation of Liability">
+          <p>
+            To the fullest extent permitted by Indian law, {BUSINESS_NAME} shall not be liable for any indirect,
+            incidental, special, consequential, or punitive damages, including loss of data, revenue, or profits,
+            arising from your use of the App. Our total liability shall not exceed the amount paid by you for the
+            Pro Plan in the 12 months preceding the claim.
+          </p>
+        </Section>
+
+        <Section title="12. Indemnification">
+          <p>
+            You agree to indemnify and hold {BUSINESS_NAME} harmless from any claims, damages, or expenses arising
+            from your violation of these Terms, your use of the App, or your violation of any third-party rights.
+          </p>
+        </Section>
+
+        <Section title="13. Modifications">
+          <p>
+            We reserve the right to modify these Terms at any time. Changes will be posted on this page with an
+            updated date. Continued use of the App after changes constitutes acceptance of the modified Terms.
+          </p>
+        </Section>
+
+        <Section title="14. Governing Law & Jurisdiction">
+          <p>
+            These Terms are governed by and construed in accordance with the laws of India. Any disputes arising
+            under these Terms shall be subject to the exclusive jurisdiction of the courts in Gonda, Uttar Pradesh, India.
+          </p>
+        </Section>
+
+        <Section title="15. Contact">
+          <p>
+            For questions about these Terms, contact us at{' '}
+            <a className="text-[#4930a8] underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            {' '}or via our <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/help')} type="button">Help & Support</button> page.
+          </p>
+        </Section>
+      </article>
+    </PageShell>
+  )
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-[18px] border border-[#eee4d8] bg-white p-4 shadow-sm">
+      <h2 className="text-[14px] font-black text-[#1d1813]">{title}</h2>
+      <div className="mt-2 text-[12px] font-semibold leading-6 text-[#5d544c]">{children}</div>
+    </section>
+  )
+}

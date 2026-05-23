@@ -88,7 +88,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const [session, setSession] = useState<AuthContextValue['session']>(null)
   const [authMethod, setAuthMethod] = useState<AuthMethod>(() => {
     const stored = localStorage.getItem(AUTH_METHOD_KEY)
-    if (stored === 'phone_otp' || stored === 'email_password') {
+    if (stored === 'phone_otp' || stored === 'email_password' || stored === 'google_oauth') {
       return stored
     }
     return null
@@ -221,6 +221,96 @@ export function AuthProvider({ children }: PropsWithChildren) {
     setAuthMethod('email_password')
   }, [])
 
+  const signUpWithEmail = useCallback(async (email: string, password: string) => {
+    if (isLocalMode || !hasSupabaseConfig) {
+      // In local mode, sign-up works the same as sign-in
+      const userId = `local-teacher-${email.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}`
+      const localSession = makeLocalSession({
+        id: userId,
+        email,
+        fullName: email.split('@')[0] || 'Local Demo Teacher',
+      })
+      setSession(localSession)
+      writeLocalSession(localSession)
+      localStorage.setItem(AUTH_METHOD_KEY, 'email_password')
+      setAuthMethod('email_password')
+      return
+    }
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/dashboard`,
+      },
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    // signUp returns a session if email confirmations are disabled,
+    // otherwise the user needs to click the confirmation email link.
+    // The onAuthStateChange listener will pick up the session automatically.
+  }, [])
+
+  const resetPassword = useCallback(async (email: string) => {
+    if (isLocalMode || !hasSupabaseConfig) {
+      // In local mode, just pretend it worked
+      return
+    }
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+  }, [])
+
+  const updatePassword = useCallback(async (newPassword: string) => {
+    if (isLocalMode || !hasSupabaseConfig) {
+      return
+    }
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword })
+    if (error) {
+      throw new Error(error.message)
+    }
+  }, [])
+
+  const signInWithGoogle = useCallback(async () => {
+    if (isLocalMode || !hasSupabaseConfig) {
+      // In local mode, create a mock Google session
+      const localSession = makeLocalSession({
+        id: 'local-google-user',
+        email: 'google-user@takhti.local',
+        fullName: 'Google Demo Teacher',
+      })
+      setSession(localSession)
+      writeLocalSession(localSession)
+      localStorage.setItem(AUTH_METHOD_KEY, 'google_oauth')
+      setAuthMethod('google_oauth')
+      return
+    }
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
+      },
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    // The redirect will happen automatically; onAuthStateChange picks up the session on return.
+    localStorage.setItem(AUTH_METHOD_KEY, 'google_oauth')
+    setAuthMethod('google_oauth')
+  }, [])
+
   const signOut = useCallback(async () => {
     if (!isLocalMode && hasSupabaseConfig) {
       await supabase.auth.signOut()
@@ -240,9 +330,13 @@ export function AuthProvider({ children }: PropsWithChildren) {
       requestPhoneOtp,
       verifyPhoneOtp,
       signInWithEmailPassword,
+      signUpWithEmail,
+      resetPassword,
+      updatePassword,
+      signInWithGoogle,
       signOut,
     }),
-    [authMethod, isLoading, requestPhoneOtp, session, signInWithEmailPassword, signOut, verifyPhoneOtp],
+    [authMethod, isLoading, requestPhoneOtp, resetPassword, session, signInWithEmailPassword, signInWithGoogle, signOut, signUpWithEmail, updatePassword, verifyPhoneOtp],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

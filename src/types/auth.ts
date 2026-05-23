@@ -1,4 +1,4 @@
-export type AuthMethod = 'phone_otp' | 'email_password' | null
+export type AuthMethod = 'phone_otp' | 'email_password' | 'google_oauth' | null
 
 export interface AppSession {
   user: {
@@ -16,5 +16,9 @@ export interface AuthContextValue {
   requestPhoneOtp: (phoneNumber: string) => Promise<void>
   verifyPhoneOtp: (phoneNumber: string, otpCode: string) => Promise<void>
   signInWithEmailPassword: (email: string, password: string) => Promise<void>
+  signUpWithEmail: (email: string, password: string) => Promise<void>
+  resetPassword: (email: string) => Promise<void>
+  updatePassword: (newPassword: string) => Promise<void>
+  signInWithGoogle: () => Promise<void>
   signOut: () => Promise<void>
 }

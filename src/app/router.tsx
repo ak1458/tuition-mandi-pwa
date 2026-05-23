@@ -20,6 +20,11 @@ const FeesPage = lazy(() => import('@/features/fees/pages/fees-page').then((modu
 const ReportsPage = lazy(() => import('@/features/reports/pages/reports-page').then((module) => ({ default: module.ReportsPage })))
 const MorePage = lazy(() => import('@/features/settings/pages/more-page').then((module) => ({ default: module.MorePage })))
 const InquiriesPage = lazy(() => import('@/features/marketplace/pages/inquiries-page').then((module) => ({ default: module.InquiriesPage })))
+const PrivacyPolicyPage = lazy(() => import('@/features/legal/pages/privacy-policy-page').then((module) => ({ default: module.PrivacyPolicyPage })))
+const TermsPage = lazy(() => import('@/features/legal/pages/terms-page').then((module) => ({ default: module.TermsPage })))
+const RefundPolicyPage = lazy(() => import('@/features/legal/pages/refund-policy-page').then((module) => ({ default: module.RefundPolicyPage })))
+const ContactPage = lazy(() => import('@/features/legal/pages/contact-page').then((module) => ({ default: module.ContactPage })))
+const ResetPasswordPage = lazy(() => import('@/features/auth/pages/reset-password-page').then((module) => ({ default: module.ResetPasswordPage })))
 
 function RouteFallback() {
   return (
@@ -37,6 +42,11 @@ export function AppRouter() {
         <Route path="/login" element={<LoginPage />} />
 
         <Route path="/help" element={<HelpPage />} />
+        <Route path="/privacy" element={<PrivacyPolicyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
+        <Route path="/refund" element={<RefundPolicyPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
 
         {/* Public routes — NO AUTH REQUIRED */}
         <Route element={<MobileShell />}>

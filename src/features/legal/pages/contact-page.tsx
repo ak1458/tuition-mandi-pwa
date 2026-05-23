@@ -1,0 +1,124 @@
+import { useNavigate } from 'react-router'
+import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/takhti-ui'
+import { SUPPORT_CONFIG, buildSupportWhatsAppLink, buildSupportMailto } from '@/lib/support'
+
+const BUSINESS_NAME = 'Takhti'
+const BUSINESS_ADDRESS = 'Gonda, Uttar Pradesh, India'
+const GRIEVANCE_EMAIL = 'grievance@takhti.app'
+
+export function ContactPage() {
+  const navigate = useNavigate()
+
+  return (
+    <PageShell>
+      <PageHeader
+        left={
+          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
+            <Icon className="h-4 w-4" name="arrow-left" />
+          </IconButton>
+        }
+        subtitle="We're here to help"
+        title="Contact Us"
+      />
+
+      <section className="px-5 py-5 pb-20 space-y-6">
+        {/* Quick contact cards */}
+        <div className="grid grid-cols-2 gap-3">
+          <a
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#ddecdf] bg-[#f4fbf6] p-5 text-center text-[#0d7b51]"
+            href={buildSupportWhatsAppLink('Contact inquiry', '')}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-[#0d7b51] shadow-sm">
+              <Icon className="h-6 w-6" name="whatsapp" />
+            </span>
+            <span className="text-[14px] font-black">WhatsApp</span>
+            <span className="text-[11px] font-semibold text-[#5d544c]">{SUPPORT_CONFIG.whatsappNumber}</span>
+          </a>
+          <a
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#ded1f7] bg-[#f7f3ff] p-5 text-center text-[#4930a8]"
+            href={buildSupportMailto('Contact inquiry', '')}
+          >
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-[#4930a8] shadow-sm">
+              <Icon className="h-6 w-6" name="message" />
+            </span>
+            <span className="text-[14px] font-black">Email</span>
+            <span className="text-[11px] font-semibold text-[#5d544c]">{SUPPORT_CONFIG.email}</span>
+          </a>
+        </div>
+
+        <p className="rounded-xl border border-[#eee4d8] bg-white px-3 py-2 text-center text-[11px] font-semibold text-[#746a60]">
+          Support hours: {SUPPORT_CONFIG.hours}
+        </p>
+
+        {/* Business details */}
+        <section className="rounded-[18px] border border-[#eee4d8] bg-white p-4 shadow-sm">
+          <h2 className="text-[14px] font-black text-[#1d1813]">Business Details</h2>
+          <div className="mt-3 space-y-3 text-[12px] font-semibold leading-6 text-[#5d544c]">
+            <div className="flex items-start gap-3">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#fbf8f1] text-[#5d544c]">
+                <Icon className="h-4 w-4" name="layout" />
+              </span>
+              <div>
+                <p className="font-black text-[#1d1813]">{BUSINESS_NAME}</p>
+                <p>{BUSINESS_ADDRESS}</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#fbf8f1] text-[#5d544c]">
+                <Icon className="h-4 w-4" name="message" />
+              </span>
+              <div>
+                <p className="font-black text-[#1d1813]">General Support</p>
+                <a className="text-[#4930a8] underline" href={`mailto:${SUPPORT_CONFIG.email}`}>{SUPPORT_CONFIG.email}</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Grievance Officer - IT Rules 2021 */}
+        <section className="rounded-[18px] border border-[#ded1f7] bg-[#f7f3ff] p-4 shadow-sm">
+          <h2 className="text-[14px] font-black text-[#4930a8]">Grievance Officer</h2>
+          <p className="mt-1 text-[11px] font-semibold text-[#746a60]">
+            As per IT (Intermediary Guidelines) Rules, 2021
+          </p>
+          <div className="mt-3 space-y-2 text-[12px] font-semibold leading-6 text-[#5d544c]">
+            <p><strong>Name:</strong> Takhti Support Team</p>
+            <p><strong>Email:</strong>{' '}
+              <a className="text-[#4930a8] underline" href={`mailto:${GRIEVANCE_EMAIL}`}>{GRIEVANCE_EMAIL}</a>
+            </p>
+            <p><strong>Address:</strong> {BUSINESS_ADDRESS}</p>
+            <p className="mt-2 rounded-lg bg-white px-3 py-2 text-[11px] text-[#9a8f83]">
+              We acknowledge all grievances within 24 hours and resolve within 15 days as mandated by law.
+            </p>
+          </div>
+        </section>
+
+        {/* Quick links */}
+        <section className="rounded-[18px] border border-[#eee4d8] bg-white p-4 shadow-sm">
+          <h2 className="text-[14px] font-black text-[#1d1813]">Quick Links</h2>
+          <div className="mt-3 space-y-1">
+            <QuickLink label="Help & FAQ" onClick={() => navigate('/help')} />
+            <QuickLink label="Privacy Policy" onClick={() => navigate('/privacy')} />
+            <QuickLink label="Terms & Conditions" onClick={() => navigate('/terms')} />
+            <QuickLink label="Refund & Cancellation Policy" onClick={() => navigate('/refund')} />
+          </div>
+        </section>
+      </section>
+    </PageShell>
+  )
+}
+
+function QuickLink({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <button
+      className="flex w-full items-center justify-between rounded-xl px-2 py-3 text-left text-[13px] font-bold text-[#1d1813] hover:bg-[#fbf8f1]"
+      onClick={onClick}
+      type="button"
+    >
+      {label}
+      <Icon className="h-4 w-4 text-[#9a8f83]" name="chevron-right" />
+    </button>
+  )
+}

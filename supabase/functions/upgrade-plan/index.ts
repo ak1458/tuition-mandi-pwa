@@ -158,6 +158,24 @@ Deno.serve(async (request) => {
   const user = userData.user
   const teacherId = user.id
 
+  // Rate limit: max 5 upgrade attempts per hour per user
+  const { count: recentCount, error: rlError } = await serviceClient
+    .from('rate_limit_log')
+    .select('id', { count: 'exact', head: true })
+    .eq('action_type', 'upgrade_plan')
+    .eq('fingerprint', teacherId)
+    .gte('created_at', new Date(Date.now() - 3600_000).toISOString())
+
+  if (!rlError && (recentCount ?? 0) >= 5) {
+    return errorResponse('Too many upgrade attempts. Please try again later.', 429)
+  }
+
+  // Log this request for rate limiting
+  await serviceClient.from('rate_limit_log').insert({
+    action_type: 'upgrade_plan',
+    fingerprint: teacherId,
+  })
+
   const basicCredentials = btoa(`${razorpayKeyId}:${razorpayKeySecret}`)
   const paymentVerifyResponse = await fetch(`https://api.razorpay.com/v1/payments/${encodeURIComponent(paymentId)}`, {
     method: 'GET',

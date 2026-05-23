@@ -1,0 +1,23 @@
+User-agent: *
+Allow: /$
+Allow: /search
+Allow: /profile/
+Allow: /help
+Allow: /privacy
+Allow: /terms
+Allow: /refund
+Allow: /contact
+Disallow: /dashboard
+Disallow: /students
+Disallow: /attendance
+Disallow: /fees
+Disallow: /reports
+Disallow: /more
+Disallow: /inquiries
+Disallow: /messages
+Disallow: /saved
+Disallow: /profile/setup
+Disallow: /auth/
+Disallow: /api/
+
+Sitemap: https://takhti.app/sitemap.xml

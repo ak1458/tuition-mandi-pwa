@@ -324,7 +324,10 @@ export function MorePage() {
           <Row icon="phone" iconTone="green" label={copy.more.help} hint="WhatsApp / Email Takhti team" onClick={() => navigate('/help')} />
           <Row icon="star" iconTone="orange" label={copy.demo.moreSettingsTitle} hint={copy.demo.moreSettingsHint} />
           <Row icon="settings" iconTone="paper" label="About Takhti" hint="Version 1.0 - Your Digital Register" />
-          <Row divider={false} icon="check" iconTone="purple" label="Privacy & Terms" hint="View Takhti policies" onClick={() => navigate('/help')} />
+          <Row icon="check" iconTone="purple" label="Privacy Policy" hint="How we handle your data" onClick={() => navigate('/privacy')} />
+          <Row icon="check" iconTone="purple" label="Terms & Conditions" hint="Rules of using Takhti" onClick={() => navigate('/terms')} />
+          <Row icon="rupee" iconTone="orange" label="Refund Policy" hint="Cancellation & refund terms" onClick={() => navigate('/refund')} />
+          <Row divider={false} icon="phone" iconTone="green" label="Contact Us" hint="Business details & grievance" onClick={() => navigate('/contact')} />
         </Section>
 
         <button

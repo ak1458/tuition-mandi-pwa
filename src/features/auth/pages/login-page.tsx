@@ -16,6 +16,7 @@ import {
 import { EducatorIllustration } from '@/components/common/illustrations'
 
 type LoginMode = 'phone' | 'email'
+type EmailAction = 'login' | 'signup'
 
 interface LocationState {
   from?: string
@@ -24,6 +25,7 @@ interface LocationState {
 const OTP_RESEND_SECONDS = 30
 const INDIA_DIAL_CODE = '+91'
 const INDIA_MOBILE_DIGITS = 10
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function sanitizeIndianMobileInput(value: string) {
   let digits = value.replace(/\D/g, '')
@@ -40,7 +42,7 @@ function sanitizeIndianMobileInput(value: string) {
 }
 
 export function LoginPage() {
-  const { requestPhoneOtp, signInWithEmailPassword, verifyPhoneOtp } = useAuth()
+  const { requestPhoneOtp, signInWithEmailPassword, signUpWithEmail, resetPassword, signInWithGoogle, verifyPhoneOtp } = useAuth()
   const { t } = useTranslation()
   const copy = useTakhtiCopy()
   const navigate = useNavigate()
@@ -54,6 +56,9 @@ export function LoginPage() {
   const [otpCooldown, setOtpCooldown] = useState(0)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [emailAction, setEmailAction] = useState<EmailAction>('login')
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [infoMessage, setInfoMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -109,17 +114,69 @@ export function LoginPage() {
     }
   }
 
-  const signInWithEmail = async (event: FormEvent) => {
+  const handleEmailSubmit = async (event: FormEvent) => {
     event.preventDefault()
     setErrorMessage('')
     setInfoMessage('')
-    setIsSubmitting(true)
 
+    const trimmedEmail = email.trim()
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      setErrorMessage('Valid email address dalein (e.g. teacher@example.com)')
+      return
+    }
+
+    if (!password || password.length < 6) {
+      setErrorMessage('Password kam se kam 6 characters ka hona chahiye.')
+      return
+    }
+
+    setIsSubmitting(true)
     try {
-      await signInWithEmailPassword(email.trim(), password)
-      navigate(redirectTo, { replace: true })
+      if (emailAction === 'signup') {
+        await signUpWithEmail(trimmedEmail, password)
+        setInfoMessage('Account ban gaya! Confirmation email check karein aur link click karein.')
+      } else {
+        await signInWithEmailPassword(trimmedEmail, password)
+        navigate(redirectTo, { replace: true })
+      }
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : t('login.loginFailed'))
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleForgotPassword = async (event: FormEvent) => {
+    event.preventDefault()
+    setErrorMessage('')
+    setInfoMessage('')
+
+    const trimmedEmail = forgotEmail.trim()
+    if (!EMAIL_REGEX.test(trimmedEmail)) {
+      setErrorMessage('Valid email address dalein.')
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      await resetPassword(trimmedEmail)
+      setInfoMessage(`Password reset link ${trimmedEmail} par bhej diya gaya hai. Email check karein.`)
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Reset email nahi bhej paye.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleGoogleLogin = async () => {
+    setErrorMessage('')
+    setInfoMessage('')
+    setIsSubmitting(true)
+    try {
+      await signInWithGoogle()
+      // For OAuth, the redirect happens automatically — no manual navigate needed
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : copy.login.googleError)
     } finally {
       setIsSubmitting(false)
     }
@@ -166,6 +223,7 @@ export function LoginPage() {
                   setMode(value as LoginMode)
                   setErrorMessage('')
                   setInfoMessage('')
+                  setShowForgotPassword(false)
                 }}
                 type="button"
               >
@@ -234,9 +292,34 @@ export function LoginPage() {
             </form>
           )}
 
-          {mode === 'email' && (
-            <form className="mt-4 space-y-3" onSubmit={signInWithEmail}>
+          {mode === 'email' && !showForgotPassword && (
+            <form className="mt-4 space-y-3" onSubmit={handleEmailSubmit}>
+              {/* Login / Sign Up toggle */}
+              <div className="grid grid-cols-2 rounded-lg bg-[#fbf8f1] p-0.5">
+                {[
+                  ['login', 'Login'] as const,
+                  ['signup', 'Sign Up'] as const,
+                ].map(([value, label]) => (
+                  <button
+                    className={cx(
+                      'rounded-md px-3 py-1.5 text-[12px] font-black',
+                      emailAction === value ? 'bg-white text-[#4930a8] shadow-sm' : 'text-[#746a60]',
+                    )}
+                    key={value}
+                    onClick={() => {
+                      setEmailAction(value)
+                      setErrorMessage('')
+                      setInfoMessage('')
+                    }}
+                    type="button"
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
               <input
+                autoComplete="email"
                 className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="teacher@example.com"
@@ -244,33 +327,75 @@ export function LoginPage() {
                 value={email}
               />
               <input
+                autoComplete={emailAction === 'signup' ? 'new-password' : 'current-password'}
                 className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
                 onChange={(event) => setPassword(event.target.value)}
-                placeholder={copy.common.password}
+                placeholder={emailAction === 'signup' ? 'Create password (min 6 chars)' : copy.common.password}
                 type="password"
                 value={password}
               />
               <PrimaryButton disabled={isSubmitting} type="submit">
-                {isSubmitting ? copy.login.loginLoading : copy.login.login}
+                {isSubmitting
+                  ? copy.login.loginLoading
+                  : emailAction === 'signup'
+                  ? 'Create Account'
+                  : copy.login.login}
               </PrimaryButton>
+
+              {emailAction === 'login' && (
+                <button
+                  className="w-full text-center text-[12px] font-bold text-[#4930a8]"
+                  onClick={() => {
+                    setShowForgotPassword(true)
+                    setForgotEmail(email)
+                    setErrorMessage('')
+                    setInfoMessage('')
+                  }}
+                  type="button"
+                >
+                  Forgot password?
+                </button>
+              )}
             </form>
           )}
 
+          {mode === 'email' && showForgotPassword && (
+            <form className="mt-4 space-y-3" onSubmit={handleForgotPassword}>
+              <p className="text-[12px] font-black text-[#1d1813]">Reset Password</p>
+              <p className="text-[11px] font-semibold text-[#5d544c]">
+                Email dalein — hum reset link bhejenge.
+              </p>
+              <input
+                autoComplete="email"
+                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                onChange={(event) => setForgotEmail(event.target.value)}
+                placeholder="teacher@example.com"
+                type="email"
+                value={forgotEmail}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  className="rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#746a60]"
+                  onClick={() => {
+                    setShowForgotPassword(false)
+                    setErrorMessage('')
+                    setInfoMessage('')
+                  }}
+                  type="button"
+                >
+                  {copy.common.back}
+                </button>
+                <PrimaryButton disabled={isSubmitting} type="submit">
+                  {isSubmitting ? 'Sending...' : 'Send Reset Link'}
+                </PrimaryButton>
+              </div>
+            </form>
+          )}
+
+          {/* Google OAuth */}
           <button
             className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#1d1813]"
-            onClick={async () => {
-              setErrorMessage('')
-              setInfoMessage('')
-              setIsSubmitting(true)
-              try {
-                await signInWithEmailPassword('demo@takhti.local', 'demo1234')
-                navigate(redirectTo, { replace: true })
-              } catch (error) {
-                setErrorMessage(error instanceof Error ? error.message : copy.login.googleError)
-              } finally {
-                setIsSubmitting(false)
-              }
-            }}
+            onClick={handleGoogleLogin}
             type="button"
           >
             <span className="grid h-5 w-5 place-items-center rounded-full border border-[#eadfcd] text-[12px] font-black text-[#d84b3f]">G</span>
