@@ -105,43 +105,14 @@ export function onNotificationsChange(callback: () => void) {
   }
 }
 
-/** Seed a few demo notifications for first-time teachers in local mode. */
-export function seedTeacherNotificationsIfEmpty(userId: string) {
-  if (!userId) return
-  const existing = readAll(userId)
-  if (existing.length > 0) return
-
-  const now = Date.now()
-  const seed: AppNotification[] = [
-    {
-      id: 'notif-seed-1',
-      user_id: userId,
-      type: 'inquiry',
-      title: 'Nayi inquiry — Anil Sharma (Parent)',
-      body: 'Class 10 - Maths ke liye baat karna chahte hain.',
-      link: '/inquiries',
-      is_read: false,
-      created_at: new Date(now - 1000 * 60 * 5).toISOString(),
-    },
-    {
-      id: 'notif-seed-2',
-      user_id: userId,
-      type: 'fee',
-      title: '2 students ki fee pending hai',
-      body: 'Is mahine ki fees abhi tak collect nahi hui.',
-      link: '/fees',
-      is_read: false,
-      created_at: new Date(now - 1000 * 60 * 60).toISOString(),
-    },
-    {
-      id: 'notif-seed-3',
-      user_id: userId,
-      type: 'system',
-      title: 'Takhti me aapka swagat hai 🎉',
-      body: 'Apne students add karein aur attendance lagana shuru karein.',
-      is_read: true,
-      created_at: new Date(now - 1000 * 60 * 60 * 24).toISOString(),
-    },
-  ]
-  writeAll(userId, seed)
+/**
+ * Kept as an exported no-op for backwards compatibility with the
+ * `useNotifications` hook. New users start with an empty notification
+ * inbox; real notifications arrive via push / WhatsApp / email channels
+ * configured per user preference.
+ */
+export function seedTeacherNotificationsIfEmpty(_userId: string): void {
+  // Intentionally empty. Keep the function signature so existing callers
+  // do not need to change.
+  void _userId
 }

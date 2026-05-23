@@ -42,7 +42,7 @@ function makeLocalSession(payload: { id: string; phone?: string; email?: string;
       phone: payload.phone,
       email: payload.email,
       user_metadata: {
-        full_name: payload.fullName ?? 'Demo Teacher',
+        full_name: payload.fullName ?? 'Teacher',
       },
     },
   }
@@ -186,7 +186,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       const localSession = makeLocalSession({
         id: userId,
         phone: normalizedPhone,
-        fullName: 'Local Demo Teacher',
+        fullName: 'Teacher',
       })
       setSession(localSession)
       writeLocalSession(localSession)
@@ -236,7 +236,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       const localSession = makeLocalSession({
         id: userId,
         email,
-        fullName: email.split('@')[0] || 'Local Demo Teacher',
+        fullName: email.split('@')[0] || 'Teacher',
       })
       setSession(localSession)
       writeLocalSession(localSession)
@@ -261,7 +261,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       const localSession = makeLocalSession({
         id: userId,
         email,
-        fullName: email.split('@')[0] || 'Local Demo Teacher',
+        fullName: email.split('@')[0] || 'Teacher',
       })
       setSession(localSession)
       writeLocalSession(localSession)
@@ -326,7 +326,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
       const localSession = makeLocalSession({
         id: 'local-google-user',
         email: 'google-user@takhti.local',
-        fullName: 'Google Demo Teacher',
+        fullName: 'Teacher',
       })
       setSession(localSession)
       writeLocalSession(localSession)
