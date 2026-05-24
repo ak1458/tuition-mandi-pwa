@@ -508,11 +508,18 @@ export async function invokeAiReport(input: InvokeAiReportInput): Promise<Genera
   })
 
   if (error) {
-    if (error.message?.includes('UPGRADE_REQUIRED')) {
-      return {
-        status: 'error',
-        error_code: 'UPGRADE_REQUIRED',
-        user_message_hi: 'Free plan me 1 report included hai. Pro plan le kar unlimited reports banayein.',
+    // supabase-js wraps non-2xx responses in a FunctionsHttpError whose
+    // `.message` is generic. The real error_code / user_message_hi live in the
+    // JSON body, reachable via `error.context` (the raw Response).
+    const context = (error as { context?: Response }).context
+    if (context && typeof context.json === 'function') {
+      try {
+        const body = (await context.json()) as GeneratedReportResponse
+        if (body?.error_code) {
+          return { ...body, status: 'error' }
+        }
+      } catch {
+        // Body wasn't JSON — fall through to generic network error.
       }
     }
 

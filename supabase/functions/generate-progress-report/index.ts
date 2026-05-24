@@ -146,12 +146,22 @@ Deno.serve(async (request) => {
       return errorResponse('NETWORK_ERROR', 'Internet connection weak hai. Connection check karke phir try karein.', 500)
     }
 
+    // Free-launch window: when FREE_LAUNCH_UNTIL (ISO date) is set and still in
+    // the future, every teacher gets Pro behaviour. Mirrors the client-side
+    // VITE_FREE_LAUNCH_UNTIL toggle so the UI promise and server enforcement
+    // stay in sync.
+    const freeLaunchUntil = Deno.env.get('FREE_LAUNCH_UNTIL')
+    const freeLaunchActive =
+      Boolean(freeLaunchUntil) &&
+      !Number.isNaN(new Date(freeLaunchUntil as string).getTime()) &&
+      new Date(freeLaunchUntil as string).getTime() > Date.now()
+
     const rawPlan = profileData?.plan === 'pro' ? 'pro' : 'free'
     const isPlanExpired =
       rawPlan === 'pro' &&
       Boolean(profileData?.plan_expires_at) &&
       new Date(profileData?.plan_expires_at as string).getTime() < Date.now()
-    const effectivePlan = isPlanExpired ? 'free' : rawPlan
+    const effectivePlan = freeLaunchActive ? 'pro' : isPlanExpired ? 'free' : rawPlan
 
     if (effectivePlan === 'free') {
       const { count: aiReportCount, error: reportCountError } = await serviceClient

@@ -5,7 +5,12 @@ export interface OfflineMutation<T = unknown> {
   type: OfflineMutationType
   payload: T
   createdAt: string
+  attempts?: number
 }
+
+// A single mutation that keeps failing must not wedge the whole queue. After
+// this many failed flush attempts we drop it and move on.
+const MAX_FLUSH_ATTEMPTS = 5
 
 const DB_NAME = 'takhti-offline-queue'
 const STORE_NAME = 'mutations'
@@ -89,6 +94,21 @@ export async function removeQueuedMutation(id: number): Promise<void> {
   db.close()
 }
 
+async function bumpMutationAttempts(item: OfflineMutation): Promise<number> {
+  if (typeof item.id !== 'number') return 0
+  const nextAttempts = (item.attempts ?? 0) + 1
+  const db = await openQueueDb()
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite')
+    const store = tx.objectStore(STORE_NAME)
+    const request = store.put({ ...item, attempts: nextAttempts })
+    request.onsuccess = () => resolve()
+    request.onerror = () => reject(new Error('Failed to update offline mutation'))
+  })
+  db.close()
+  return nextAttempts
+}
+
 export async function flushQueuedMutations(
   type: OfflineMutationType,
   processor: (item: OfflineMutation) => Promise<void>,
@@ -104,6 +124,14 @@ export async function flushQueuedMutations(
       }
       processedCount += 1
     } catch {
+      // Bump the failure counter. A poison-pill mutation that has exhausted its
+      // retry budget is dropped so it can't wedge the queue forever; otherwise
+      // we stop here (likely offline) and retry the rest on the next flush.
+      const attempts = await bumpMutationAttempts(item)
+      if (attempts >= MAX_FLUSH_ATTEMPTS && typeof item.id === 'number') {
+        await removeQueuedMutation(item.id)
+        continue
+      }
       break
     }
   }
