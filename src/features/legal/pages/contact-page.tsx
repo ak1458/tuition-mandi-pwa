@@ -4,7 +4,7 @@ import { SUPPORT_CONFIG, buildSupportWhatsAppLink, buildSupportMailto } from '@/
 
 const BUSINESS_NAME = 'Takhti'
 const BUSINESS_ADDRESS = 'Gonda, Uttar Pradesh, India'
-const GRIEVANCE_EMAIL = 'grievance@takhti.in'
+const GRIEVANCE_EMAIL = 'grievance@takhti.app'
 
 export function ContactPage() {
   const navigate = useNavigate()
