@@ -45,4 +45,9 @@ export const appEnv = {
 }
 
 export const hasSupabaseConfig = Boolean(appEnv.supabaseUrl && appEnv.supabaseAnonKey)
-export const isLocalMode = appEnv.localMode || !hasSupabaseConfig
+/**
+ * Hardened for production: Local storage simulation mode is completely disabled.
+ * The application strictly relies on the remote live Supabase database.
+ */
+export const isLocalMode = false
+

@@ -7,10 +7,11 @@
  */
 
 export const SUPPORT_CONFIG = {
-  whatsappNumber: '+919999999999', // Replace with real Takhti support number in production
-  email: 'support@takhti.app',
+  whatsappNumber: '+919598285514', // Real Takhti Support Number
+  email: 'support@takhti.in',
   hours: 'Mon-Sat, 10 AM - 7 PM IST',
 }
+
 
 export interface SupportTicket {
   id: string
