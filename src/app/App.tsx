@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AppRouter } from '@/app/router'
 import { StorageConsentBanner } from '@/components/common/storage-consent-banner'
+import { SwUpdateToast } from '@/features/pwa/sw-update-toast'
 
 export function App() {
   const { i18n } = useTranslation()
@@ -14,6 +15,7 @@ export function App() {
     <>
       <AppRouter />
       <StorageConsentBanner />
+      <SwUpdateToast />
     </>
   )
 }

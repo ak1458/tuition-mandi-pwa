@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
-import { hasSupabaseConfig, isLocalMode } from '@/lib/env'
+import { hasSupabaseConfig } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 import {
   Icon,
@@ -43,9 +43,8 @@ export function ResetPasswordPage() {
     let cancelled = false
 
     async function check() {
-      if (isLocalMode || !hasSupabaseConfig) {
-        // Local/demo mode — pretend the link is valid.
-        if (!cancelled) setLinkState('valid')
+      if (!hasSupabaseConfig) {
+        if (!cancelled) setLinkState('invalid')
         return
       }
 

@@ -49,8 +49,6 @@ export async function updateTeacherProfile(
 // ----------------------------------------------------------
 
 export async function searchTeachers(filters: SearchFilters) {
-    if (!filters.city) return []
-
     let query = supabase
         .from('teacher_profiles')
         .select(`
@@ -60,7 +58,10 @@ export async function searchTeachers(filters: SearchFilters) {
       profile_boosts(is_active, expires_at)
     `)
         .eq('is_active', true)
-        .eq('city', filters.city)
+
+    if (filters.city) {
+        query = query.eq('city', filters.city)
+    }
 
     if (filters.subject) {
         query = query.contains('subjects', [filters.subject])

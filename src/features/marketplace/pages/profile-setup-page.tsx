@@ -1,4 +1,4 @@
-import { useCallback, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { upsertTeacherProfile } from '@/lib/queries/teachers'
@@ -29,6 +29,7 @@ const TOTAL_STEPS = 3
 // ------- Form state type -------
 interface ProfileFormState {
     full_name: string
+    phone: string
     area_mohalla: string
     city: string
     district: string
@@ -49,6 +50,7 @@ interface ProfileFormState {
 
 const initialState: ProfileFormState = {
     full_name: '',
+    phone: '',
     area_mohalla: '',
     city: '',
     district: '',
@@ -76,11 +78,11 @@ function ProgressBar({ step }: { step: number }) {
                 <div key={s} className="flex-1 flex flex-col items-center gap-1">
                     <div
                         className={`h-2 w-full rounded-full transition-all duration-500 ${s <= step
-                                ? 'bg-gradient-to-r from-saffron to-orange-400 shadow-[0_0_8px_rgba(224,122,47,0.4)]'
+                                ? 'bg-gradient-to-r from-[#e07a2f] to-orange-400 shadow-[0_0_8px_rgba(224,122,47,0.4)]'
                                 : 'bg-slate-200'
                             }`}
                     />
-                    <span className={`text-[10px] font-bold tracking-wider uppercase ${s <= step ? 'text-saffron' : 'text-slate-400'
+                    <span className={`text-[10px] font-bold tracking-wider uppercase ${s <= step ? 'text-[#e07a2f]' : 'text-slate-400'
                         }`}>
                         {s === 1 ? 'Basic Info' : s === 2 ? 'Teaching' : 'Fees'}
                     </span>
@@ -111,8 +113,8 @@ function ChipSelector({
                         type="button"
                         onClick={() => onToggle(opt)}
                         className={`rounded-xl border px-3 py-2.5 text-[12px] font-semibold tracking-wide transition-all duration-200 ${isSelected
-                                ? 'border-saffron bg-saffron/10 text-saffron shadow-sm'
-                                : 'border-slate-200 bg-white text-slate-500 hover:border-saffron/40 hover:text-ink'
+                                ? 'border-[#e07a2f] bg-[#e07a2f]/10 text-[#e07a2f] shadow-sm'
+                                : 'border-slate-200 bg-white text-slate-500 hover:border-[#e07a2f]/40 hover:text-slate-800'
                             }`}
                     >
                         {opt}
@@ -133,14 +135,14 @@ function Toggle({
     onChange: (v: boolean) => void
 }) {
     return (
-        <label className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 cursor-pointer hover:border-saffron/40 transition-colors">
-            <span className="text-sm font-medium text-ink">{label}</span>
+        <label className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 cursor-pointer hover:border-[#e07a2f]/40 transition-colors">
+            <span className="text-sm font-medium text-slate-800">{label}</span>
             <div
                 onClick={(e) => {
                     e.preventDefault()
                     onChange(!checked)
                 }}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 cursor-pointer ${checked ? 'bg-saffron' : 'bg-slate-300'
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 cursor-pointer ${checked ? 'bg-[#e07a2f]' : 'bg-slate-300'
                     }`}
             >
                 <span
@@ -183,7 +185,7 @@ function TextInput({
             placeholder={placeholder}
             required={required}
             maxLength={maxLength}
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#e07a2f] focus:outline-none focus:ring-2 focus:ring-[#e07a2f]/20 transition-all"
         />
     )
 }
@@ -198,6 +200,14 @@ export function ProfileSetupPage() {
     const [saving, setSaving] = useState(false)
     const [error, setError] = useState<string | null>(null)
 
+    // Pre-populate phone number if already present in session
+    useEffect(() => {
+        if (session?.user?.phone) {
+            const cleanPhone = session.user.phone.replace(/^\+91/, '')
+            setForm((f) => ({ ...f, phone: cleanPhone }))
+        }
+    }, [session])
+
     const toggleArrayItem = useCallback((field: 'subjects' | 'classes_taught' | 'time_slots', value: string) => {
         setForm((prev) => {
             const arr = prev[field]
@@ -210,9 +220,17 @@ export function ProfileSetupPage() {
         })
     }, [])
 
-    const canProceedStep1 = form.full_name.trim() && form.city.trim() && form.district.trim() && form.area_mohalla.trim() &&
+    const canProceedStep1 = 
+        form.full_name.trim() && 
+        form.phone.trim().length === 10 &&
+        form.city.trim() && 
+        form.district.trim() && 
+        form.area_mohalla.trim() &&
         (form.pincode === '' || /^[1-8]\d{5}$/.test(form.pincode))
-    const canProceedStep2 = form.subjects.length > 0 && form.classes_taught.length > 0 &&
+
+    const canProceedStep2 = 
+        form.subjects.length > 0 && 
+        form.classes_taught.length > 0 &&
         (form.experience_years === '' || (Number(form.experience_years) >= 0 && Number(form.experience_years) <= 80))
 
     function handleNext() {
@@ -231,10 +249,13 @@ export function ProfileSetupPage() {
         setError(null)
 
         try {
+            // Strictly E.164 formatted WhatsApp phone number
+            const phone_e164 = `+91${form.phone.trim()}`
+
             await upsertTeacherProfile({
                 teacher_id: session.user.id,
                 full_name: form.full_name.trim(),
-                phone_e164: session.user.phone || session.user.email || '',
+                phone_e164,
                 bio: form.bio.trim() || null,
                 city: form.city.trim(),
                 district: form.district.trim(),
@@ -265,14 +286,14 @@ export function ProfileSetupPage() {
     }
 
     return (
-        <main className="flex min-h-screen w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-ink selection:bg-saffron selection:text-white">
+        <main className="flex min-h-screen w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-slate-800 selection:bg-[#e07a2f] selection:text-white">
             {/* Header */}
             <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-5 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md">
                 <div className="flex items-center gap-3">
                     <AnimatedLogo />
                     <div>
-                        <h1 className="font-display text-xl font-semibold text-ink">Profile Setup</h1>
-                        <p className="text-[11px] text-muted">Apni teaching profile banayein</p>
+                        <h1 className="font-display text-xl font-semibold text-slate-800">Profile Setup</h1>
+                        <p className="text-[11px] text-slate-500">Apni teaching profile banayein</p>
                     </div>
                 </div>
             </header>
@@ -285,7 +306,7 @@ export function ProfileSetupPage() {
                     {/* ---- Step 1: Basic Info ---- */}
                     {step === 1 && (
                         <div className="space-y-4 animate-in fade-in">
-                            <h2 className="font-display text-lg font-semibold text-ink mb-4">
+                            <h2 className="font-display text-lg font-semibold text-slate-800 mb-4">
                                 📝 Basic Information
                             </h2>
 
@@ -297,6 +318,22 @@ export function ProfileSetupPage() {
                                     placeholder="Aapka poora naam"
                                     required
                                 />
+                            </div>
+
+                            <div>
+                                <FormLabel>WhatsApp Number *</FormLabel>
+                                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-[#e07a2f] focus-within:ring-2 focus-within:ring-[#e07a2f]/20 transition-all">
+                                    <span className="grid w-14 place-items-center border-r border-slate-200 bg-slate-50 text-sm font-bold text-slate-500">+91</span>
+                                    <input
+                                        type="tel"
+                                        value={form.phone}
+                                        onChange={(e) => setForm({ ...form, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+                                        placeholder="9876543210"
+                                        required
+                                        maxLength={10}
+                                        className="min-w-0 flex-1 bg-transparent px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none"
+                                    />
+                                </div>
                             </div>
 
                             <div>
@@ -339,7 +376,7 @@ export function ProfileSetupPage() {
                                     maxLength={6}
                                 />
                                 {form.pincode && !/^[1-8]\d{5}$/.test(form.pincode) && (
-                                    <p className="text-[10px] text-rose mt-1">6 digit valid pincode dalein.</p>
+                                    <p className="text-[10px] text-rose-500 mt-1">6 digit valid pincode dalein.</p>
                                 )}
                             </div>
 
@@ -351,7 +388,7 @@ export function ProfileSetupPage() {
                                     placeholder="Apne baare mein kuch likhein..."
                                     maxLength={200}
                                     rows={3}
-                                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all resize-none"
+                                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#e07a2f] focus:outline-none focus:ring-2 focus:ring-[#e07a2f]/20 transition-all resize-none"
                                 />
                             </div>
                         </div>
@@ -360,7 +397,7 @@ export function ProfileSetupPage() {
                     {/* ---- Step 2: Teaching Details ---- */}
                     {step === 2 && (
                         <div className="space-y-5 animate-in fade-in">
-                            <h2 className="font-display text-lg font-semibold text-ink mb-4">
+                            <h2 className="font-display text-lg font-semibold text-slate-800 mb-4">
                                 📚 Teaching Details
                             </h2>
 
@@ -393,8 +430,8 @@ export function ProfileSetupPage() {
                                             type="button"
                                             onClick={() => setForm({ ...form, medium: m })}
                                             className={`flex-1 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${form.medium === m
-                                                    ? 'border-saffron bg-saffron/10 text-saffron'
-                                                    : 'border-slate-200 bg-white text-slate-500 hover:border-saffron/40'
+                                                    ? 'border-[#e07a2f] bg-[#e07a2f]/10 text-[#e07a2f]'
+                                                    : 'border-slate-200 bg-white text-slate-500 hover:border-[#e07a2f]/40'
                                                 }`}
                                         >
                                             {m}
@@ -434,7 +471,7 @@ export function ProfileSetupPage() {
                     {/* ---- Step 3: Fees & Availability ---- */}
                     {step === 3 && (
                         <div className="space-y-4 animate-in fade-in">
-                            <h2 className="font-display text-lg font-semibold text-ink mb-4">
+                            <h2 className="font-display text-lg font-semibold text-slate-800 mb-4">
                                 💰 Fees & Availability
                             </h2>
 
@@ -497,7 +534,7 @@ export function ProfileSetupPage() {
                             <button
                                 type="button"
                                 onClick={handleBack}
-                                className="flex-1 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-muted hover:border-saffron/40 hover:text-ink transition-all"
+                                className="flex-1 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-500 hover:border-[#e07a2f]/40 hover:text-slate-800 transition-all"
                             >
                                 ← Peeche
                             </button>
@@ -508,7 +545,7 @@ export function ProfileSetupPage() {
                                 type="button"
                                 onClick={handleNext}
                                 disabled={step === 1 ? !canProceedStep1 : !canProceedStep2}
-                                className="flex-1 rounded-2xl border border-saffron bg-saffron py-3.5 text-sm font-semibold text-white shadow-[0_8px_16px_rgba(224,122,47,0.35)] hover:shadow-[0_12px_24px_rgba(224,122,47,0.45)] transition-all disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed"
+                                className="flex-1 rounded-2xl border border-[#e07a2f] bg-[#e07a2f] py-3.5 text-sm font-semibold text-white shadow-[0_8px_16px_rgba(224,122,47,0.35)] hover:shadow-[0_12px_24px_rgba(224,122,47,0.45)] transition-all disabled:opacity-40 disabled:shadow-none disabled:cursor-not-allowed"
                             >
                                 Aage →
                             </button>
@@ -516,7 +553,7 @@ export function ProfileSetupPage() {
                             <button
                                 type="submit"
                                 disabled={saving}
-                                className="flex-1 rounded-2xl border border-saffron bg-saffron py-3.5 text-sm font-semibold text-white shadow-[0_8px_16px_rgba(224,122,47,0.35)] hover:shadow-[0_12px_24px_rgba(224,122,47,0.45)] transition-all disabled:opacity-60"
+                                className="flex-1 rounded-2xl border border-[#e07a2f] bg-[#e07a2f] py-3.5 text-sm font-semibold text-white shadow-[0_8px_16px_rgba(224,122,47,0.35)] hover:shadow-[0_12px_24px_rgba(224,122,47,0.45)] transition-all disabled:opacity-60"
                             >
                                 {saving ? 'Saving...' : '✅ Profile Banayein'}
                             </button>

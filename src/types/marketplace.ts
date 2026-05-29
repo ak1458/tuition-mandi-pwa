@@ -131,7 +131,7 @@ export interface ProfileBoost {
 // Search filters for parent search page
 // ----------------------------------------------------------
 export interface SearchFilters {
-    city: string;
+    city?: string;
     subject?: string;
     class_level?: string;
     fee_max?: number;

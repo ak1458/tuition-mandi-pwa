@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
-import { isLocalMode } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 import type { ParentInquiry } from '@/types/marketplace'
 import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
@@ -46,13 +45,6 @@ export function InquiriesPage() {
     setLoading(true)
     setError('')
 
-    if (isLocalMode) {
-      const existing = localStorage.getItem('takhti_local_inquiries')
-      setInquiries(existing ? (JSON.parse(existing) as ParentInquiry[]) : [])
-      setLoading(false)
-      return
-    }
-
     try {
       // First fetch the teacher's own teacher_profiles row(s), then fetch
       // inquiries scoped to those profile IDs. RLS already enforces this on
@@ -92,15 +84,6 @@ export function InquiriesPage() {
   }, [loadInquiries])
 
   async function updateStatus(inquiryId: string, newStatus: string) {
-    if (isLocalMode) {
-      const updated = inquiries.map((inquiry) =>
-        inquiry.id === inquiryId ? { ...inquiry, status: newStatus as ParentInquiry['status'] } : inquiry,
-      )
-      localStorage.setItem('takhti_local_inquiries', JSON.stringify(updated))
-      setInquiries(updated)
-      return
-    }
-
     const { error: err } = await supabase.from('parent_inquiries').update({ status: newStatus }).eq('id', inquiryId)
     if (err) {
       setError(err.message)

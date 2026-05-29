@@ -7,7 +7,7 @@ import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { Icon, PageHeader, PersonAvatar, cx, type IconName } from '@/components/common/takhti-ui'
 import { ConfirmDialog } from '@/components/common/confirm-dialog'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
-import { hasSupabaseConfig, isLocalMode } from '@/lib/env'
+import { hasSupabaseConfig } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 import {
   DEFAULT_PREFS,
@@ -168,7 +168,7 @@ export function MorePage() {
 
     // If we have a real Supabase session, also pull cloud data via the
     // data-export edge function.
-    if (!isLocalMode && hasSupabaseConfig) {
+    if (hasSupabaseConfig) {
       try {
         const { data, error } = await supabase.functions.invoke('data-export', { body: {} })
         if (!error && data) cloudData = data
@@ -201,7 +201,7 @@ export function MorePage() {
 
       // Then ask the server to erase cloud data + auth.users row.
       // Ignore errors — we still sign the user out locally.
-      if (!isLocalMode && hasSupabaseConfig) {
+      if (hasSupabaseConfig) {
         try {
           await supabase.functions.invoke('account-deletion', { body: {} })
         } catch {

@@ -7,6 +7,7 @@ export interface ReportStudent {
   full_name: string
   class_label: string
   subject: string
+  guardian_phone?: string | null
   created_at?: string
 }
 
@@ -58,6 +59,7 @@ export async function listReportStudents(teacherId: string): Promise<ReportStude
         full_name: student.full_name,
         class_label: student.class_label,
         subject: student.subject,
+        guardian_phone: student.guardian_phone,
         created_at: student.created_at,
       }))
       .sort((a, b) => a.full_name.localeCompare(b.full_name))
@@ -65,7 +67,7 @@ export async function listReportStudents(teacherId: string): Promise<ReportStude
 
   const { data, error } = await supabase
     .from('students')
-    .select('id,full_name,class_label,subject,created_at')
+    .select('id,full_name,class_label,subject,guardian_phone,created_at')
     .eq('teacher_id', teacherId)
     .eq('is_active', true)
     .order('full_name', { ascending: true })

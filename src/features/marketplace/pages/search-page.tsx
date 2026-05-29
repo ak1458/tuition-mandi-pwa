@@ -1,27 +1,25 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router'
-import { searchTeachers } from '@/lib/queries/teachers'
+import { searchTeachersWithAi } from '@/features/marketplace/services/ai-search-service'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
-import type { ParentRating, SearchFilters, TeacherProfile } from '@/types/marketplace'
+import type { ParentRating, TeacherProfile } from '@/types/marketplace'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 import { useAuth } from '@/app/providers/auth-provider'
 import { NotificationsBell, NotificationsPanel } from '@/components/common/notifications-panel'
 import {
-  Chip,
   Icon,
   IconButton,
   PageHeader,
   PageShell,
   PersonAvatar,
   TakhtiLogo,
-  cx,
 } from '@/components/common/takhti-ui'
 
 const QUICK_SEARCHES = [
-  { label: 'Class 10 Maths', subject: 'Maths', classLevel: 'Class 10' },
-  { label: 'Class 9 Science', subject: 'Science', classLevel: 'Class 9' },
-  { label: 'English Speaking', subject: 'English', classLevel: undefined },
-  { label: 'Home Tuition', subject: undefined, classLevel: undefined, homeTuition: true },
+  { label: 'Class 10 Maths', queryText: 'Class 10 Mathematics Gonda' },
+  { label: 'Class 9 Science', queryText: 'Class 9 Science Civil Lines' },
+  { label: 'English Speaking', queryText: 'English Speaking Course' },
+  { label: 'Home Tuition', queryText: 'Home Tuition near me' },
 ]
 
 function avgRating(ratings: ParentRating[] | undefined): number {
@@ -51,13 +49,17 @@ function TeacherResultCard({
   const distance = ['1.2 km away', '1.5 km away', '1.8 km away', '2.1 km away'][index % 4]
 
   return (
-    <article className="rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)]">
+    <article className="rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)] transition-all duration-300 hover:shadow-[0_14px_30px_rgba(53,38,22,0.1)]">
       <div className="flex items-start gap-3">
         <PersonAvatar name={teacher.full_name} size="sm" variant={teacherVariant(teacher.full_name)} />
         <Link className="min-w-0 flex-1" to={`/profile/${teacher.id}`}>
           <div className="flex items-center gap-1.5">
             <h2 className="truncate text-[13px] font-extrabold text-[#1d1813]">{teacher.full_name}</h2>
-            {teacher.is_verified && <span className="grid h-4 w-4 place-items-center rounded-full bg-[#0d7b51] text-white"><Icon className="h-2.5 w-2.5" name="check" /></span>}
+            {teacher.is_verified && (
+              <span className="grid h-4 w-4 place-items-center rounded-full bg-[#0d7b51] text-white">
+                <Icon className="h-2.5 w-2.5" name="check" />
+              </span>
+            )}
           </div>
           <p className="mt-0.5 truncate text-[11px] font-semibold text-[#5d544c]">
             {teacher.subjects.slice(0, 2).join(' + ')} - {teacher.classes_taught.slice(0, 2).join(', ')}
@@ -69,6 +71,12 @@ function TeacherResultCard({
             </span>
             <span className="text-[#9a8f83]">-</span>
             <span>{distance}</span>
+            {teacher.area_mohalla && (
+              <>
+                <span className="text-[#9a8f83]">-</span>
+                <span className="truncate text-[#746a60] max-w-[120px]">{teacher.area_mohalla}</span>
+              </>
+            )}
           </div>
         </Link>
         <IconButton className="h-9 w-9 border-transparent shadow-none" label="Save teacher">
@@ -107,52 +115,57 @@ export function SearchPage() {
   const copy = useTakhtiCopy()
   const { session } = useAuth()
   const userId = session?.user.id ?? 'parent'
+
   const [query, setQuery] = useState('')
-  const [selectedSubject, setSelectedSubject] = useState<string | undefined>()
-  const [selectedClass, setSelectedClass] = useState<string | undefined>()
-  const [homeTuition, setHomeTuition] = useState(false)
   const [teachers, setTeachers] = useState<TeacherProfile[]>([])
   const [loading, setLoading] = useState(true)
   const [searched, setSearched] = useState(false)
   const [error, setError] = useState('')
+  const [aiResponseText, setAiResponseText] = useState('')
+  const [suggestions, setSuggestions] = useState<string[]>([])
+  const [isFallback, setIsFallback] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
 
-  const loadTeachers = useCallback(
-    async (overrides?: Partial<SearchFilters> & { markSearched?: boolean }) => {
-      const rawArea = query.trim() || 'Gonda Civil Lines'
-      const city = /lucknow/i.test(rawArea) ? 'Lucknow' : 'Gonda'
-      const filters: SearchFilters = {
-        city,
-        subject: overrides?.subject ?? selectedSubject,
-        class_level: overrides?.class_level ?? selectedClass,
-        home_tuition: overrides?.home_tuition ?? (homeTuition || undefined),
-      }
+  const loadTeachers = useCallback(async (textToSearch: string) => {
+    setLoading(true)
+    setError('')
+    setSearched(true)
 
-      setLoading(true)
-      setError('')
-      if (overrides?.markSearched) setSearched(true)
-
-      try {
-        const results = await searchTeachers(filters)
-        setTeachers(results)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Search mein dikkat aayi.')
-      } finally {
-        setLoading(false)
-      }
-    },
-    [homeTuition, query, selectedClass, selectedSubject],
-  )
+    try {
+      const result = await searchTeachersWithAi(textToSearch)
+      setTeachers(result.teachers)
+      setAiResponseText(result.responseText)
+      setSuggestions(result.suggestions)
+      setIsFallback(result.isFallback)
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Search karne mein thodi dikkat aayi. Kripya network connection check karke dobara try karein.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
     let ignore = false
     setLoading(true)
-    searchTeachers({ city: 'Gonda' })
-      .then((results) => {
-        if (!ignore) setTeachers(results)
+    searchTeachersWithAi('')
+      .then((result) => {
+        if (!ignore) {
+          setTeachers(result.teachers)
+          setAiResponseText('')
+          setSuggestions(result.suggestions)
+          setIsFallback(false)
+        }
       })
       .catch((err) => {
-        if (!ignore) setError(err instanceof Error ? err.message : 'Search mein dikkat aayi.')
+        if (!ignore) {
+          setError(
+            err instanceof Error ? err.message : 'Tutors list dhoondhne mein dikkat aayi.',
+          )
+        }
       })
       .finally(() => {
         if (!ignore) setLoading(false)
@@ -165,25 +178,16 @@ export function SearchPage() {
 
   const onSearch = (event: FormEvent) => {
     event.preventDefault()
-    setSearched(true)
-    loadTeachers({ markSearched: true }).catch(() => {})
+    if (!query.trim()) return
+    loadTeachers(query).catch(() => {})
   }
 
-  const onQuick = (item: (typeof QUICK_SEARCHES)[number]) => {
-    setQuery('Gonda, Civil Lines')
-    setSelectedSubject(item.subject)
-    setSelectedClass(item.classLevel)
-    setHomeTuition(Boolean(item.homeTuition))
-    setSearched(true)
-    loadTeachers({
-      subject: item.subject,
-      class_level: item.classLevel,
-      home_tuition: item.homeTuition,
-      markSearched: true,
-    }).catch(() => {})
+  const onQuick = (queryText: string) => {
+    setQuery(queryText)
+    loadTeachers(queryText).catch(() => {})
   }
 
-  const title = searched && selectedSubject ? copy.search.resultTitle.replace('{{subject}}', selectedSubject) : copy.search.nearby
+  const title = searched ? 'Searched Teachers' : copy.search.nearby
 
   return (
     <PageShell>
@@ -217,7 +221,7 @@ export function SearchPage() {
         </div>
 
         <h1 className="text-[22px] font-black leading-tight text-[#1d1813]">
-          {copy.search.question}
+          Aapko kaunsa tutor chahiye?
         </h1>
 
         <form className="mt-4 rounded-2xl border border-[#eadfcd] bg-white p-2 shadow-[0_12px_24px_rgba(53,38,22,0.05)]" onSubmit={onSearch}>
@@ -226,7 +230,7 @@ export function SearchPage() {
             <input
               className="min-w-0 flex-1 bg-transparent py-3 text-[14px] font-semibold text-[#1d1813] outline-none placeholder:text-[#9a8f83]"
               onChange={(event) => setQuery(event.target.value)}
-              placeholder={copy.search.placeholder}
+              placeholder="e.g. Class 10 Maths tutor near Civil Lines"
               value={query}
             />
             <IconButton className="h-10 w-10 border-transparent bg-[#fbf8f1] shadow-none" label="Voice search">
@@ -240,14 +244,9 @@ export function SearchPage() {
           <div className="mt-3 flex flex-wrap gap-2">
             {QUICK_SEARCHES.map((item) => (
               <button
-                className={cx(
-                  'rounded-xl px-3 py-2 text-[12px] font-extrabold',
-                  selectedSubject === item.subject && selectedClass === item.classLevel
-                    ? 'bg-[#4930a8] text-white'
-                    : 'bg-[#f7f3ff] text-[#4930a8]',
-                )}
+                className="rounded-xl bg-[#f7f3ff] px-3 py-2 text-[12px] font-extrabold text-[#4930a8] transition-all hover:bg-[#4930a8] hover:text-white"
                 key={item.label}
-                onClick={() => onQuick(item)}
+                onClick={() => onQuick(item.queryText)}
                 type="button"
               >
                 {item.label}
@@ -256,50 +255,75 @@ export function SearchPage() {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-between">
+        {/* AI Assistant response card */}
+        {searched && !loading && (aiResponseText || isFallback) && (
+          <div className="mt-6 rounded-[22px] border border-[#d9eee2] bg-gradient-to-br from-[#f4fbf6] to-[#eaf7ef] p-4 shadow-[0_12px_28px_rgba(13,123,81,0.06)] animate-in fade-in duration-300">
+            <div className="flex items-center gap-2">
+              <span className="grid h-7 w-7 place-items-center rounded-xl bg-[#0d7b51] text-white">
+                <Icon className="h-4 w-4" name="star" />
+              </span>
+              <h3 className="text-[13px] font-black text-[#0d7b51]">Takhti AI Assistant</h3>
+              {isFallback && (
+                <span className="rounded-full bg-[#c87b22]/10 px-2 py-0.5 text-[9px] font-black text-[#c87b22]">
+                  Suggested recommendations
+                </span>
+              )}
+            </div>
+            <p className="mt-3 text-[12.5px] font-bold leading-relaxed text-[#235840]">
+              {aiResponseText}
+            </p>
+            {suggestions.length > 0 && (
+              <div className="mt-4 border-t border-[#d2eadb]/50 pt-3">
+                <p className="text-[10px] font-black uppercase tracking-wide text-[#528f73]">Try related searches:</p>
+                <div className="mt-2 flex flex-wrap gap-1.5">
+                  {suggestions.map((item) => (
+                    <button
+                      className="rounded-lg bg-white/70 px-2.5 py-1 text-[11px] font-black text-[#235840] border border-[#d2eadb] hover:bg-white"
+                      key={item}
+                      onClick={() => onQuick(item)}
+                      type="button"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="mt-8 flex items-center justify-between">
           <div>
             <h2 className="text-[15px] font-black text-[#1d1813]">{title}</h2>
             <p className="mt-0.5 text-[11px] font-semibold text-[#746a60]">
               {copy.search.resultSubtitle}
             </p>
           </div>
-          <div className="flex gap-2">
+        </div>
+
+        {/* Dynamic premium error boundary */}
+        {error && (
+          <div className="mt-6 rounded-[22px] border border-[#ffd5cc] bg-[#fff3f0] p-5 text-center shadow-[0_12px_24px_rgba(216,75,63,0.06)] animate-in fade-in duration-300">
+            <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-[#ffd5cc] text-[#d84b3f] shadow-sm">
+              <Icon className="h-6 w-6" name="report" />
+            </span>
+            <h3 className="mt-4 text-[14px] font-black text-[#1d1813]">Aapka offline status / issue lag raha hai</h3>
+            <p className="mt-2 text-[12px] font-bold leading-5 text-[#746a60]">{error}</p>
             <button
-              className={cx(
-                'inline-flex items-center gap-1 rounded-xl border px-3 py-2 text-[12px] font-extrabold',
-                homeTuition ? 'border-[#ccebdd] bg-[#eaf7ef] text-[#0d7b51]' : 'border-[#eadfcd] bg-white text-[#5d544c]',
-              )}
-              onClick={() => {
-                const next = !homeTuition
-                setHomeTuition(next)
-                setSearched(true)
-                loadTeachers({ home_tuition: next || undefined, markSearched: true }).catch(() => {})
-              }}
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#d84b3f] px-6 py-3 text-sm font-black text-white hover:bg-[#c23f33] active:scale-[0.98] transition-all shadow-[0_8px_16px_rgba(216,75,63,0.2)]"
+              onClick={() => loadTeachers(query || 'Mathematics')}
               type="button"
             >
-              <Icon className="h-4 w-4" name="filter" />
-              {copy.search.filter}
-            </button>
-            <button className="inline-flex items-center gap-1 rounded-xl border border-[#eadfcd] bg-white px-3 py-2 text-[12px] font-extrabold text-[#5d544c]" type="button">
               <Icon className="h-4 w-4" name="sort" />
-              {copy.search.sort}
+              Try Again
             </button>
           </div>
-        </div>
-
-        <div className="mt-3 flex flex-wrap gap-2">
-          {selectedSubject && <Chip active>{selectedSubject}</Chip>}
-          {selectedClass && <Chip active>{selectedClass}</Chip>}
-          {homeTuition && <Chip active>{copy.search.homeTuition}</Chip>}
-          {!selectedSubject && !selectedClass && !homeTuition && <Chip>{copy.search.trusted}</Chip>}
-        </div>
-
-        {error && <p className="mt-4 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{error}</p>}
+        )}
 
         <div className="mt-4 space-y-3">
           {loading ? (
-            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-5 text-sm font-bold text-[#746a60]">
-              {copy.search.loading}
+            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-5 text-sm font-bold text-[#746a60] animate-pulse">
+              Matching tutors dhoondh rahe hain...
             </div>
           ) : teachers.length === 0 ? (
             <div className="rounded-[18px] border border-[#eee4d8] bg-white p-5 text-center">
@@ -315,7 +339,13 @@ export function SearchPage() {
             </div>
           ) : (
             teachers.map((teacher, index) => (
-              <TeacherResultCard index={index} key={teacher.id} noPhoneLabel={copy.search.noPhone} profileLabel={copy.search.profile} teacher={teacher} />
+              <TeacherResultCard
+                index={index}
+                key={teacher.id}
+                noPhoneLabel={copy.search.noPhone}
+                profileLabel={copy.search.profile}
+                teacher={teacher}
+              />
             ))
           )}
         </div>

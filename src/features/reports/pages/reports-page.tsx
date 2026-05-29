@@ -21,7 +21,6 @@ import {
   cx,
 } from '@/components/common/takhti-ui'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
-import { getLocalState } from '@/lib/local-data'
 import { pushNotification } from '@/lib/notifications'
 import { formatTrialMessage, getDemoTrialStatus } from '@/lib/demo-trial'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
@@ -69,16 +68,7 @@ export function ReportsPage() {
   }, [i18n.language, i18n.resolvedLanguage])
 
   const selectedStudent = students.find((student) => student.id === selectedStudentId)
-  const guardianPhone = useMemo(() => {
-    if (!selectedStudent || !teacherId) return null
-    try {
-      const state = getLocalState(teacherId)
-      const localStudent = state.students.find((entry) => entry.id === selectedStudent.id)
-      return localStudent?.guardian_phone ?? null
-    } catch {
-      return null
-    }
-  }, [selectedStudent, teacherId])
+  const guardianPhone = selectedStudent?.guardian_phone ?? null
 
   const loadStudents = useCallback(async () => {
     if (!teacherId) {

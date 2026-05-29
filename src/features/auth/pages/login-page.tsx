@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuth, TERMS_VERSION } from '@/app/providers/auth-provider'
-import { isLocalMode } from '@/lib/env'
+
 import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { useTakhtiCopy } from '@/i18n/takhti-copy'
 import {
@@ -117,7 +117,7 @@ export function LoginPage() {
       await requestPhoneOtp(phoneNumberE164)
       setOtpRequested(true)
       setOtpCooldown(OTP_RESEND_SECONDS)
-      setInfoMessage(isLocalMode ? copy.login.demoOtp : t('login.otpSentTo', { phone: phoneNumberE164 }))
+      setInfoMessage(t('login.otpSentTo', { phone: phoneNumberE164 }))
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : t('login.otpSendFailed'))
     } finally {
@@ -209,17 +209,17 @@ export function LoginPage() {
     setErrorMessage('')
     setInfoMessage('')
 
-    // For Google we cannot detect "first time" reliably client-side. Treat the
-    // consent boxes as required only if the user explicitly opened the signup
-    // tab on the email side, OR show them inline near the Google button. We
-    // always send consent metadata so handle_new_user trigger captures it for
-    // genuinely-new accounts; existing users' values just won't be overwritten.
-    if (!ensureConsent()) return
-
     setIsSubmitting(true)
     try {
-      await signInWithGoogle(buildConsentPayload())
-      // For OAuth, the redirect happens automatically — no manual navigate needed
+      // Create a consent payload automatically on Google login, as consent is implied
+      // by the text notice rendered right below the Google button.
+      const consentPayload: ConsentPayload = {
+        acceptedAt: new Date().toISOString(),
+        ageVerified: true,
+        termsVersion: TERMS_VERSION,
+      }
+
+      await signInWithGoogle(consentPayload)
     } catch (error) {
       setErrorMessage(error instanceof Error ? error.message : copy.login.googleError)
     } finally {
