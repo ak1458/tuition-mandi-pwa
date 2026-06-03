@@ -34,9 +34,12 @@ Derived from `PRODUCTION-READINESS-AUDIT.md`. Ordered by value × safety. Each i
 
 ## P3 — Cleanup & simplify (low risk)
 
-- Remove `src/assets/react.svg` if unused; dedupe keepalive scripts; ensure `supabase/.temp/` is git-ignored; confirm `react-router-dom` import source.
-- Make AI-search city/subject lists data-driven (`features/marketplace`).
-- Add `ARCHITECTURE.md`.
+- ✅ Removed unused `src/assets/react.svg`.
+- ✅ Untracked `supabase/.temp/` (was tracked before the gitignore rule).
+- ✅ Dropped unused `react-router-dom`; declared `react-router` directly (app imports from it). Verified by build.
+- ~~Dedupe keepalive scripts~~ — **WONTFIX:** `supabase-keepalive.ps1` is an intentional Windows wrapper around `.mjs` (CI uses `.mjs`, local Windows task scheduler uses `.ps1`). Keep both.
+- ⬜ Make AI-search city/subject lists data-driven (`features/marketplace`).
+- ⬜ Add `ARCHITECTURE.md`.
 
 ## Explicitly NOT doing (would break product)
 
