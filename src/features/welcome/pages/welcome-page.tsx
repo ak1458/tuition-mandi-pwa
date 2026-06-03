@@ -1,14 +1,14 @@
 import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { InstallPrompt } from '@/features/pwa/install-prompt'
 import {
   Icon,
   PageShell,
-  TakhtiLogo,
+  TuitionMandiLogo,
   cx,
-} from '@/components/common/takhti-ui'
+} from '@/components/common/tuition-mandi-ui'
 import { BookLoverIllustration } from '@/components/common/illustrations'
 
 function ChoiceCard({
@@ -64,13 +64,13 @@ function ChoiceCard({
 export function WelcomePage() {
   const navigate = useNavigate()
   const { session } = useAuth()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
 
   return (
     <PageShell>
       <section className="flex min-h-screen flex-col px-5 pb-6 pt-7">
         <div className="flex items-start justify-between gap-3">
-          <TakhtiLogo tagline={copy.brandTagline} />
+          <TuitionMandiLogo tagline={copy.brandTagline} />
           <LanguageSwitcher />
         </div>
 

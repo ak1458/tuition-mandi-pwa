@@ -1,6 +1,4 @@
-// =============================================================
-// V2 Marketplace Types — Takhti Hyperlocal Teacher Discovery
-// =============================================================
+// V2 Marketplace Types — TuitionMandi Hyperlocal Teacher Discovery
 
 export type TeachingMedium = 'Hindi' | 'English' | 'Both';
 export type PlanType = 'free' | 'pro';

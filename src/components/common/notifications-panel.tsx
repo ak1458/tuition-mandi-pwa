@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
-import { Icon, IconButton, cx, type IconName } from '@/components/common/takhti-ui'
+import { Icon, IconButton, cx, type IconName } from '@/components/common/tuition-mandi-ui'
 import { useNotifications } from '@/hooks/use-notifications'
 import type { AppNotification, NotificationType } from '@/lib/notifications'
 

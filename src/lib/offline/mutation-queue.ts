@@ -12,7 +12,7 @@ export interface OfflineMutation<T = unknown> {
 // this many failed flush attempts we drop it and move on.
 const MAX_FLUSH_ATTEMPTS = 5
 
-const DB_NAME = 'takhti-offline-queue'
+const DB_NAME = 'tuition-mandi-offline-queue'
 const STORE_NAME = 'mutations'
 const DB_VERSION = 1
 

@@ -14,7 +14,7 @@ import { hasSupabaseConfig } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
-const AUTH_METHOD_KEY = 'takhti_auth_method'
+const AUTH_METHOD_KEY = 'tuition_mandi_auth_method'
 const INDIA_DIAL_CODE = '+91'
 const INDIA_MOBILE_DIGITS = 10
 
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (!hasSupabaseConfig) {
-      console.error('[takhti] Supabase not configured — auth disabled.')
+      console.error('[tuition-mandi] Supabase not configured — auth disabled.')
       return
     }
 

@@ -19,8 +19,8 @@ import {
   PersonAvatar,
   ReportReadyIllustration,
   cx,
-} from '@/components/common/takhti-ui'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+} from '@/components/common/tuition-mandi-ui'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { pushNotification } from '@/lib/notifications'
 import { formatTrialMessage, getDemoTrialStatus } from '@/lib/demo-trial'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
@@ -43,7 +43,7 @@ export function ReportsPage() {
   const { i18n } = useTranslation()
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const teacherId = session?.user.id ?? ''
 
   const [students, setStudents] = useState<ReportStudent[]>([])

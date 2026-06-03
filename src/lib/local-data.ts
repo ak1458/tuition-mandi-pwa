@@ -70,7 +70,7 @@ export interface LocalDataState {
   progress_reports: LocalProgressReport[]
 }
 
-const STORAGE_PREFIX = 'takhti_local_state_v1'
+const STORAGE_PREFIX = 'tuition_mandi_local_state_v1'
 
 function storageKey(teacherId: string) {
   return `${STORAGE_PREFIX}:${teacherId}`

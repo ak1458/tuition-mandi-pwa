@@ -1,5 +1,5 @@
 /**
- * Takhti Design System — Tokens
+ * TuitionMandi Design System — Tokens
  * Extracted from Stitch design (project/12697994044832797708)
  * All UI components must import from here. No hardcoded color values in components.
  */

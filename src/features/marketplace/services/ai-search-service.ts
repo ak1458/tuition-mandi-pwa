@@ -94,7 +94,7 @@ export async function searchTeachersWithAi(query: string): Promise<AiSearchRespo
 
   if (appEnv.openRouterApiKey) {
     try {
-      const prompt = `You are an expert AI search assistant for Takhti (Aapka Digital Register).
+      const prompt = `You are an expert AI search assistant for TuitionMandi (Aapka Digital Register).
 A parent is searching for a private tutor using this query: "${cleanQuery}".
 
 Analyze their query and extract:
@@ -157,7 +157,7 @@ Return ONLY a valid JSON object matching this schema. Do not include markdown co
         usedLlm = true
       }
     } catch (e) {
-      console.warn('[takhti] OpenRouter search call failed, using local keyword extractor fallback:', e)
+      console.warn('[tuition-mandi] OpenRouter search call failed, using local keyword extractor fallback:', e)
     }
   }
 
@@ -224,7 +224,7 @@ Return ONLY a valid JSON object matching this schema. Do not include markdown co
       const areaLabel = filters.area_mohalla || filters.city || 'local area'
       responseText = `Aapke exact area (${areaLabel}) mein humein abhi matching ${subjectLabel} tutors nahi mile. Par humne city ke verified expert tutors niche recommend kiye hain jinhe aap directly message kar sakte hain.`
     } else {
-      responseText = `Humein aapke city ya specified subjects ke teachers abhi nahi mile. Takhti team directly local level par teachers onboard kar rahi hai! Tab tak aap hamare online lessons ya guidance panel use kar sakte hain.`
+      responseText = `Humein aapke city ya specified subjects ke teachers abhi nahi mile. TuitionMandi team directly local level par teachers onboard kar rahi hai! Tab tak aap hamare online lessons ya guidance panel use kar sakte hain.`
     }
   }
 

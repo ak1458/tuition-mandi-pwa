@@ -9,7 +9,7 @@ function resolveLanguage(value?: string): LanguageCode {
   return 'en'
 }
 
-export const kalamCopy = {
+export const tuitionMandiCopy = {
   en: {
     brandTagline: 'Your Digital Register',
     common: {
@@ -46,7 +46,7 @@ export const kalamCopy = {
       parentSubtitle: 'Search trusted teachers in your area',
       teacherTitle: 'I am a Teacher',
       teacherSubtitle: 'Find students and manage your tuition',
-      howItWorks: 'How Kalam works',
+      howItWorks: 'How TuitionMandi works',
     },
     login: {
       title: 'Welcome Teacher',
@@ -210,8 +210,8 @@ export const kalamCopy = {
       title: 'More',
       subtitle: 'Settings',
       language: 'Language',
-      freePlan: 'Kalam Free Plan',
-      proPlan: 'Kalam Pro Plan',
+      freePlan: 'TuitionMandi Free Plan',
+      proPlan: 'TuitionMandi Pro Plan',
       premium: 'Premium Automation',
       logout: 'Logout',
       profileVisibility: 'Profile Visibility',
@@ -264,7 +264,7 @@ export const kalamCopy = {
       parentSubtitle: 'अपने क्षेत्र के भरोसेमंद शिक्षक खोजें',
       teacherTitle: 'मैं शिक्षक हूं',
       teacherSubtitle: 'छात्र पाएं और अपनी ट्यूशन संभालें',
-      howItWorks: 'कलम कैसे काम करता है',
+      howItWorks: 'ट्यूशनमंडी कैसे काम करता है',
     },
     login: {
       title: 'स्वागत है शिक्षक',
@@ -315,7 +315,7 @@ export const kalamCopy = {
       reviews: 'समीक्षाएं',
       addReview: 'समीक्षा जोड़ें',
       noReviews: 'अभी कोई समीक्षा नहीं है।',
-      successRate: 'सफलता दर',
+      successRate: 'साफलता दर',
       studentsTaught: 'पढ़ाए छात्र',
       topRank: 'टॉप रैंक',
       sendInquiry: 'पूछताछ भेजें',
@@ -428,8 +428,8 @@ export const kalamCopy = {
       title: 'अधिक',
       subtitle: 'सेटिंग्स',
       language: 'भाषा',
-      freePlan: 'कलम फ्री प्लान',
-      proPlan: 'कलम प्रो प्लान',
+      freePlan: 'ट्यूशनमंडी फ्री प्लान',
+      proPlan: 'ट्यूशनमंडी प्रो प्लान',
       premium: 'प्रीमियम ऑटोमेशन',
       logout: 'लॉगआउट',
       profileVisibility: 'प्रोफ़ाइल दृश्यता',
@@ -440,7 +440,7 @@ export const kalamCopy = {
       settings: 'सेटिंग्स',
     },
     nav: {
-      dashboard: 'डैशबोर्ड',
+      dashboard: 'डैशलोग',
       students: 'छात्र',
       reports: 'रिपोर्ट',
       more: 'अधिक',
@@ -482,7 +482,7 @@ export const kalamCopy = {
       parentSubtitle: 'Apne area ke trusted teachers search karein',
       teacherTitle: 'Main Teacher Hoon',
       teacherSubtitle: 'Students dhundhein aur apni tuition manage karein',
-      howItWorks: 'Kalam kaise kaam karta hai',
+      howItWorks: 'TuitionMandi kaise kaam karta hai',
     },
     login: {
       title: 'Welcome Teacher',
@@ -646,8 +646,8 @@ export const kalamCopy = {
       title: 'More',
       subtitle: 'Settings',
       language: 'Language',
-      freePlan: 'Kalam Free Plan',
-      proPlan: 'Kalam Pro Plan',
+      freePlan: 'TuitionMandi Free Plan',
+      proPlan: 'TuitionMandi Pro Plan',
       premium: 'Premium Automation',
       logout: 'Logout',
       profileVisibility: 'Profile Visibility',
@@ -666,7 +666,7 @@ export const kalamCopy = {
   },
 } as const
 
-export function useKalamCopy() {
+export function useTuitionMandiCopy() {
   const { i18n } = useTranslation()
-  return kalamCopy[resolveLanguage(i18n.language || i18n.resolvedLanguage)]
+  return tuitionMandiCopy[resolveLanguage(i18n.language || i18n.resolvedLanguage)]
 }

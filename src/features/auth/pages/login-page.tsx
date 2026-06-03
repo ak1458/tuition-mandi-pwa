@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next'
 import { useAuth, TERMS_VERSION } from '@/app/providers/auth-provider'
 
 import { LanguageSwitcher } from '@/components/common/language-switcher'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import {
   Icon,
   IconButton,
   PageShell,
   PrimaryButton,
-  TakhtiLogo,
+  TuitionMandiLogo,
   cx,
-} from '@/components/common/takhti-ui'
+} from '@/components/common/tuition-mandi-ui'
 import { EducatorIllustration } from '@/components/common/illustrations'
 import type { ConsentPayload } from '@/types/auth'
 
@@ -46,7 +46,7 @@ function sanitizeIndianMobileInput(value: string) {
 export function LoginPage() {
   const { requestPhoneOtp, signInWithEmailPassword, signUpWithEmail, resetPassword, signInWithGoogle, verifyPhoneOtp } = useAuth()
   const { t } = useTranslation()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const navigate = useNavigate()
   const location = useLocation()
   const state = location.state as LocationState | null
@@ -242,7 +242,7 @@ export function LoginPage() {
         </div>
 
         <div className="mt-4">
-          <TakhtiLogo tagline={copy.brandTagline} />
+          <TuitionMandiLogo tagline={copy.brandTagline} />
         </div>
 
         <div className="mt-6 flex items-center justify-center py-2">

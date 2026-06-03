@@ -1,7 +1,7 @@
 {
   "id": "/",
-  "name": "Takhti — Aapka Digital Register",
-  "short_name": "Takhti",
+  "name": "TuitionMandi — Aapka Digital Register",
+  "short_name": "TuitionMandi",
   "description": "Hyperlocal tuition discovery, WhatsApp inquiries, attendance, fees, and parent reports.",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -46,14 +46,14 @@
       "sizes": "1200x630",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Takhti — Your Digital Register for tuition teachers"
+      "label": "TuitionMandi — Your Digital Register for tuition teachers"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Takhti app icon"
+      "label": "TuitionMandi app icon"
     }
   ],
   "shortcuts": [

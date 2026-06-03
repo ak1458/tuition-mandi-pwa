@@ -1,7 +1,7 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
-import { Icon, IconButton, PageHeader, PageShell, cx } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PageShell, cx } from '@/components/common/tuition-mandi-ui'
 import {
   SUPPORT_CONFIG,
   buildSupportMailto,
@@ -17,7 +17,7 @@ interface FAQItem {
 
 const FAQS: FAQItem[] = [
   {
-    q: 'Takhti kaise kaam karta hai?',
+    q: 'TuitionMandi kaise kaam karta hai?',
     a: 'Teachers students add karein, attendance lagayein, fees track karein. Parents apne shahar ke teachers search karein aur WhatsApp se baat karein.',
   },
   {
@@ -60,7 +60,7 @@ export function HelpPage() {
 
   const fullPayload = useMemo(() => {
     const lines = [
-      `From: ${userName || 'Takhti user'}`,
+      `From: ${userName || 'TuitionMandi user'}`,
       contact ? `Contact: ${contact}` : null,
       session?.user.id ? `User ID: ${session.user.id}` : null,
       '',
@@ -88,7 +88,7 @@ export function HelpPage() {
       pushNotification(userId, {
         type: 'system',
         title: 'Support request submitted',
-        body: `"${subject.trim()}" — Takhti team aapko jaldi reply karegi.`,
+        body: `"${subject.trim()}" — TuitionMandi team aapko jaldi reply karegi.`,
         link: '/help',
       })
       setSubmitted(true)
@@ -101,7 +101,7 @@ export function HelpPage() {
 
   const sendOnWhatsApp = () => {
     const finalSubject = subject.trim() || 'Help request'
-    const finalMessage = message.trim() || 'Mujhe Takhti use karne mein madad chahiye.'
+    const finalMessage = message.trim() || 'Mujhe TuitionMandi use karne mein madad chahiye.'
     recordSupportTicket({
       user_id: userId,
       subject: finalSubject,
@@ -114,7 +114,7 @@ export function HelpPage() {
 
   const sendOverEmail = () => {
     const finalSubject = subject.trim() || 'Help request'
-    const finalMessage = message.trim() || 'Mujhe Takhti use karne mein madad chahiye.'
+    const finalMessage = message.trim() || 'Mujhe TuitionMandi use karne mein madad chahiye.'
     recordSupportTicket({
       user_id: userId,
       subject: finalSubject,
@@ -142,7 +142,7 @@ export function HelpPage() {
         <div className="grid grid-cols-2 gap-3">
           <a
             className="flex flex-col items-center gap-2 rounded-2xl border border-[#ddecdf] bg-[#f4fbf6] p-4 text-center text-[#0d7b51]"
-            href={buildSupportWhatsAppLink('Help request', `From: ${userName || 'Takhti user'}\nContact: ${contact}`)}
+            href={buildSupportWhatsAppLink('Help request', `From: ${userName || 'TuitionMandi user'}\nContact: ${contact}`)}
             rel="noreferrer"
             target="_blank"
           >
@@ -154,7 +154,7 @@ export function HelpPage() {
           </a>
           <a
             className="flex flex-col items-center gap-2 rounded-2xl border border-[#ded1f7] bg-[#f7f3ff] p-4 text-center text-[#4930a8]"
-            href={buildSupportMailto('Help request', `From: ${userName || 'Takhti user'}\nContact: ${contact}`)}
+            href={buildSupportMailto('Help request', `From: ${userName || 'TuitionMandi user'}\nContact: ${contact}`)}
           >
             <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-[#4930a8]">
               <Icon className="h-5 w-5" name="message" />
@@ -179,7 +179,7 @@ export function HelpPage() {
                 <Icon className="h-7 w-7" name="check" />
               </div>
               <p className="mt-3 text-base font-black text-[#0d7b51]">Shukriya! Aapka message bhej diya gaya.</p>
-              <p className="mt-1 text-[12px] font-semibold text-[#5d544c]">Takhti team jaldi se aapko contact karegi.</p>
+              <p className="mt-1 text-[12px] font-semibold text-[#5d544c]">TuitionMandi team jaldi se aapko contact karegi.</p>
               <button
                 className="mt-4 rounded-xl border border-[#ddecdf] bg-white px-4 py-2 text-sm font-bold text-[#0d7b51]"
                 onClick={() => {

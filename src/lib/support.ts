@@ -7,8 +7,8 @@
  */
 
 export const SUPPORT_CONFIG = {
-  whatsappNumber: '+91 9453878422', // Updated Takhti Support Number
-  email: 'support@takhti.app',
+  whatsappNumber: '+91 9453878422', // Updated TuitionMandi Support Number
+  email: 'support@tuitionmandi.com',
   hours: 'Mon-Sat, 10 AM - 7 PM IST',
 }
 
@@ -24,7 +24,7 @@ export interface SupportTicket {
   created_at: string
 }
 
-const STORAGE_KEY = 'takhti_support_tickets_v1'
+const STORAGE_KEY = 'tuition_mandi_support_tickets_v1'
 
 function readAll(): SupportTicket[] {
   try {
@@ -59,10 +59,10 @@ export function listSupportTickets(userId: string): SupportTicket[] {
 
 export function buildSupportWhatsAppLink(subject: string, message: string): string {
   const phone = SUPPORT_CONFIG.whatsappNumber.replace(/\D/g, '')
-  const text = `Takhti Support — ${subject}\n\n${message}`
+  const text = `TuitionMandi Support — ${subject}\n\n${message}`
   return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`
 }
 
 export function buildSupportMailto(subject: string, message: string): string {
-  return `mailto:${SUPPORT_CONFIG.email}?subject=${encodeURIComponent(`[Takhti] ${subject}`)}&body=${encodeURIComponent(message)}`
+  return `mailto:${SUPPORT_CONFIG.email}?subject=${encodeURIComponent(`[TuitionMandi] ${subject}`)}&body=${encodeURIComponent(message)}`
 }

@@ -21,7 +21,7 @@ export const CLASSES = [
 export const MEDIUMS = ['Hindi', 'English', 'Both'] as const
 
 /**
- * Cities and neighbourhoods Takhti is actively onboarding in. Used by the AI
+ * Cities and neighbourhoods TuitionMandi is actively onboarding in. Used by the AI
  * search rule-based fallback to pull a location out of free-text queries.
  * Extend these as the platform expands to new towns.
  */

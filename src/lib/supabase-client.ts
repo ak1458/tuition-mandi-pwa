@@ -7,7 +7,7 @@ const isProduction = appEnv.appEnv === 'production' && !appEnv.localMode
 // fall back to a dummy URL that produces confusing 401s.
 if (isProduction && !hasSupabaseConfig) {
   console.error(
-    '[takhti] FATAL: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing in a production build. ' +
+    '[tuition-mandi] FATAL: VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY is missing in a production build. ' +
       'Set them in Vercel Environment Variables or .env.production.local.',
   )
   // Throwing here would break the bundle's top-level evaluation. We instead
@@ -26,7 +26,7 @@ function buildClient(): SupabaseClient {
     return new Proxy({}, {
       get(_target, prop) {
         throw new Error(
-          `[takhti] Supabase not configured. Tried to access supabase.${String(prop)}. ` +
+          `[tuition-mandi] Supabase not configured. Tried to access supabase.${String(prop)}. ` +
             'Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your production env.',
         )
       },

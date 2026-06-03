@@ -11,9 +11,9 @@ import {
 } from '@/features/attendance/services/attendance-service'
 import { enqueueMutation, flushQueuedMutations, type OfflineMutation } from '@/lib/offline/mutation-queue'
 import type { AttendanceStatus, Batch } from '@/types/domain'
-import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/tuition-mandi-ui'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 
 interface AttendanceStudent {
   id: string
@@ -38,7 +38,7 @@ function formatDate(dateStr: string) {
 export function AttendancePage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const teacherId = session?.user.id ?? ''
 
   const [batches, setBatches] = useState<Batch[]>([])

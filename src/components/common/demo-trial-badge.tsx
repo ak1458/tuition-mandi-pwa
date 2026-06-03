@@ -4,7 +4,7 @@ import {
   getDemoTrialStatus,
   type DemoTrialStatus,
 } from '@/lib/demo-trial'
-import { cx } from '@/components/common/takhti-ui'
+import { cx } from '@/components/common/tuition-mandi-ui'
 
 interface DemoTrialBadgeProps {
   createdAt: string | Date | null | undefined

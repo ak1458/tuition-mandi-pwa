@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Kalam App",
+    "name": "TuitionMandi App",
     "tagline": "Tuition Teacher Management"
   },
   "nav": {
@@ -242,8 +242,8 @@
   "more": {
     "title": "More",
     "plan": {
-      "free": "Kalam Free Plan — 3 Mahine FREE chal raha hai",
-      "pro": "Kalam Pro Plan"
+      "free": "TuitionMandi Free Plan — 3 Mahine FREE chal raha hai",
+      "pro": "TuitionMandi Pro Plan"
     },
     "language": "Language / भाषा",
     "menu": {
@@ -261,7 +261,7 @@
   },
   "pwa": {
     "offlineBanner": "Offline mode active. Sync internet aane par hoga.",
-    "installButton": "Kalam App install karein"
+    "installButton": "TuitionMandi App install karein"
   },
   "profileSetup": {
     "title": "Profile Setup",
@@ -301,7 +301,7 @@
     "saveError": "Profile save nahi hua. Dobara try karein."
   },
   "search": {
-    "title": "Kalam Search",
+    "title": "TuitionMandi Search",
     "subtitle": "Apne area ka best teacher dhundhein",
     "cityPlaceholder": "City daalein — Gonda, Lucknow...",
     "showFilters": "Filters dikhao ▼",
@@ -340,7 +340,7 @@
     "fees": "Fees",
     "feeNegotiable": "💬 Fees mein baat ho sakti hai",
     "timings": "Available Timings",
-    "verifiedResults": "✅ Kalam Verified Results",
+    "verifiedResults": "✅ TuitionMandi Verified Results",
     "ratings": "Ratings & Reviews",
     "noReviews": "Abhi koi review nahi hai",
     "writeReview": "✍️ Apna anubhav share karein",

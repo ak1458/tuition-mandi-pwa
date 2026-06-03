@@ -22,7 +22,7 @@ if (isProductionBuild && rawOpenRouterKey) {
   // Visible warning in browser console for any teammate who accidentally
   // ships a build with the OpenRouter key set. We refuse to honour it.
   console.warn(
-    '[takhti] VITE_OPENROUTER_API_KEY is set in a production build and will be ignored. ' +
+    '[tuition-mandi] VITE_OPENROUTER_API_KEY is set in a production build and will be ignored. ' +
       'Move it to the Supabase Edge Function secrets (see DEPLOYMENT.md).',
   )
 }
@@ -40,8 +40,8 @@ export const appEnv = {
    */
   openRouterApiKey: isProductionBuild ? '' : rawOpenRouterKey,
   openRouterModel: import.meta.env.VITE_OPENROUTER_MODEL ?? 'qwen/qwq-32b',
-  openRouterReferer: import.meta.env.VITE_OPENROUTER_REFERER ?? 'https://takhti.app',
-  openRouterTitle: import.meta.env.VITE_OPENROUTER_TITLE ?? 'Takhti App',
+  openRouterReferer: import.meta.env.VITE_OPENROUTER_REFERER ?? 'https://tuitionmandi.com',
+  openRouterTitle: import.meta.env.VITE_OPENROUTER_TITLE ?? 'TuitionMandi App',
 }
 
 export const hasSupabaseConfig = Boolean(appEnv.supabaseUrl && appEnv.supabaseAnonKey)

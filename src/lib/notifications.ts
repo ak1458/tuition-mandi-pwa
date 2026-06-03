@@ -19,8 +19,8 @@ export interface AppNotification {
   created_at: string
 }
 
-const STORAGE_PREFIX = 'takhti_notifications_v1'
-const CHANGE_EVENT = 'takhti:notifications:change'
+const STORAGE_PREFIX = 'tuition_mandi_notifications_v1'
+const CHANGE_EVENT = 'tuition_mandi:notifications:change'
 
 function key(userId: string) {
   return `${STORAGE_PREFIX}:${userId || 'anon'}`

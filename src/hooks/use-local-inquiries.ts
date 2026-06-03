@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useSyncExternalStore } from 'react'
 import type { ParentInquiry } from '@/types/marketplace'
 
-const STORAGE_KEY = 'takhti_local_inquiries'
-const CHANGE_EVENT = 'takhti:local-inquiries:change'
+const STORAGE_KEY = 'tuition_mandi_local_inquiries'
+const CHANGE_EVENT = 'tuition_mandi:local-inquiries:change'
 
 function readMessages(): ParentInquiry[] {
   try {

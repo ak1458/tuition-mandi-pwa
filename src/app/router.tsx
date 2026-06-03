@@ -29,7 +29,7 @@ const ResetPasswordPage = lazy(() => import('@/features/auth/pages/reset-passwor
 function RouteFallback() {
   return (
     <main className="grid min-h-screen place-items-center bg-[#fbf8f1] px-5 text-sm font-bold text-[#746a60]">
-      Takhti load ho raha hai...
+      TuitionMandi load ho raha hai...
     </main>
   )
 }

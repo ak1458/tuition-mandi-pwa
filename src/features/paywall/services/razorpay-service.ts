@@ -63,7 +63,7 @@ export async function openRazorpayCheckout(input: OpenRazorpayCheckoutInput): Pr
       key: appEnv.razorpayKey,
       amount: input.amountPaise,
       currency: 'INR',
-      name: 'Takhti',
+      name: 'TuitionMandi',
       description: input.description,
       prefill: {
         name: input.teacherName,

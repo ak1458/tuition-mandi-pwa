@@ -30,7 +30,7 @@ const DEFAULT_PLAN_STATE: PlanState = {
   plan_expires_at: null,
 }
 
-const LOCAL_PLAN_PREFIX = 'takhti_local_plan_v1'
+const LOCAL_PLAN_PREFIX = 'tuition_mandi_local_plan_v1'
 const PlanContext = createContext<PlanContextValue | undefined>(undefined)
 
 function localPlanKey(userId: string) {

@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { supabase } from '@/lib/supabase-client'
 import type { ParentInquiry } from '@/types/marketplace'
-import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/tuition-mandi-ui'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { ProfessorIllustration } from '@/components/common/illustrations'
 
 const statusLabels: Record<string, string> = {
@@ -35,7 +35,7 @@ function timeAgo(dateStr: string) {
 export function InquiriesPage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const [inquiries, setInquiries] = useState<ParentInquiry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -99,7 +99,7 @@ export function InquiriesPage() {
   function replyLink(inquiry: ParentInquiry) {
     if (!inquiry.parent_phone) return null
     const cleanPhone = inquiry.parent_phone.replace(/\D/g, '')
-    const text = `Namaste ${inquiry.parent_name || ''} Ji,\n\nAapki Takhti inquiry mili. ${inquiry.subject_needed || 'Tuition'} ke liye baat kar sakte hain.`
+    const text = `Namaste ${inquiry.parent_name || ''} Ji,\n\nAapki TuitionMandi inquiry mili. ${inquiry.subject_needed || 'Tuition'} ke liye baat kar sakte hain.`
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`
   }
 

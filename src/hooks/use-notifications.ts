@@ -30,7 +30,7 @@ export function useNotifications(userId: string | undefined): NotificationsState
 
   const getSnapshot = useCallback(() => {
     if (!id) return ''
-    return localStorage.getItem(`takhti_notifications_v1:${id}`) ?? ''
+    return localStorage.getItem(`tuition_mandi_notifications_v1:${id}`) ?? ''
   }, [id])
 
   const getServerSnapshot = useCallback(() => '', [])

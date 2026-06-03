@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import { usePlan } from '@/hooks/use-plan'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
-import { Icon, PageHeader, PersonAvatar, cx, type IconName } from '@/components/common/takhti-ui'
+import { Icon, PageHeader, PersonAvatar, cx, type IconName } from '@/components/common/tuition-mandi-ui'
 import { ConfirmDialog } from '@/components/common/confirm-dialog'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { hasSupabaseConfig } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 import {
@@ -127,7 +127,7 @@ export function MorePage() {
   const { session, signOut } = useAuth()
   const { isPro, planExpiresAt } = usePlan()
   const { t } = useTranslation()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const teacherId = session?.user.id ?? ''
   const teacherName =
     (session?.user?.user_metadata?.full_name as string | undefined) || t('common.teacher')
@@ -136,7 +136,7 @@ export function MorePage() {
   // Subscribe to preferences changes via useSyncExternalStore (React 19 friendly).
   const prefsSnapshot = useSyncExternalStore(
     (callback) => onPreferencesChange(callback),
-    () => (teacherId ? localStorage.getItem(`takhti_user_prefs_v1:${teacherId}`) ?? '' : ''),
+    () => (teacherId ? localStorage.getItem(`tuition_mandi_user_prefs_v1:${teacherId}`) ?? '' : ''),
     () => '',
   )
   const loaded = useMemo(
@@ -155,6 +155,8 @@ export function MorePage() {
     if (!teacherId) return
     const current = getPreferences(teacherId)
     const merged = { ...current, ...next }
+    // Update local storage key helper inside preferences helper is handled,
+    // but we can map the preferences set/get keys too.
     setPreferences(teacherId, merged)
     setToast('Settings saved.')
     window.setTimeout(() => setToast(null), 1500)
@@ -177,7 +179,7 @@ export function MorePage() {
       }
     }
 
-    downloadJson(`takhti-export-${teacherId}.json`, {
+    downloadJson(`tuition-mandi-export-${teacherId}.json`, {
       exported_at: new Date().toISOString(),
       teacher_id: teacherId,
       teacher_name: teacherName,
@@ -192,10 +194,10 @@ export function MorePage() {
     if (teacherId) {
       // First wipe all teacher data namespaces in localStorage
       const prefixes = [
-        `takhti_local_state_v1:${teacherId}`,
-        `takhti_local_plan_v1:${teacherId}`,
-        `takhti_user_prefs_v1:${teacherId}`,
-        `takhti_notifications_v1:${teacherId}`,
+        `tuition_mandi_local_state_v1:${teacherId}`,
+        `tuition_mandi_local_plan_v1:${teacherId}`,
+        `tuition_mandi_user_prefs_v1:${teacherId}`,
+        `tuition_mandi_notifications_v1:${teacherId}`,
       ]
       prefixes.forEach((key) => localStorage.removeItem(key))
 
@@ -348,11 +350,11 @@ export function MorePage() {
 
         {/* Support */}
         <Section title="Support">
-          <Row icon="phone" iconTone="green" label={copy.more.help} hint="WhatsApp / Email Takhti team" onClick={() => navigate('/help')} />
+          <Row icon="phone" iconTone="green" label={copy.more.help} hint="WhatsApp / Email TuitionMandi team" onClick={() => navigate('/help')} />
           <Row icon="star" iconTone="orange" label={copy.demo.moreSettingsTitle} hint={copy.demo.moreSettingsHint} />
-          <Row icon="settings" iconTone="paper" label="About Takhti" hint="Version 1.0 - Your Digital Register" />
+          <Row icon="settings" iconTone="paper" label="About TuitionMandi" hint="Version 1.0 - Your Digital Register" />
           <Row icon="check" iconTone="purple" label="Privacy Policy" hint="How we handle your data" onClick={() => navigate('/privacy')} />
-          <Row icon="check" iconTone="purple" label="Terms & Conditions" hint="Rules of using Takhti" onClick={() => navigate('/terms')} />
+          <Row icon="check" iconTone="purple" label="Terms & Conditions" hint="Rules of using TuitionMandi" onClick={() => navigate('/terms')} />
           <Row icon="rupee" iconTone="orange" label="Refund Policy" hint="Cancellation & refund terms" onClick={() => navigate('/refund')} />
           <Row divider={false} icon="phone" iconTone="green" label="Contact Us" hint="Business details & grievance" onClick={() => navigate('/contact')} />
         </Section>

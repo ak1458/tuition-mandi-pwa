@@ -1,4 +1,4 @@
-import { cx } from './takhti-ui'
+import { cx } from './tuition-mandi-ui'
 
 interface IllustrationProps {
   className?: string

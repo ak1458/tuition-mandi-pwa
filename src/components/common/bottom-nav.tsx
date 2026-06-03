@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router'
-import { Icon, type IconName, cx } from '@/components/common/takhti-ui'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { Icon, type IconName, cx } from '@/components/common/tuition-mandi-ui'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 
 interface NavItem {
   label: string
@@ -25,7 +25,7 @@ const parentNavItems: NavItem[] = [
 export function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
 
   const labels: Record<string, string> = {
     Dashboard: copy.nav.dashboard,

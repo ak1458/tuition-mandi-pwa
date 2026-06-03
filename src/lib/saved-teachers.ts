@@ -5,8 +5,8 @@
 
 import type { TeacherProfile } from '@/types/marketplace'
 
-const KEY = 'takhti_saved_teachers_v1'
-const CHANGE_EVENT = 'takhti:saved-teachers:change'
+const KEY = 'tuition_mandi_saved_teachers_v1'
+const CHANGE_EVENT = 'tuition_mandi:saved-teachers:change'
 
 export interface SavedTeacher {
   id: string

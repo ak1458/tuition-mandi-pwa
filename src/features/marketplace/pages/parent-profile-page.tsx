@@ -3,18 +3,18 @@ import { useNavigate } from 'react-router'
 import {
   PageShell,
   PrimaryButton,
-  TakhtiLogo,
+  TuitionMandiLogo,
   FamilyStudyIllustration,
-} from '@/components/common/takhti-ui'
+} from '@/components/common/tuition-mandi-ui'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { useSavedTeachers } from '@/hooks/use-saved-teachers'
 
-const PARENT_PHONE_KEY = 'takhti_parent_phone_v1'
+const PARENT_PHONE_KEY = 'tuition_mandi_parent_phone_v1'
 
 export function ParentProfilePage() {
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const [phone, setPhone] = useState(() => localStorage.getItem(PARENT_PHONE_KEY) ?? '')
   const [errorMessage, setErrorMessage] = useState('')
   const savedTeachers = useSavedTeachers()
@@ -35,7 +35,7 @@ export function ParentProfilePage() {
     <PageShell>
       <section className="min-h-full bg-[#fbf8f1] px-5 pb-24 pt-5">
         <div className="flex items-center justify-between">
-          <TakhtiLogo tagline="Parent Portal" />
+          <TuitionMandiLogo tagline="Parent Portal" />
           <LanguageSwitcher />
         </div>
 

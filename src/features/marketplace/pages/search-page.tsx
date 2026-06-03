@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { searchTeachersWithAi } from '@/features/marketplace/services/ai-search-service'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import type { ParentRating, TeacherProfile } from '@/types/marketplace'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { useAuth } from '@/app/providers/auth-provider'
 import { NotificationsBell, NotificationsPanel } from '@/components/common/notifications-panel'
 import {
@@ -12,8 +12,8 @@ import {
   PageHeader,
   PageShell,
   PersonAvatar,
-  TakhtiLogo,
-} from '@/components/common/takhti-ui'
+  TuitionMandiLogo,
+} from '@/components/common/tuition-mandi-ui'
 
 const QUICK_SEARCHES = [
   { label: 'Class 10 Maths', queryText: 'Class 10 Mathematics Gonda' },
@@ -107,7 +107,7 @@ function TeacherResultCard({
 
 export function SearchPage() {
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const { session } = useAuth()
   const userId = session?.user.id ?? 'parent'
 
@@ -205,7 +205,7 @@ export function SearchPage() {
 
       <section className="px-4 pb-24 pt-4">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <TakhtiLogo compact />
+          <TuitionMandiLogo compact />
           <button
             className="inline-flex items-center gap-1 rounded-full border border-[#eadfcd] bg-white px-3 py-2 text-[12px] font-extrabold text-[#0d7b51]"
             onClick={() => navigate('/login')}
@@ -257,7 +257,7 @@ export function SearchPage() {
               <span className="grid h-7 w-7 place-items-center rounded-xl bg-[#0d7b51] text-white">
                 <Icon className="h-4 w-4" name="star" />
               </span>
-              <h3 className="text-[13px] font-black text-[#0d7b51]">Takhti AI Assistant</h3>
+              <h3 className="text-[13px] font-black text-[#0d7b51]">TuitionMandi AI Assistant</h3>
               {isFallback && (
                 <span className="rounded-full bg-[#c87b22]/10 px-2 py-0.5 text-[9px] font-black text-[#c87b22]">
                   Suggested recommendations

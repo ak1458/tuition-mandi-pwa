@@ -15,12 +15,12 @@ export function ShareProfileButton({
     const shareText = `${teacherName} — Experienced tuition teacher in ${city}. 
 Verified profile, parent ratings, aur results dekho:
 ${profileUrl}
-#Takhti #Tuition${city.replace(/\s/g, '')}`
+#TuitionMandi #Tuition${city.replace(/\s/g, '')}`
 
     function handleShare() {
         if (navigator.share) {
             navigator.share({
-                title: `${teacherName} — Takhti Teacher Profile`,
+                title: `${teacherName} — TuitionMandi Teacher Profile`,
                 text: shareText,
                 url: profileUrl,
             }).catch(() => {

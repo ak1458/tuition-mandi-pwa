@@ -3,16 +3,16 @@ import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { createStudent, listStudents } from '@/features/students/services/students-service'
 import type { Student } from '@/types/domain'
-import { Icon, IconButton, PageHeader, PersonAvatar, PrimaryButton } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PersonAvatar, PrimaryButton } from '@/components/common/tuition-mandi-ui'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { BookLoverIllustration } from '@/components/common/illustrations'
 import { countActiveDemoTrials, isInDemoTrial } from '@/lib/demo-trial'
 
 export function StudentsPage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const teacherId = session?.user.id ?? ''
 
   const [students, setStudents] = useState<Student[]>([])

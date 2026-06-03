@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router'
-import { Icon, IconButton, PageHeader, PageShell, PersonAvatar, cx } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PageShell, PersonAvatar, cx } from '@/components/common/tuition-mandi-ui'
 import { removeSavedTeacher } from '@/lib/saved-teachers'
 import { useSavedTeachers } from '@/hooks/use-saved-teachers'
 

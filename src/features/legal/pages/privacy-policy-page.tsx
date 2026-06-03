@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router'
-import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/tuition-mandi-ui'
 
 const LAST_UPDATED = '23 May 2026'
-const BUSINESS_NAME = 'Takhti'
+const BUSINESS_NAME = 'TuitionMandi'
 const BUSINESS_ADDRESS = 'Gonda, Uttar Pradesh, India'
-const GRIEVANCE_EMAIL = 'grievance@takhti.app'
-const SUPPORT_EMAIL = 'support@takhti.app'
+const GRIEVANCE_EMAIL = 'grievance@tuitionmandi.com'
+const SUPPORT_EMAIL = 'support@tuitionmandi.com'
 
 export function PrivacyPolicyPage() {
   const navigate = useNavigate()
@@ -27,7 +27,7 @@ export function PrivacyPolicyPage() {
         <section className="rounded-[18px] border border-[#ded1f7] bg-[#f7f3ff] p-4">
           <h2 className="text-[14px] font-black text-[#4930a8]">🔒 Your Data, Your Choice</h2>
           <p className="mt-2 text-[12px] font-semibold leading-6 text-[#5d544c]">
-            By using Takhti, you consent to the collection and processing of your personal data as described
+            By using TuitionMandi, you consent to the collection and processing of your personal data as described
             in this Privacy Policy, in accordance with the Digital Personal Data Protection (DPDP) Act, 2023
             and the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021.
             You may withdraw consent at any time by deleting your account.
@@ -55,7 +55,7 @@ export function PrivacyPolicyPage() {
 
         <Section title="3. How We Use Your Data">
           <ul className="list-disc pl-4 space-y-2">
-            <li>To provide and maintain the Takhti service (attendance, fees, reports, marketplace).</li>
+            <li>To provide and maintain the TuitionMandi service (attendance, fees, reports, marketplace).</li>
             <li>To authenticate you via phone OTP or email/password login.</li>
             <li>To process Pro plan payments through Razorpay.</li>
             <li>To generate AI progress reports for your students.</li>
@@ -108,7 +108,7 @@ export function PrivacyPolicyPage() {
 
         <Section title="8. Children's Privacy">
           <p>
-            Takhti is designed for teachers and parents. Student data is entered by teachers — we do not
+            TuitionMandi is designed for teachers and parents. Student data is entered by teachers — we do not
             directly collect data from children under 18. Teachers are responsible for obtaining appropriate
             consent from parents/guardians before entering student information.
           </p>
@@ -116,7 +116,7 @@ export function PrivacyPolicyPage() {
 
         <Section title="9. Grievance Officer (IT Rules 2021)">
           <div className="rounded-xl border border-[#eee4d8] bg-[#fffdf8] p-3 mt-2">
-            <p><strong>Grievance Officer:</strong> Takhti Support Team</p>
+            <p><strong>Grievance Officer:</strong> TuitionMandi Support Team</p>
             <p><strong>Email:</strong> <a className="text-[#4930a8] underline" href={`mailto:${GRIEVANCE_EMAIL}`}>{GRIEVANCE_EMAIL}</a></p>
             <p><strong>Address:</strong> {BUSINESS_ADDRESS}</p>
             <p className="mt-2 text-[11px] text-[#9a8f83]">
@@ -128,7 +128,7 @@ export function PrivacyPolicyPage() {
         <Section title="10. Changes to This Policy">
           <p>
             We may update this Privacy Policy from time to time. Changes will be posted on this page with
-            an updated date. Continued use of Takhti after changes constitutes acceptance.
+            an updated date. Continued use of TuitionMandi after changes constitutes acceptance.
           </p>
         </Section>
 

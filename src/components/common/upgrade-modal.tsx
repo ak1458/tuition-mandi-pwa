@@ -56,7 +56,7 @@ export function UpgradeModal({ reason, onClose, onUpgradeSuccess }: UpgradeModal
     if (typeof fullName === 'string' && fullName.trim()) {
       return fullName.trim()
     }
-    return 'Takhti Teacher'
+    return 'TuitionMandi Teacher'
   }, [session?.user.user_metadata])
 
   const teacherPhone = session?.user.phone

@@ -22,7 +22,7 @@ export function buildWhatsAppLink(
 
   const message = `Namaste ${teacherName} Ji,
 
-Maine Takhti app pe aapka profile dekha.
+Maine TuitionMandi app pe aapka profile dekha.
 
 Mujhe apne bachche ke liye tuition ki zaroorat hai. Kya aap available hain?
 

@@ -17,8 +17,8 @@ export interface UserPreferences {
   data_collection_opt_out: boolean
 }
 
-const STORAGE_PREFIX = 'takhti_user_prefs_v1'
-const CHANGE_EVENT = 'takhti:prefs:change'
+const STORAGE_PREFIX = 'tuition_mandi_user_prefs_v1'
+const CHANGE_EVENT = 'tuition_mandi:prefs:change'
 
 export const DEFAULT_PREFS: UserPreferences = {
   notifications: {

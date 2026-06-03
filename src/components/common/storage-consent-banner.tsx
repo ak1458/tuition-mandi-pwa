@@ -17,7 +17,7 @@ function shouldShowInitially(): boolean {
 /**
  * One-time storage / data-processing notice for first-time visitors.
  *
- * Takhti uses localStorage (not third-party cookies) to keep teachers signed
+ * TuitionMandi uses localStorage (not third-party cookies) to keep teachers signed
  * in and to remember preferences. Under the DPDP Act 2023 we still surface
  * notice and link to the Privacy Policy. This is dismissable; we record the
  * dismissal locally so the user does not see it again.
@@ -43,7 +43,7 @@ export function StorageConsentBanner() {
       role="region"
     >
       <p className="text-[12px] font-semibold leading-5 text-[#1d1813]">
-        Takhti aapko sign-in rakhne aur preferences yaad rakhne ke liye device storage use karta hai.
+        TuitionMandi aapko sign-in rakhne aur preferences yaad rakhne ke liye device storage use karta hai.
         Hum third-party tracking cookies use nahi karte. Details ke liye{' '}
         <Link className="font-bold text-[#4930a8] underline" to="/privacy">
           Privacy Policy

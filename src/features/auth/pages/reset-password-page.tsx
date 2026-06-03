@@ -8,8 +8,8 @@ import {
   IconButton,
   PageShell,
   PrimaryButton,
-  TakhtiLogo,
-} from '@/components/common/takhti-ui'
+  TuitionMandiLogo,
+} from '@/components/common/tuition-mandi-ui'
 
 const PASSWORD_MIN_LENGTH = 8
 
@@ -123,7 +123,7 @@ export function ResetPasswordPage() {
         </div>
 
         <div className="mt-4">
-          <TakhtiLogo tagline="Your Digital Register" />
+          <TuitionMandiLogo tagline="Your Digital Register" />
         </div>
 
         <div className="mt-8 text-center">

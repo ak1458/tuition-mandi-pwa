@@ -305,20 +305,20 @@ export function Icon({ name, className, ...props }: IconProps) {
   )
 }
 
-export function KalamLogo({ compact = false, tagline = 'Your Digital Register' }: { compact?: boolean; tagline?: string }) {
+export function TuitionMandiLogo({ compact = false, tagline = 'Your Digital Register' }: { compact?: boolean; tagline?: string }) {
   return (
     <div className="flex items-center gap-2.5">
       <div className="flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#ecd7ab] bg-[linear-gradient(160deg,#fff8ea_0%,#fceeca_100%)] shadow-[0_8px_18px_rgba(122,78,25,0.14)]">
         <svg className="h-7 w-7" viewBox="0 0 48 48" aria-hidden="true">
-          {/* Slate / kalam body */}
+          {/* Slate / tuition-mandi body */}
           <rect x="7" y="7" width="34" height="34" rx="6" fill="#1f1812" />
           <rect x="9" y="9" width="30" height="30" rx="5" fill="#2a201a" />
           {/* Wooden inner frame */}
           <rect x="11" y="11" width="26" height="26" rx="4" fill="#f5b860" />
           <rect x="12.5" y="12.5" width="23" height="23" rx="3" fill="#fff7e7" />
-          {/* Devanagari-style "K" (Ka - क) mark in chalk */}
+          {/* Devanagari-style "T" (Ta - ट) mark in chalk */}
           <path
-            d="M17 18.5h14 M24 18.5v13 M24 21.5c-3 0-5 2-5 3.5s2 3.5 5 3.5 M24 25c3 0 5 1.5 5 3.5v1"
+            d="M17 18.5h14 M24 18.5v3.5 M24 22c3 0 5.5 1.5 5.5 4.5S27 31 23.5 31c-3.5 0-5.5-2-5.5-4.5"
             stroke="#1f1812"
             strokeWidth="2.4"
             strokeLinecap="round"
@@ -330,11 +330,11 @@ export function KalamLogo({ compact = false, tagline = 'Your Digital Register' }
         </svg>
       </div>
       {!compact && (
-        <div>
-          <p className="font-display text-[26px] font-extrabold leading-none tracking-[-0.03em] text-[#17120d]">
-            Kalam
+        <div className="min-w-0">
+          <p className="font-display text-[21px] font-extrabold leading-none tracking-[-0.02em] text-[#17120d] truncate">
+            TuitionMandi
           </p>
-          <p className="mt-1 text-[11px] font-medium tracking-wide text-[#7a6f64]">{tagline}</p>
+          <p className="mt-1.5 text-[10px] font-semibold tracking-wide text-[#7a6f64] truncate">{tagline}</p>
         </div>
       )}
     </div>

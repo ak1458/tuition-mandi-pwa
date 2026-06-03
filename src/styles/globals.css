@@ -1,4 +1,4 @@
-/* ── Takhti Global Styles ── */
+/* ── TuitionMandi Global Styles ── */
 
 @import 'tokens.css';
 @tailwind base;
@@ -156,7 +156,7 @@ html[lang='hi'] * {
 
 /* ── Constrain very wide screens so the mobile-first layout looks
  *    intentional on a desktop preview rather than stretched. */
-.takhti-app-shell {
+.tuition-mandi-shell {
   max-width: 480px;
   margin-inline: auto;
   min-height: 100vh;

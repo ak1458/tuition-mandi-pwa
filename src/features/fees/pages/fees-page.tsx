@@ -4,8 +4,8 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { getFeeRows, saveFeeMutation, toMonthStart, type FeeMutationPayload, type FeeRow } from '@/features/fees/services/fees-service'
 import { enqueueMutation, flushQueuedMutations, type OfflineMutation } from '@/lib/offline/mutation-queue'
 import { buildFeeReminderLink } from '@/utils/whatsapp'
-import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/tuition-mandi-ui'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 
 function isNetworkError(error: unknown): boolean {
   const message = error instanceof Error ? error.message.toLowerCase() : ''
@@ -25,7 +25,7 @@ function statusClass(status: string) {
 export function FeesPage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const teacherId = session?.user.id ?? ''
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7))
   const [rows, setRows] = useState<FeeRow[]>([])

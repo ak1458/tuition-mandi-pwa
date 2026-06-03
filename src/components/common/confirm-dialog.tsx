@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { cx } from '@/components/common/takhti-ui'
+import { cx } from '@/components/common/tuition-mandi-ui'
 
 interface ConfirmDialogProps {
   open: boolean

@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router'
-import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/tuition-mandi-ui'
 import { SUPPORT_CONFIG, buildSupportWhatsAppLink, buildSupportMailto } from '@/lib/support'
 
-const BUSINESS_NAME = 'Takhti'
+const BUSINESS_NAME = 'TuitionMandi'
 const BUSINESS_ADDRESS = 'Gonda, Uttar Pradesh, India'
-const GRIEVANCE_EMAIL = 'grievance@takhti.app'
+const GRIEVANCE_EMAIL = 'grievance@tuitionmandi.com'
 
 export function ContactPage() {
   const navigate = useNavigate()
@@ -84,7 +84,7 @@ export function ContactPage() {
             As per IT (Intermediary Guidelines) Rules, 2021
           </p>
           <div className="mt-3 space-y-2 text-[12px] font-semibold leading-6 text-[#5d544c]">
-            <p><strong>Name:</strong> Takhti Support Team</p>
+            <p><strong>Name:</strong> TuitionMandi Support Team</p>
             <p><strong>Email:</strong>{' '}
               <a className="text-[#4930a8] underline" href={`mailto:${GRIEVANCE_EMAIL}`}>{GRIEVANCE_EMAIL}</a>
             </p>

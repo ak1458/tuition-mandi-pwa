@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router'
-import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PageShell } from '@/components/common/tuition-mandi-ui'
 
 const LAST_UPDATED = '23 May 2026'
-const SUPPORT_EMAIL = 'support@takhti.app'
+const SUPPORT_EMAIL = 'support@tuitionmandi.com'
 
 export function RefundPolicyPage() {
   const navigate = useNavigate()
@@ -34,7 +34,7 @@ export function RefundPolicyPage() {
         <Section title="1. Scope">
           <p>
             This Refund & Cancellation Policy applies to paid Pro Plan subscriptions purchased through the
-            Takhti App via Razorpay. The Free Plan has no charges and is not subject to this policy.
+            TuitionMandi App via Razorpay. The Free Plan has no charges and is not subject to this policy.
           </p>
         </Section>
 

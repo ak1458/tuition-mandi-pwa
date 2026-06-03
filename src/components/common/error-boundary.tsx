@@ -21,7 +21,7 @@ const REPORTING_URL = import.meta.env.VITE_ERROR_REPORTING_URL ?? ''
 
 function reportError(error: Error, info: ErrorInfo) {
   // Always log to console — useful in dev and as a no-op fallback.
-  console.error('Takhti app crashed:', error, info.componentStack)
+  console.error('TuitionMandi app crashed:', error, info.componentStack)
 
   if (!REPORTING_URL || typeof window === 'undefined') return
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import { Icon, IconButton, PageHeader, PageShell, PersonAvatar } from '@/components/common/takhti-ui'
+import { Icon, IconButton, PageHeader, PageShell, PersonAvatar } from '@/components/common/tuition-mandi-ui'
 import { useLocalInquiries } from '@/hooks/use-local-inquiries'
 
 function timeAgo(dateStr: string) {

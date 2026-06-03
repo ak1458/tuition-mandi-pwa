@@ -35,7 +35,7 @@ i18n
     detection: {
       order: ['localStorage', 'navigator'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'takhti_language',
+      lookupLocalStorage: 'tuition_mandi_language',
     },
     react: {
       useSuspense: false,

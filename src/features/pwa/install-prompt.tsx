@@ -24,7 +24,7 @@ export function InstallPrompt() {
   const [isDismissed, setIsDismissed] = useState(() => {
     if (typeof window === 'undefined') return false
     try {
-      return window.localStorage.getItem('takhti-pwa-dismissed') === 'true'
+      return window.localStorage.getItem('tuition-mandi-pwa-dismissed') === 'true'
     } catch {
       return false
     }
@@ -69,7 +69,7 @@ export function InstallPrompt() {
 
   const handleDismiss = () => {
     try {
-      window.localStorage.setItem('takhti-pwa-dismissed', 'true')
+      window.localStorage.setItem('tuition-mandi-pwa-dismissed', 'true')
     } catch {
       // ignore
     }
@@ -97,14 +97,20 @@ export function InstallPrompt() {
             <rect x="7" y="7" width="34" height="34" rx="6" fill="#1f1812" />
             <rect x="11" y="11" width="26" height="26" rx="4" fill="#f5b860" />
             <rect x="12.5" y="12.5" width="23" height="23" rx="3" fill="#fff7e7" />
-            <path d="M17 18.5h14M24 18.5v13" stroke="#1f1812" strokeWidth="3" strokeLinecap="round" />
+            <path
+              d="M17 18.5h14 M24 18.5v3.5 M24 22c3 0 5.5 1.5 5.5 4.5S27 31 23.5 31c-3.5 0-5.5-2-5.5-4.5"
+              stroke="#1f1812"
+              strokeWidth="2.4"
+              strokeLinecap="round"
+              fill="none"
+            />
           </svg>
         </div>
 
         {/* Text Area */}
         <div className="flex-1 min-w-0">
           <h4 className="text-sm font-bold text-[#1d1813] leading-tight font-display">
-            Install Takhti App
+            Install TuitionMandi App
           </h4>
           <p className="text-xs text-[#746a60] font-medium leading-normal mt-0.5 truncate">
             {isIOS ? 'Install on iPhone for the best experience' : 'Fast access, offline mode & parent reports'}
@@ -140,7 +146,7 @@ export function InstallPrompt() {
             {/* Header */}
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-bold text-[#1d1813] font-display">Install Takhti on iOS</h3>
+                <h3 className="text-lg font-bold text-[#1d1813] font-display">Install TuitionMandi on iOS</h3>
                 <p className="text-xs text-[#746a60] font-medium mt-1">Get high-speed native app access in 3 easy steps:</p>
               </div>
               <button

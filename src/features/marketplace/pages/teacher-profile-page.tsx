@@ -4,7 +4,7 @@ import { getTeacherPublicProfile, submitInquiry } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import { isTeacherSaved, onSavedTeachersChange, toggleSavedTeacher } from '@/lib/saved-teachers'
 import type { ParentRating, TeacherOutcome, TeacherProfile } from '@/types/marketplace'
-import { useKalamCopy } from '@/i18n/kalam-copy'
+import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import {
   Chip,
   Icon,
@@ -15,7 +15,7 @@ import {
   PersonAvatar,
   PrimaryButton,
   cx,
-} from '@/components/common/takhti-ui'
+} from '@/components/common/tuition-mandi-ui'
 
 function avgRating(ratings: ParentRating[] | undefined): number {
   if (!ratings?.length) return 0
@@ -55,7 +55,7 @@ function resultStats(outcome: TeacherOutcome | undefined, fallbackStudents: numb
 export function TeacherProfilePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const copy = useKalamCopy()
+  const copy = useTuitionMandiCopy()
   const [teacher, setTeacher] = useState<TeacherProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -87,7 +87,7 @@ export function TeacherProfilePage() {
         if (ignore) return
         setTeacher(data)
         if (data) {
-          document.title = `${data.full_name} - ${data.subjects.join(', ')} Teacher in ${data.city} | Takhti`
+          document.title = `${data.full_name} - ${data.subjects.join(', ')} Teacher in ${data.city} | TuitionMandi`
         }
       })
       .catch((err) => {
@@ -134,7 +134,7 @@ export function TeacherProfilePage() {
   const shareProfile = () => {
     if (!teacher) return
     if (navigator.share) {
-      navigator.share({ title: teacher.full_name, text: `${teacher.full_name} on Takhti`, url: profileUrl }).catch(() => {})
+      navigator.share({ title: teacher.full_name, text: `${teacher.full_name} on TuitionMandi`, url: profileUrl }).catch(() => {})
       return
     }
     navigator.clipboard.writeText(profileUrl).catch(() => {})
