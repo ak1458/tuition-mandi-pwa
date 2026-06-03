@@ -12,8 +12,11 @@ Derived from `PRODUCTION-READINESS-AUDIT.md`. Ordered by value × safety. Each i
 ### 0.2 Harden SECURITY DEFINER function exposure (CODE — migration `0016`)
 - **Why:** 9 trigger functions are RPC-callable by `anon`/`authenticated`; 2 have mutable `search_path`.
 - **Do:** `REVOKE EXECUTE` on trigger functions from `anon, authenticated`; `ALTER FUNCTION ... SET search_path = ''` on the two flagged.
-- **Risk:** Low — these are trigger bodies, not meant to be called directly. `is_teacher_pro` is the one to keep callable if the client uses it (verify before revoking). **Migration written; apply via `supabase db push` after review.**
-- **Status:** ✅ drafted this session — `supabase/migrations/0016_harden_function_exposure.sql`
+- **Risk:** Low — these are trigger bodies, not meant to be called directly. The web client makes zero `.rpc()` calls. `service_role` keeps EXECUTE for Edge Functions.
+- **Status:**
+  - `0016_harden_function_exposure.sql` — APPLIED to prod. Fixed `search_path` (2/2 ✅) but the EXECUTE revoke was **ineffective**: it revoked from `anon`/`authenticated`, but those inherit EXECUTE from the `PUBLIC` pseudo-role, whose grant remained. Advisor warnings did NOT clear.
+  - `0018_revoke_function_execute_from_public.sql` — the real fix: `REVOKE EXECUTE ... FROM PUBLIC`. Verified via transactional dry-run (ACL drops the `=X` PUBLIC entry, `service_role` retained). **NOT yet pushed — run `supabase db push` to apply.**
+- **Lesson:** revoking from `anon`/`authenticated` ≠ revoking from `PUBLIC`. Always revoke from `PUBLIC`.
 
 ## P1 — Close real feature gaps
 
