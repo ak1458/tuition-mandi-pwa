@@ -7,14 +7,14 @@ import {
   FamilyStudyIllustration,
 } from '@/components/common/takhti-ui'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { useSavedTeachers } from '@/hooks/use-saved-teachers'
 
 const PARENT_PHONE_KEY = 'takhti_parent_phone_v1'
 
 export function ParentProfilePage() {
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const [phone, setPhone] = useState(() => localStorage.getItem(PARENT_PHONE_KEY) ?? '')
   const [errorMessage, setErrorMessage] = useState('')
   const savedTeachers = useSavedTeachers()

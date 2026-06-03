@@ -13,7 +13,7 @@ import { enqueueMutation, flushQueuedMutations, type OfflineMutation } from '@/l
 import type { AttendanceStatus, Batch } from '@/types/domain'
 import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 
 interface AttendanceStudent {
   id: string
@@ -38,7 +38,7 @@ function formatDate(dateStr: string) {
 export function AttendancePage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const teacherId = session?.user.id ?? ''
 
   const [batches, setBatches] = useState<Batch[]>([])

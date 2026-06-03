@@ -4,7 +4,7 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { supabase } from '@/lib/supabase-client'
 import type { ParentInquiry } from '@/types/marketplace'
 import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { ProfessorIllustration } from '@/components/common/illustrations'
 
 const statusLabels: Record<string, string> = {
@@ -35,7 +35,7 @@ function timeAgo(dateStr: string) {
 export function InquiriesPage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const [inquiries, setInquiries] = useState<ParentInquiry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')

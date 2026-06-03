@@ -6,7 +6,7 @@ import { usePlan } from '@/hooks/use-plan'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { Icon, PageHeader, PersonAvatar, cx, type IconName } from '@/components/common/takhti-ui'
 import { ConfirmDialog } from '@/components/common/confirm-dialog'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { hasSupabaseConfig } from '@/lib/env'
 import { supabase } from '@/lib/supabase-client'
 import {
@@ -127,7 +127,7 @@ export function MorePage() {
   const { session, signOut } = useAuth()
   const { isPro, planExpiresAt } = usePlan()
   const { t } = useTranslation()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const teacherId = session?.user.id ?? ''
   const teacherName =
     (session?.user?.user_metadata?.full_name as string | undefined) || t('common.teacher')

@@ -4,7 +4,7 @@ import { getTeacherPublicProfile, submitInquiry } from '@/lib/queries/teachers'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import { isTeacherSaved, onSavedTeachersChange, toggleSavedTeacher } from '@/lib/saved-teachers'
 import type { ParentRating, TeacherOutcome, TeacherProfile } from '@/types/marketplace'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import {
   Chip,
   Icon,
@@ -55,7 +55,7 @@ function resultStats(outcome: TeacherOutcome | undefined, fallbackStudents: numb
 export function TeacherProfilePage() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const [teacher, setTeacher] = useState<TeacherProfile | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')

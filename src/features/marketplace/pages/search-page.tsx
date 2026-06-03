@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router'
 import { searchTeachersWithAi } from '@/features/marketplace/services/ai-search-service'
 import { buildWhatsAppLink } from '@/utils/whatsapp'
 import type { ParentRating, TeacherProfile } from '@/types/marketplace'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { useAuth } from '@/app/providers/auth-provider'
 import { NotificationsBell, NotificationsPanel } from '@/components/common/notifications-panel'
 import {
@@ -107,7 +107,7 @@ function TeacherResultCard({
 
 export function SearchPage() {
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const { session } = useAuth()
   const userId = session?.user.id ?? 'parent'
 

@@ -9,7 +9,7 @@ function resolveLanguage(value?: string): LanguageCode {
   return 'en'
 }
 
-export const takhtiCopy = {
+export const kalamCopy = {
   en: {
     brandTagline: 'Your Digital Register',
     common: {
@@ -46,7 +46,7 @@ export const takhtiCopy = {
       parentSubtitle: 'Search trusted teachers in your area',
       teacherTitle: 'I am a Teacher',
       teacherSubtitle: 'Find students and manage your tuition',
-      howItWorks: 'How Takhti works',
+      howItWorks: 'How Kalam works',
     },
     login: {
       title: 'Welcome Teacher',
@@ -210,8 +210,8 @@ export const takhtiCopy = {
       title: 'More',
       subtitle: 'Settings',
       language: 'Language',
-      freePlan: 'Takhti Free Plan',
-      proPlan: 'Takhti Pro Plan',
+      freePlan: 'Kalam Free Plan',
+      proPlan: 'Kalam Pro Plan',
       premium: 'Premium Automation',
       logout: 'Logout',
       profileVisibility: 'Profile Visibility',
@@ -264,7 +264,7 @@ export const takhtiCopy = {
       parentSubtitle: 'अपने क्षेत्र के भरोसेमंद शिक्षक खोजें',
       teacherTitle: 'मैं शिक्षक हूं',
       teacherSubtitle: 'छात्र पाएं और अपनी ट्यूशन संभालें',
-      howItWorks: 'तख्ती कैसे काम करता है',
+      howItWorks: 'कलम कैसे काम करता है',
     },
     login: {
       title: 'स्वागत है शिक्षक',
@@ -428,8 +428,8 @@ export const takhtiCopy = {
       title: 'अधिक',
       subtitle: 'सेटिंग्स',
       language: 'भाषा',
-      freePlan: 'तख्ती फ्री प्लान',
-      proPlan: 'तख्ती प्रो प्लान',
+      freePlan: 'कलम फ्री प्लान',
+      proPlan: 'कलम प्रो प्लान',
       premium: 'प्रीमियम ऑटोमेशन',
       logout: 'लॉगआउट',
       profileVisibility: 'प्रोफ़ाइल दृश्यता',
@@ -482,7 +482,7 @@ export const takhtiCopy = {
       parentSubtitle: 'Apne area ke trusted teachers search karein',
       teacherTitle: 'Main Teacher Hoon',
       teacherSubtitle: 'Students dhundhein aur apni tuition manage karein',
-      howItWorks: 'Takhti kaise kaam karta hai',
+      howItWorks: 'Kalam kaise kaam karta hai',
     },
     login: {
       title: 'Welcome Teacher',
@@ -646,8 +646,8 @@ export const takhtiCopy = {
       title: 'More',
       subtitle: 'Settings',
       language: 'Language',
-      freePlan: 'Takhti Free Plan',
-      proPlan: 'Takhti Pro Plan',
+      freePlan: 'Kalam Free Plan',
+      proPlan: 'Kalam Pro Plan',
       premium: 'Premium Automation',
       logout: 'Logout',
       profileVisibility: 'Profile Visibility',
@@ -666,7 +666,7 @@ export const takhtiCopy = {
   },
 } as const
 
-export function useTakhtiCopy() {
+export function useKalamCopy() {
   const { i18n } = useTranslation()
-  return takhtiCopy[resolveLanguage(i18n.language || i18n.resolvedLanguage)]
+  return kalamCopy[resolveLanguage(i18n.language || i18n.resolvedLanguage)]
 }

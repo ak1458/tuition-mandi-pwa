@@ -1,6 +1,6 @@
 {
   "app": {
-    "name": "Takhti App",
+    "name": "TuitionMandi App",
     "tagline": "Tuition Teacher Management"
   },
   "nav": {
@@ -242,8 +242,8 @@
   "more": {
     "title": "More",
     "plan": {
-      "free": "Takhti Free Plan — 3 Months FREE",
-      "pro": "Takhti Pro Plan"
+      "free": "TuitionMandi Free Plan — 3 Months FREE",
+      "pro": "TuitionMandi Pro Plan"
     },
     "language": "Language / भाषा",
     "menu": {
@@ -261,7 +261,7 @@
   },
   "pwa": {
     "offlineBanner": "Offline mode active. Sync will run when internet returns.",
-    "installButton": "Install Takhti App"
+    "installButton": "Install TuitionMandi App"
   },
   "profileSetup": {
     "title": "Profile Setup",
@@ -301,7 +301,7 @@
     "saveError": "Could not save profile. Please try again."
   },
   "search": {
-    "title": "Takhti Search",
+    "title": "TuitionMandi Search",
     "subtitle": "Find the best teacher in your area",
     "cityPlaceholder": "Enter city — Gonda, Lucknow...",
     "showFilters": "Show Filters ▼",
@@ -340,7 +340,7 @@
     "fees": "Fees",
     "feeNegotiable": "💬 Fee is negotiable",
     "timings": "Available Timings",
-    "verifiedResults": "✅ Takhti Verified Results",
+    "verifiedResults": "✅ TuitionMandi Verified Results",
     "ratings": "Ratings & Reviews",
     "noReviews": "No reviews yet",
     "writeReview": "✍️ Share your experience",

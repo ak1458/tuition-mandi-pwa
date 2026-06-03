@@ -5,7 +5,7 @@ import { getFeeRows, saveFeeMutation, toMonthStart, type FeeMutationPayload, typ
 import { enqueueMutation, flushQueuedMutations, type OfflineMutation } from '@/lib/offline/mutation-queue'
 import { buildFeeReminderLink } from '@/utils/whatsapp'
 import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 
 function isNetworkError(error: unknown): boolean {
   const message = error instanceof Error ? error.message.toLowerCase() : ''
@@ -25,7 +25,7 @@ function statusClass(status: string) {
 export function FeesPage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const teacherId = session?.user.id ?? ''
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7))
   const [rows, setRows] = useState<FeeRow[]>([])

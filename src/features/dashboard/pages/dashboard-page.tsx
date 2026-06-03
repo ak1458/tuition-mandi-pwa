@@ -7,7 +7,7 @@ import { listStudents } from '@/features/students/services/students-service'
 import type { DashboardSummary, Student } from '@/types/domain'
 import { Icon, PageHeader, PersonAvatar, cx } from '@/components/common/takhti-ui'
 import { NotificationsBell, NotificationsPanel } from '@/components/common/notifications-panel'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { useLocalInquiries } from '@/hooks/use-local-inquiries'
 import { countActiveDemoTrials } from '@/lib/demo-trial'
 
@@ -52,7 +52,7 @@ export function DashboardPage() {
   const navigate = useNavigate()
   const teacherId = session?.user.id ?? ''
   const { t } = useTranslation()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const teacherName =
     (session?.user?.user_metadata?.full_name as string | undefined) || t('common.teacher')
 

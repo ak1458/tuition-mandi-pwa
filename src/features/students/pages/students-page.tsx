@@ -5,14 +5,14 @@ import { createStudent, listStudents } from '@/features/students/services/studen
 import type { Student } from '@/types/domain'
 import { Icon, IconButton, PageHeader, PersonAvatar, PrimaryButton } from '@/components/common/takhti-ui'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { BookLoverIllustration } from '@/components/common/illustrations'
 import { countActiveDemoTrials, isInDemoTrial } from '@/lib/demo-trial'
 
 export function StudentsPage() {
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const teacherId = session?.user.id ?? ''
 
   const [students, setStudents] = useState<Student[]>([])

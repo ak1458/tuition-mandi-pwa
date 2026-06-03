@@ -1,4 +1,4 @@
-project_id = "takhti-app-local"
+project_id = "tuition-mandi-app-local"
 
 [api]
 enabled = true

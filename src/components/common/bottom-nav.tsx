@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'react-router'
 import { Icon, type IconName, cx } from '@/components/common/takhti-ui'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 
 interface NavItem {
   label: string
@@ -25,7 +25,7 @@ const parentNavItems: NavItem[] = [
 export function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
 
   const labels: Record<string, string> = {
     Dashboard: copy.nav.dashboard,
@@ -42,7 +42,7 @@ export function BottomNav() {
   const currentItems = isParentRoute ? parentNavItems : teacherNavItems
 
   return (
-    <nav className="mx-auto flex max-w-[480px] items-center justify-around border-t border-[#eadfcd] bg-white/95 px-2 py-1 backdrop-blur safe-bottom">
+    <nav className="pointer-events-auto mx-auto flex max-w-[480px] items-center justify-around border-t border-[#eadfcd] bg-white/95 px-2 py-1 backdrop-blur safe-bottom">
       {currentItems.map((item) => {
         const isActive = location.pathname.startsWith(item.path) || (item.path === '/search' && location.pathname === '/search')
         return (

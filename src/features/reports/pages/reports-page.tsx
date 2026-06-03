@@ -20,7 +20,7 @@ import {
   ReportReadyIllustration,
   cx,
 } from '@/components/common/takhti-ui'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { pushNotification } from '@/lib/notifications'
 import { formatTrialMessage, getDemoTrialStatus } from '@/lib/demo-trial'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
@@ -43,7 +43,7 @@ export function ReportsPage() {
   const { i18n } = useTranslation()
   const { session } = useAuth()
   const navigate = useNavigate()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
   const teacherId = session?.user.id ?? ''
 
   const [students, setStudents] = useState<ReportStudent[]>([])

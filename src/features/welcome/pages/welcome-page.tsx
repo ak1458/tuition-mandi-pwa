@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
-import { useTakhtiCopy } from '@/i18n/takhti-copy'
+import { useKalamCopy } from '@/i18n/kalam-copy'
 import { InstallPrompt } from '@/features/pwa/install-prompt'
 import {
   Icon,
@@ -64,7 +64,7 @@ function ChoiceCard({
 export function WelcomePage() {
   const navigate = useNavigate()
   const { session } = useAuth()
-  const copy = useTakhtiCopy()
+  const copy = useKalamCopy()
 
   return (
     <PageShell>
