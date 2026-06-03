@@ -27,10 +27,14 @@ Derived from `PRODUCTION-READINESS-AUDIT.md`. Ordered by value × safety. Each i
 
 ## P2 — Performance (before scale, not before launch)
 
-### 2.1 RLS `initplan` fix (CODE — migration)
-- Rewrite 45 policies: `auth.uid()` → `(select auth.uid())`. Mechanical but touches every policy → do as one reviewed migration, test with real rows first. **Not auto-applied — security surface.**
+### 2.1 RLS `initplan` fix (CODE — migration 0017) ✅ DRAFTED + VERIFIED, NOT PUSHED
+- Rewrites all 45 policies: `auth.uid()` → `(select auth.uid())`. DDL generated directly from the live catalog (guaranteed to match current definitions), then transactional dry-run against the real DB passed and rolled back. Adds the 3 FK covering indexes too.
+- **Action for you:** review `supabase/migrations/0017_rls_perf_initplan.sql`, then `npx supabase db push` (ideally on a branch/staging first).
 
-### 2.2 Consolidate 12 overlapping permissive policies; add 3 FK indexes; drop unused indexes only after real-traffic confirmation.
+### 2.2 Remaining (deferred — need judgement, not mechanical)
+- ⬜ Consolidate 12 overlapping permissive policies (public-read + owner). **Not auto-merged** — merging changes access semantics; do deliberately.
+- ✅ 3 FK indexes — folded into migration 0017.
+- ⬜ Drop 26 "unused" indexes only after real traffic confirms they stay unused (currently unused only because the DB is empty).
 
 ## P3 — Cleanup & simplify (low risk)
 
