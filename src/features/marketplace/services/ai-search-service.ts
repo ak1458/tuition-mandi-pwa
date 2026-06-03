@@ -1,5 +1,6 @@
 import { appEnv } from '@/lib/env'
 import { searchTeachers } from '@/lib/queries/teachers'
+import { SUBJECTS, CLASSES, CITIES, AREAS } from '@/lib/taxonomy'
 import type { TeacherProfile, SearchFilters } from '@/types/marketplace'
 
 export interface AiSearchResponse {
@@ -16,9 +17,6 @@ export interface AiSearchResponse {
 
 // Robust keyword extraction fallback if LLM is offline or API key is absent
 function ruleBasedSearchFallback(query: string): Partial<SearchFilters> & { subjects?: string[]; classes_taught?: string[]; area_mohalla?: string } {
-  const subjectsList = ['Mathematics', 'Science', 'English', 'Hindi', 'Social Science', 'Physics', 'Chemistry', 'Biology', 'Accountancy', 'Economics', 'History', 'Geography']
-  const classesList = ['Class 1-5', 'Class 6', 'Class 7', 'Class 8', 'Class 9', 'Class 10', 'Class 11', 'Class 12']
-
   const foundSubjects: string[] = []
   const foundClasses: string[] = []
   let homeTuition = false
@@ -27,7 +25,7 @@ function ruleBasedSearchFallback(query: string): Partial<SearchFilters> & { subj
   const lowerQuery = query.toLowerCase()
 
   // Match subjects (e.g. Maths, Science, etc.)
-  for (const sub of subjectsList) {
+  for (const sub of SUBJECTS) {
     if (lowerQuery.includes(sub.toLowerCase()) || 
         (sub === 'Mathematics' && (lowerQuery.includes('math') || lowerQuery.includes('ganit'))) || 
         (sub === 'Social Science' && (lowerQuery.includes('sst') || lowerQuery.includes('social')))) {
@@ -36,7 +34,7 @@ function ruleBasedSearchFallback(query: string): Partial<SearchFilters> & { subj
   }
 
   // Match classes (e.g. Class 10, Class 9, etc.)
-  for (const cls of classesList) {
+  for (const cls of CLASSES) {
     const num = cls.match(/\d+/)?.[0]
     if (lowerQuery.includes(cls.toLowerCase()) || 
         (num && lowerQuery.includes(`class ${num}`)) || 
@@ -53,22 +51,17 @@ function ruleBasedSearchFallback(query: string): Partial<SearchFilters> & { subj
     onlineTuition = true
   }
 
-  // Extract common cities
+  // Extract a known city from the query (proper casing comes from the list).
   let city: string | undefined
   const words = query.split(/\s+/)
-  const targetCities = ['gonda', 'lucknow', 'basti', 'kanpur', 'delhi', 'noida']
   for (const w of words) {
     const cleaned = w.toLowerCase().replace(/[^a-z0-9]/g, '')
-    if (targetCities.includes(cleaned)) {
-      city = cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
-    }
+    const matchedCity = CITIES.find((c) => c.toLowerCase() === cleaned)
+    if (matchedCity) city = matchedCity
   }
 
-  // Extract common areas
-  let area: string | undefined
-  if (lowerQuery.includes('civil lines')) area = 'Civil Lines'
-  else if (lowerQuery.includes('gandhi nagar')) area = 'Gandhi Nagar'
-  else if (lowerQuery.includes('pant nagar')) area = 'Pant Nagar'
+  // Extract a known neighbourhood / mohalla.
+  const area = AREAS.find((a) => lowerQuery.includes(a.toLowerCase()))
 
   return {
     subjects: foundSubjects.length > 0 ? foundSubjects : undefined,
@@ -105,8 +98,8 @@ export async function searchTeachersWithAi(query: string): Promise<AiSearchRespo
 A parent is searching for a private tutor using this query: "${cleanQuery}".
 
 Analyze their query and extract:
-1. subjects: Array of matching subjects. Available subjects: Mathematics, Science, English, Hindi, Social Science, Physics, Chemistry, Biology, Accountancy, Economics, History, Geography.
-2. classes_taught: Array of matching classes. Available classes: Class 1-5, Class 6, Class 7, Class 8, Class 9, Class 10, Class 11, Class 12.
+1. subjects: Array of matching subjects. Available subjects: ${SUBJECTS.join(', ')}.
+2. classes_taught: Array of matching classes. Available classes: ${CLASSES.join(', ')}.
 3. city: String (extracted city name, e.g., "Gonda").
 4. area_mohalla: String (extracted neighborhood or area name, e.g., "Civil Lines").
 5. home_tuition: Boolean (true if they explicitly ask for home tuition or teacher coming home, "ghar pe", "home tutor").

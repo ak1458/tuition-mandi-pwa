@@ -4,25 +4,13 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { upsertTeacherProfile } from '@/lib/queries/teachers'
 import { AnimatedLogo } from '@/components/common/animated-logo'
 import type { TeachingMedium } from '@/types/marketplace'
+import { SUBJECTS, CLASSES, MEDIUMS } from '@/lib/taxonomy'
 
 // ------- Constants -------
-const SUBJECTS = [
-    'Mathematics', 'Science', 'English', 'Hindi',
-    'Social Science', 'Physics', 'Chemistry', 'Biology',
-    'Accountancy', 'Economics', 'History', 'Geography',
-]
-
-const CLASSES = [
-    'Class 1-5', 'Class 6', 'Class 7', 'Class 8',
-    'Class 9', 'Class 10', 'Class 11', 'Class 12',
-]
-
 const TIME_SLOTS = [
     'Subah 6-8 AM', 'Subah 8-10 AM', 'Dopahar 12-2 PM',
     'Shaam 4-6 PM', 'Shaam 6-8 PM', 'Raat 8-10 PM',
 ]
-
-const MEDIUMS = ['Hindi', 'English', 'Both'] as const
 
 const TOTAL_STEPS = 3
 

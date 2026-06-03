@@ -33,12 +33,10 @@ function teacherVariant(name: string) {
 
 function TeacherResultCard({
   teacher,
-  index,
   profileLabel,
   noPhoneLabel,
 }: {
   teacher: TeacherProfile
-  index: number
   profileLabel: string
   noPhoneLabel: string
 }) {
@@ -46,7 +44,6 @@ function TeacherResultCard({
   const ratingCount = teacher.parent_ratings?.length ?? 0
   const profileUrl = `${window.location.origin}/profile/${teacher.id}`
   const whatsappUrl = buildWhatsAppLink(teacher.phone_e164, teacher.full_name, profileUrl)
-  const distance = ['1.2 km away', '1.5 km away', '1.8 km away', '2.1 km away'][index % 4]
 
   return (
     <article className="rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)] transition-all duration-300 hover:shadow-[0_14px_30px_rgba(53,38,22,0.1)]">
@@ -69,8 +66,6 @@ function TeacherResultCard({
               <Icon className="h-3.5 w-3.5 fill-current" name="star" />
               {rating > 0 ? rating.toFixed(1) : 'New'} {ratingCount > 0 && `(${ratingCount})`}
             </span>
-            <span className="text-[#9a8f83]">-</span>
-            <span>{distance}</span>
             {teacher.area_mohalla && (
               <>
                 <span className="text-[#9a8f83]">-</span>
@@ -338,9 +333,8 @@ export function SearchPage() {
               </button>
             </div>
           ) : (
-            teachers.map((teacher, index) => (
+            teachers.map((teacher) => (
               <TeacherResultCard
-                index={index}
                 key={teacher.id}
                 noPhoneLabel={copy.search.noPhone}
                 profileLabel={copy.search.profile}
