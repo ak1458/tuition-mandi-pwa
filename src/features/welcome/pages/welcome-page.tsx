@@ -102,7 +102,7 @@ export function WelcomePage() {
           />
           <ChoiceCard
             icon="graduation"
-            onClick={() => navigate(session ? '/dashboard' : '/login')}
+            onClick={() => navigate(session ? '/dashboard' : '/search')}
             subtitle={copy.welcome.teacherSubtitle}
             title={copy.welcome.teacherTitle}
             tone="teacher"

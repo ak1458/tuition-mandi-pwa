@@ -208,7 +208,7 @@ export function SearchPage() {
           <TuitionMandiLogo compact />
           <button
             className="inline-flex items-center gap-1 rounded-full border border-[#e5decf] bg-white px-3 py-2 text-[12px] font-extrabold text-[#138a5e]"
-            onClick={() => navigate('/login')}
+            onClick={() => navigate('/dashboard')}
             type="button"
           >
             {copy.search.teacherCta}

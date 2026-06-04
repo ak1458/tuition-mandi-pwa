@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router'
 import { Icon, type IconName, cx } from '@/components/common/tuition-mandi-ui'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
+import { useAuth } from '@/app/providers/auth-provider'
 
 interface NavItem {
   label: string
@@ -27,6 +28,7 @@ export function BottomNav() {
   const location = useLocation()
   const navigate = useNavigate()
   const copy = useTuitionMandiCopy()
+  const { session } = useAuth()
 
   const labels: Record<string, string> = {
     Home: copy.nav.dashboard,
@@ -40,10 +42,7 @@ export function BottomNav() {
     Profile: 'Profile',
   }
 
-  const isParentRoute =
-    location.pathname.startsWith('/search') ||
-    location.pathname.startsWith('/saved')
-  const currentItems = isParentRoute ? parentNavItems : teacherNavItems
+  const currentItems = session ? teacherNavItems : parentNavItems
 
   return (
     <nav
