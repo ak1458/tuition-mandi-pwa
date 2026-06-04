@@ -79,7 +79,7 @@ export class ErrorBoundary extends Component<Props, State> {
     if (!this.state.hasError) return this.props.children
 
     return (
-      <main className="grid min-h-screen place-items-center bg-[#f4f1ea] px-5">
+      <main className="grid min-h-dvh place-items-center bg-[#f4f1ea] px-5">
         <div className="w-full max-w-md rounded-3xl border border-[#e5decf] bg-white p-6 shadow-[0_20px_50px_rgba(53,38,22,0.12)]">
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#fbe6e1] text-[#e14b36]">
             <svg className="h-7 w-7" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24">

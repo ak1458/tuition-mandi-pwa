@@ -562,8 +562,8 @@ export function Chip({
 
 export function PageShell({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <main className={cx('min-h-screen bg-[#f4f1ea] text-[#1c1916]', className)}>
-      <div className="mx-auto min-h-screen w-full max-w-[480px] bg-[linear-gradient(180deg,#f4f1ea_0%,#f4f1ea_44%,#ffffff_100%)]">
+    <main className={cx('min-h-dvh bg-[#f4f1ea] text-[#1c1916]', className)}>
+      <div className="mx-auto min-h-dvh w-full max-w-[480px] bg-[linear-gradient(180deg,#f4f1ea_0%,#f4f1ea_44%,#ffffff_100%)]">
         {children}
       </div>
     </main>

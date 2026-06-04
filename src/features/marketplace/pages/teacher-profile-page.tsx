@@ -149,7 +149,7 @@ export function TeacherProfilePage() {
   if (loading) {
     return (
       <PageShell>
-        <div className="grid min-h-screen place-items-center px-5 text-sm font-bold text-[#847a6c]">{copy.profile.loading}</div>
+        <div className="grid min-h-dvh place-items-center px-5 text-sm font-bold text-[#847a6c]">{copy.profile.loading}</div>
       </PageShell>
     )
   }
@@ -157,7 +157,7 @@ export function TeacherProfilePage() {
   if (error || !teacher) {
     return (
       <PageShell>
-        <div className="flex min-h-screen flex-col items-center justify-center px-5 text-center">
+        <div className="flex min-h-dvh flex-col items-center justify-center px-5 text-center">
           <div className="grid h-16 w-16 place-items-center rounded-2xl bg-[#fbe6e1] text-[#e14b36]">
             <Icon className="h-8 w-8" name="search" />
           </div>

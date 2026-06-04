@@ -115,7 +115,7 @@ export function ResetPasswordPage() {
 
   return (
     <PageShell>
-      <section className="min-h-screen px-5 pb-6 pt-5">
+      <section className="min-h-dvh px-5 pb-6 pt-5">
         <div className="flex items-start">
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate('/login')}>
             <Icon className="h-4 w-4" name="arrow-left" />

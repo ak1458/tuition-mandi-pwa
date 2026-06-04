@@ -160,6 +160,6 @@ html[lang='hi'] * {
 .tuition-mandi-shell {
   max-width: 480px;
   margin-inline: auto;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: var(--bg-page);
 }

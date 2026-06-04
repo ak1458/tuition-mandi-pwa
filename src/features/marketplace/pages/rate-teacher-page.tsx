@@ -51,7 +51,7 @@ export function RateTeacherPage() {
     // Success state
     if (submitted) {
         return (
-            <main className="flex min-h-screen flex-col items-center justify-center bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] px-5 text-center">
+            <main className="flex min-h-dvh flex-col items-center justify-center bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] px-5 text-center">
                 <p className="text-5xl mb-4">🙏</p>
                 <h2 className="font-display text-xl font-semibold text-ink mb-2">Shukriya!</h2>
                 <p className="text-sm text-muted mb-6">
@@ -68,7 +68,7 @@ export function RateTeacherPage() {
     }
 
     return (
-        <main className="flex min-h-screen w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-ink">
+        <main className="flex min-h-dvh w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-ink">
             {/* Header */}
             <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-5 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md">
                 <div className="flex items-center justify-between">

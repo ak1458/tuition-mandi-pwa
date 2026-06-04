@@ -68,7 +68,7 @@ export function WelcomePage() {
 
   return (
     <PageShell>
-      <section className="flex min-h-screen flex-col px-5 pb-6 pt-7">
+      <section className="flex min-h-dvh flex-col px-5 pb-6 pt-7">
         <div className="flex items-start justify-between gap-3">
           <TuitionMandiLogo tagline={copy.brandTagline} />
           <LanguageSwitcher />

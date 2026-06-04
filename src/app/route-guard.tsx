@@ -7,7 +7,7 @@ export function RouteGuard() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-cream px-4 text-center">
+      <div className="flex min-h-dvh items-center justify-center bg-cream px-4 text-center">
         <p className="text-sm font-semibold text-muted">Session check ho raha hai...</p>
       </div>
     )

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useMemo, useState, type FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAuth, TERMS_VERSION } from '@/app/providers/auth-provider'
@@ -15,6 +15,7 @@ import {
 } from '@/components/common/tuition-mandi-ui'
 import { EducatorIllustration } from '@/components/common/illustrations'
 import type { ConsentPayload } from '@/types/auth'
+import { hasSupabaseConfig } from '@/lib/env'
 
 type LoginMode = 'phone' | 'email'
 type EmailAction = 'login' | 'signup'
@@ -227,13 +228,20 @@ export function LoginPage() {
     }
   }
 
+  const messageRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    if ((errorMessage || infoMessage) && messageRef.current) {
+      messageRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [errorMessage, infoMessage])
+
   const showConsentBlock =
     (mode === 'email' && emailAction === 'signup' && !showForgotPassword) ||
     (mode === 'phone' && phoneIsSignup)
 
   return (
     <PageShell>
-      <section className="min-h-screen px-5 pb-6 pt-5">
+      <section className="min-h-dvh px-5 pb-6 pt-5">
         <div className="flex items-start justify-between">
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate('/')}>
             <Icon className="h-4 w-4" name="arrow-left" />
@@ -245,8 +253,8 @@ export function LoginPage() {
           <TuitionMandiLogo tagline={copy.brandTagline} />
         </div>
 
-        <div className="mt-6 flex items-center justify-center py-2">
-          <EducatorIllustration className="w-full max-w-[280px] xs:max-w-[320px] h-auto" />
+        <div className="mt-4 flex items-center justify-center py-1">
+          <EducatorIllustration className="w-full max-w-[200px] sm:max-w-[260px] h-auto max-h-[140px] sm:max-h-[180px]" />
         </div>
 
         <div className="mt-6 text-center">
@@ -256,7 +264,15 @@ export function LoginPage() {
           </p>
         </div>
 
-        <section className="mt-5 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+        {!hasSupabaseConfig && (
+          <div className="mt-4 rounded-xl border border-[#fcefd2] bg-[#fff9ee] px-3 py-2.5">
+            <p className="text-[11px] font-bold text-[#d6850a]">
+              Setup needed: Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env.local file to enable login.
+            </p>
+          </div>
+        )}
+
+        <section className="mt-4 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
           <div className="grid grid-cols-2 rounded-xl bg-[#f4f1ea] p-1">
             {[
               ['phone', copy.common.mobile],
@@ -279,6 +295,12 @@ export function LoginPage() {
                 {label}
               </button>
             ))}
+          </div>
+
+          {/* Status messages — shown at top so they're always visible without scrolling */}
+          <div ref={messageRef}>
+            {infoMessage && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{infoMessage}</p>}
+            {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
           </div>
 
           {mode === 'phone' && !otpRequested && (
@@ -488,8 +510,6 @@ export function LoginPage() {
             </p>
           )}
 
-          {infoMessage && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{infoMessage}</p>}
-          {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
         </section>
 
         <button

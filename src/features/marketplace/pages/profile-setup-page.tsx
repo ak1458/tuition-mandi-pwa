@@ -274,7 +274,7 @@ export function ProfileSetupPage() {
     }
 
     return (
-        <main className="flex min-h-screen w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-slate-800 selection:bg-[#e07a2f] selection:text-white">
+        <main className="flex min-h-dvh w-full flex-col bg-[linear-gradient(180deg,#f6f0e6_0%,#fefcf8_35%,#ffffff_100%)] text-slate-800 selection:bg-[#e07a2f] selection:text-white">
             {/* Header */}
             <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 px-5 py-4 shadow-[0_8px_24px_rgba(15,23,42,0.08)] backdrop-blur-md">
                 <div className="flex items-center gap-3">
