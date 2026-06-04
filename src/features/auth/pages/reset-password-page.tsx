@@ -127,7 +127,7 @@ export function ResetPasswordPage() {
         </div>
 
         <div className="mt-8 text-center">
-          <h1 className="text-[24px] font-black leading-tight text-[#1d1813]">
+          <h1 className="text-[24px] font-black leading-tight text-[#1c1916]">
             {success
               ? 'Password Updated!'
               : linkState === 'invalid'
@@ -145,13 +145,13 @@ export function ResetPasswordPage() {
           </p>
         </div>
 
-        <section className="mt-6 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+        <section className="mt-6 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
           {success ? (
             <div className="space-y-4">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#eaf7ef] text-[#0d7b51]">
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#dcf1e7] text-[#138a5e]">
                 <Icon className="h-8 w-8" name="check" />
               </div>
-              <p className="text-center text-sm font-bold text-[#0d7b51]">
+              <p className="text-center text-sm font-bold text-[#138a5e]">
                 Password successfully updated.
               </p>
               <PrimaryButton onClick={() => navigate('/login', { replace: true })} type="button">
@@ -160,10 +160,10 @@ export function ResetPasswordPage() {
             </div>
           ) : linkState === 'invalid' ? (
             <div className="space-y-3 text-center">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#fff0ee] text-[#d84b3f]">
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#fbe6e1] text-[#e14b36]">
                 <Icon className="h-8 w-8" name="lock" />
               </div>
-              <p className="text-sm font-bold text-[#d84b3f]">
+              <p className="text-sm font-bold text-[#e14b36]">
                 Link expired ya already use ho chuka hai.
               </p>
               <p className="text-[12px] font-semibold text-[#5d544c]">
@@ -174,15 +174,15 @@ export function ResetPasswordPage() {
               </PrimaryButton>
             </div>
           ) : linkState === 'checking' ? (
-            <p className="py-8 text-center text-sm font-semibold text-[#746a60]">Verifying link…</p>
+            <p className="py-8 text-center text-sm font-semibold text-[#847a6c]">Verifying link…</p>
           ) : (
             <form className="space-y-3" onSubmit={handleSubmit}>
-              <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="new-password">
+              <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="new-password">
                 New Password
               </label>
               <input
                 autoComplete="new-password"
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 id="new-password"
                 minLength={PASSWORD_MIN_LENGTH}
                 onChange={(event) => setNewPassword(event.target.value)}
@@ -190,12 +190,12 @@ export function ResetPasswordPage() {
                 type="password"
                 value={newPassword}
               />
-              <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="confirm-password">
+              <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="confirm-password">
                 Confirm Password
               </label>
               <input
                 autoComplete="new-password"
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 id="confirm-password"
                 minLength={PASSWORD_MIN_LENGTH}
                 onChange={(event) => setConfirmPassword(event.target.value)}
@@ -205,7 +205,7 @@ export function ResetPasswordPage() {
               />
 
               {errorMessage && (
-                <p className="rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">
+                <p className="rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">
                   {errorMessage}
                 </p>
               )}

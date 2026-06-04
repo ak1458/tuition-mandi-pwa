@@ -250,14 +250,14 @@ export function LoginPage() {
         </div>
 
         <div className="mt-6 text-center">
-          <h1 className="text-[24px] font-black leading-tight text-[#1d1813]">{copy.login.title}</h1>
+          <h1 className="text-[24px] font-black leading-tight text-[#1c1916]">{copy.login.title}</h1>
           <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-[#5d544c]">
             {copy.login.subtitle}
           </p>
         </div>
 
-        <section className="mt-5 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
-          <div className="grid grid-cols-2 rounded-xl bg-[#fbf8f1] p-1">
+        <section className="mt-5 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+          <div className="grid grid-cols-2 rounded-xl bg-[#f4f1ea] p-1">
             {[
               ['phone', copy.common.mobile],
               ['email', copy.common.email],
@@ -265,7 +265,7 @@ export function LoginPage() {
               <button
                 className={cx(
                   'rounded-lg px-3 py-2 text-sm font-black',
-                  mode === value ? 'bg-white text-[#4930a8] shadow-sm' : 'text-[#746a60]',
+                  mode === value ? 'bg-white text-[#d6850a] shadow-sm' : 'text-[#847a6c]',
                 )}
                 key={value}
                 onClick={() => {
@@ -284,10 +284,10 @@ export function LoginPage() {
           {mode === 'phone' && !otpRequested && (
             <form className="mt-4 space-y-3" onSubmit={sendOtp}>
               <div className="flex items-center justify-between">
-                <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="phone">
+                <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="phone">
                   {copy.login.mobileNumber}
                 </label>
-                <label className="flex items-center gap-1 text-[10px] font-bold text-[#746a60]">
+                <label className="flex items-center gap-1 text-[10px] font-bold text-[#847a6c]">
                   <input
                     checked={phoneIsSignup}
                     className="h-3 w-3"
@@ -297,8 +297,8 @@ export function LoginPage() {
                   New account?
                 </label>
               </div>
-              <div className="flex overflow-hidden rounded-xl border border-[#eadfcd] bg-[#fffdf8] focus-within:border-[#4930a8]">
-                <span className="grid w-14 place-items-center border-r border-[#eadfcd] text-sm font-black text-[#4930a8]">+91</span>
+              <div className="flex overflow-hidden rounded-xl border border-[#e5decf] bg-[#fffdf8] focus-within:border-[#d6850a]">
+                <span className="grid w-14 place-items-center border-r border-[#e5decf] text-sm font-black text-[#d6850a]">+91</span>
                 <input
                   className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold outline-none"
                   id="phone"
@@ -317,11 +317,11 @@ export function LoginPage() {
 
           {mode === 'phone' && otpRequested && (
             <form className="mt-4 space-y-3" onSubmit={verifyOtp}>
-              <label className="block text-[12px] font-black text-[#1d1813]" htmlFor="otp">
+              <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="otp">
                 OTP
               </label>
               <input
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 id="otp"
                 inputMode="numeric"
                 maxLength={6}
@@ -340,7 +340,7 @@ export function LoginPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#746a60]"
+                  className="rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#847a6c]"
                   onClick={() => setOtpRequested(false)}
                   type="button"
                 >
@@ -351,7 +351,7 @@ export function LoginPage() {
                 </PrimaryButton>
               </div>
               <button
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-4 py-3 text-sm font-bold text-[#4930a8] disabled:opacity-50"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-4 py-3 text-sm font-bold text-[#d6850a] disabled:opacity-50"
                 disabled={otpCooldown > 0 || isSubmitting}
                 onClick={sendOtp}
                 type="button"
@@ -364,7 +364,7 @@ export function LoginPage() {
           {mode === 'email' && !showForgotPassword && (
             <form className="mt-4 space-y-3" onSubmit={handleEmailSubmit}>
               {/* Login / Sign Up toggle */}
-              <div className="grid grid-cols-2 rounded-lg bg-[#fbf8f1] p-0.5">
+              <div className="grid grid-cols-2 rounded-lg bg-[#f4f1ea] p-0.5">
                 {[
                   ['login', 'Login'] as const,
                   ['signup', 'Sign Up'] as const,
@@ -372,7 +372,7 @@ export function LoginPage() {
                   <button
                     className={cx(
                       'rounded-md px-3 py-1.5 text-[12px] font-black',
-                      emailAction === value ? 'bg-white text-[#4930a8] shadow-sm' : 'text-[#746a60]',
+                      emailAction === value ? 'bg-white text-[#d6850a] shadow-sm' : 'text-[#847a6c]',
                     )}
                     key={value}
                     onClick={() => {
@@ -389,7 +389,7 @@ export function LoginPage() {
 
               <input
                 autoComplete="email"
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="teacher@example.com"
                 type="email"
@@ -397,7 +397,7 @@ export function LoginPage() {
               />
               <input
                 autoComplete={emailAction === 'signup' ? 'new-password' : 'current-password'}
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 minLength={emailAction === 'signup' ? PASSWORD_MIN_LENGTH : undefined}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder={emailAction === 'signup' ? `Create password (min ${PASSWORD_MIN_LENGTH} chars)` : copy.common.password}
@@ -423,7 +423,7 @@ export function LoginPage() {
 
               {emailAction === 'login' && (
                 <button
-                  className="w-full text-center text-[12px] font-bold text-[#4930a8]"
+                  className="w-full text-center text-[12px] font-bold text-[#d6850a]"
                   onClick={() => {
                     setShowForgotPassword(true)
                     setForgotEmail(email)
@@ -440,13 +440,13 @@ export function LoginPage() {
 
           {mode === 'email' && showForgotPassword && (
             <form className="mt-4 space-y-3" onSubmit={handleForgotPassword}>
-              <p className="text-[12px] font-black text-[#1d1813]">Reset Password</p>
+              <p className="text-[12px] font-black text-[#1c1916]">Reset Password</p>
               <p className="text-[11px] font-semibold text-[#5d544c]">
                 Email dalein — hum reset link bhejenge.
               </p>
               <input
                 autoComplete="email"
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 onChange={(event) => setForgotEmail(event.target.value)}
                 placeholder="teacher@example.com"
                 type="email"
@@ -454,7 +454,7 @@ export function LoginPage() {
               />
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#746a60]"
+                  className="rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#847a6c]"
                   onClick={() => {
                     setShowForgotPassword(false)
                     setErrorMessage('')
@@ -473,27 +473,27 @@ export function LoginPage() {
 
           {/* Google OAuth */}
           <button
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#1d1813]"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#1c1916]"
             onClick={handleGoogleLogin}
             type="button"
           >
-            <span className="grid h-5 w-5 place-items-center rounded-full border border-[#eadfcd] text-[12px] font-black text-[#d84b3f]">G</span>
+            <span className="grid h-5 w-5 place-items-center rounded-full border border-[#e5decf] text-[12px] font-black text-[#e14b36]">G</span>
             {copy.login.google}
           </button>
 
           {/* If user clicks Google but consent block not shown above, surface a hint */}
           {!showConsentBlock && (
-            <p className="mt-2 text-center text-[10px] font-semibold text-[#9a8f83]">
-              Google se sign in karne par <button className="underline text-[#4930a8]" onClick={() => navigate('/privacy')} type="button">Privacy</button> aur <button className="underline text-[#4930a8]" onClick={() => navigate('/terms')} type="button">Terms</button> accept honge.
+            <p className="mt-2 text-center text-[10px] font-semibold text-[#847a6c]">
+              Google se sign in karne par <button className="underline text-[#d6850a]" onClick={() => navigate('/privacy')} type="button">Privacy</button> aur <button className="underline text-[#d6850a]" onClick={() => navigate('/terms')} type="button">Terms</button> accept honge.
             </p>
           )}
 
-          {infoMessage && <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-sm font-bold text-[#0d7b51]">{infoMessage}</p>}
-          {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
+          {infoMessage && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{infoMessage}</p>}
+          {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
         </section>
 
         <button
-          className="mt-5 w-full text-center text-[13px] font-black text-[#0d7b51]"
+          className="mt-5 w-full text-center text-[13px] font-black text-[#138a5e]"
           onClick={() => navigate('/search')}
           type="button"
         >
@@ -514,7 +514,7 @@ interface ConsentBlockProps {
 
 function ConsentBlock({ agreeToTerms, setAgreeToTerms, confirmAge, setConfirmAge, navigate }: ConsentBlockProps) {
   return (
-    <div className="space-y-2 rounded-xl border border-[#ded1f7] bg-[#f7f3ff] p-3">
+    <div className="space-y-2 rounded-xl border border-[#fcefd2] bg-[#fcefd2] p-3">
       <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-[#5d544c]">
         <input
           checked={agreeToTerms}
@@ -525,11 +525,11 @@ function ConsentBlock({ agreeToTerms, setAgreeToTerms, confirmAge, setConfirmAge
         />
         <span>
           Maine{' '}
-          <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/privacy')} type="button">
+          <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/privacy')} type="button">
             Privacy Policy
           </button>{' '}
           aur{' '}
-          <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/terms')} type="button">
+          <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/terms')} type="button">
             Terms
           </button>{' '}
           padhi hain aur accept karta hoon.

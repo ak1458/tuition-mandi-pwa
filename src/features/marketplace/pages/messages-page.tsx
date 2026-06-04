@@ -34,15 +34,15 @@ export function MessagesPage() {
       <section className="px-4 py-4 pb-24">
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-            <div className="grid h-20 w-20 place-items-center rounded-full bg-[#fbf8f1] text-[#9a8f83]">
+            <div className="grid h-20 w-20 place-items-center rounded-full bg-[#f4f1ea] text-[#847a6c]">
               <Icon className="h-10 w-10" name="message" />
             </div>
-            <h2 className="mt-6 text-lg font-black text-[#1d1813]">No inquiries yet</h2>
-            <p className="mt-2 text-sm font-semibold text-[#746a60]">
+            <h2 className="mt-6 text-lg font-black text-[#1c1916]">No inquiries yet</h2>
+            <p className="mt-2 text-sm font-semibold text-[#847a6c]">
               Teachers ke profile pe Send Inquiry tap karein - aapke messages yahan dikhenge.
             </p>
             <button
-              className="mt-5 rounded-xl bg-[#0d7b51] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)]"
+              className="mt-5 rounded-xl bg-[#138a5e] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)]"
               onClick={() => navigate('/search')}
               type="button"
             >
@@ -53,7 +53,7 @@ export function MessagesPage() {
           <div className="space-y-3">
             {items.map((inquiry, index) => (
               <article
-                className="rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)]"
+                className="rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)]"
                 key={inquiry.id}
               >
                 <div className="flex items-start gap-3">
@@ -64,14 +64,14 @@ export function MessagesPage() {
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="truncate text-[13px] font-black text-[#1d1813]">
+                      <p className="truncate text-[13px] font-black text-[#1c1916]">
                         {inquiry.subject_needed || 'Tuition'} - {inquiry.student_class || 'Class'}
                       </p>
-                      <span className="shrink-0 text-[10px] font-bold text-[#9a8f83]">
+                      <span className="shrink-0 text-[10px] font-bold text-[#847a6c]">
                         {timeAgo(inquiry.created_at)}
                       </span>
                     </div>
-                    <p className="mt-0.5 truncate text-[11px] font-semibold text-[#746a60]">
+                    <p className="mt-0.5 truncate text-[11px] font-semibold text-[#847a6c]">
                       Status: {inquiry.status}
                     </p>
                     {inquiry.message && (

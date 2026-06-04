@@ -1,4 +1,4 @@
-# Takhti — Architecture
+# TuitionMandi — Architecture
 
 A guide for anyone new to the codebase. Goal of the product: **help parents find tutors, and help tutors find students.** Everything here serves that.
 

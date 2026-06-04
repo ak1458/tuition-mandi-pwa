@@ -27,7 +27,9 @@ export type IconName =
   | 'menu'
   | 'message'
   | 'mic'
+  | 'moon'
   | 'more'
+  | 'sun'
   | 'phone'
   | 'plus'
   | 'report'
@@ -67,6 +69,15 @@ export function Icon({ name, className, ...props }: IconProps) {
         )
       case 'bookmark':
         return <path d="M19 21 12 17 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+      case 'moon':
+        return <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" />
+      case 'sun':
+        return (
+          <>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </>
+        )
       case 'calendar':
         return (
           <>
@@ -308,33 +319,31 @@ export function Icon({ name, className, ...props }: IconProps) {
 export function TuitionMandiLogo({ compact = false, tagline = 'Your Digital Register' }: { compact?: boolean; tagline?: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#ecd7ab] bg-[linear-gradient(160deg,#fff8ea_0%,#fceeca_100%)] shadow-[0_8px_18px_rgba(122,78,25,0.14)]">
+      <div
+        className="flex h-11 w-11 items-center justify-center rounded-[14px]"
+        style={{ background: 'var(--marigold-wash)', boxShadow: 'var(--shadow-sm)' }}
+      >
+        {/* Brand mark — open book (learning) + spark (the "aha" of a good tutor) */}
         <svg className="h-7 w-7" viewBox="0 0 48 48" aria-hidden="true">
-          {/* Slate / tuition-mandi body */}
-          <rect x="7" y="7" width="34" height="34" rx="6" fill="#1f1812" />
-          <rect x="9" y="9" width="30" height="30" rx="5" fill="#2a201a" />
-          {/* Wooden inner frame */}
-          <rect x="11" y="11" width="26" height="26" rx="4" fill="#f5b860" />
-          <rect x="12.5" y="12.5" width="23" height="23" rx="3" fill="#fff7e7" />
-          {/* Devanagari-style "T" (Ta - ट) mark in chalk */}
+          <path d="M24 14.5 C 19 11.2, 12 10.4, 6.5 12.2 V 35.4 C 12 33.6, 19 34.2, 24 37.6 Z" fill="var(--marigold)" />
+          <path d="M24 14.5 C 29 11.2, 36 10.4, 41.5 12.2 V 35.4 C 36 33.6, 29 34.2, 24 37.6 Z" fill="var(--marigold)" />
+          <path d="M24 15.4 V 36.6" stroke="var(--on-marigold)" strokeWidth="1.7" strokeLinecap="round" />
+          <g stroke="var(--on-marigold)" strokeWidth="1.6" strokeLinecap="round" opacity="0.5">
+            <path d="M11 19 H 19.5 M11 23.5 H 19.5 M11 28 H 18" />
+            <path d="M28.5 19 H 37 M28.5 23.5 H 37 M30 28 H 37" />
+          </g>
           <path
-            d="M17 18.5h14 M24 18.5v3.5 M24 22c3 0 5.5 1.5 5.5 4.5S27 31 23.5 31c-3.5 0-5.5-2-5.5-4.5"
-            stroke="#1f1812"
-            strokeWidth="2.4"
-            strokeLinecap="round"
-            fill="none"
+            d="M38.5 6 l1.05 2.45 2.45 1.05 -2.45 1.05 -1.05 2.45 -1.05 -2.45 -2.45 -1.05 2.45 -1.05 Z"
+            fill="var(--on-marigold)"
           />
-          {/* Soft chalk dust glow */}
-          <circle cx="17" cy="32.5" r="1.2" fill="#1f1812" opacity="0.55" />
-          <circle cx="31" cy="32.5" r="1.2" fill="#1f1812" opacity="0.55" />
         </svg>
       </div>
       {!compact && (
         <div className="min-w-0">
-          <p className="font-display text-[21px] font-extrabold leading-none tracking-[-0.02em] text-[#17120d] truncate">
-            TuitionMandi
+          <p className="font-display text-[21px] font-extrabold leading-none tracking-[-0.04em] truncate" style={{ color: 'var(--ink)' }}>
+            Tuition<span style={{ color: 'var(--marigold-deep)' }}>Mandi</span>
           </p>
-          <p className="mt-1.5 text-[10px] font-semibold tracking-wide text-[#7a6f64] truncate">{tagline}</p>
+          <p className="mt-1.5 text-[10px] font-semibold tracking-wide truncate" style={{ color: 'var(--ink-soft)' }}>{tagline}</p>
         </div>
       )}
     </div>
@@ -363,7 +372,7 @@ export function PersonAvatar({
   const hair = variant === 'female' ? '#161616' : '#1f1f1f'
 
   return (
-    <div className={cx('overflow-hidden rounded-full border border-[#eadfcd] bg-[#f8e6cc]', dimensions)} title={name}>
+    <div className={cx('overflow-hidden rounded-full border border-[#e5decf] bg-[#f8e6cc]', dimensions)} title={name}>
       <svg viewBox="0 0 72 72" className="h-full w-full" aria-hidden="true">
         <rect width="72" height="72" fill="#f7e4c6" />
         <circle cx="36" cy="31" r="16" fill={face} />
@@ -401,7 +410,7 @@ export function IconButton({
     <button
       aria-label={label}
       className={cx(
-        'grid h-10 w-10 place-items-center rounded-xl border border-[#eadfcd] bg-white text-[#302820] shadow-sm active:scale-[0.98]',
+        'grid h-10 w-10 place-items-center rounded-xl border border-[#e5decf] bg-white text-[#302820] shadow-sm active:scale-[0.98]',
         className,
       )}
       type="button"
@@ -420,7 +429,7 @@ export function PrimaryButton({
   return (
     <button
       className={cx(
-        'w-full rounded-xl bg-[#4930a8] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] active:scale-[0.99] disabled:opacity-50',
+        'w-full rounded-xl bg-[#d6850a] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] active:scale-[0.99] disabled:opacity-50',
         className,
       )}
       type="button"
@@ -439,7 +448,7 @@ export function LinkButton({
   return (
     <a
       className={cx(
-        'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d7b51] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)] active:scale-[0.99]',
+        'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#138a5e] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)] active:scale-[0.99]',
         className,
       )}
       {...props}
@@ -462,7 +471,7 @@ export function Chip({
     <span
       className={cx(
         'inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold',
-        active ? 'border-[#d9eee2] bg-[#eaf7ef] text-[#0d7b51]' : 'border-[#eee4d8] bg-white text-[#5d544c]',
+        active ? 'border-[#d9eee2] bg-[#dcf1e7] text-[#138a5e]' : 'border-[#e5decf] bg-white text-[#5d544c]',
         className,
       )}
     >
@@ -473,8 +482,8 @@ export function Chip({
 
 export function PageShell({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <main className={cx('min-h-screen bg-[#fbf8f1] text-[#1d1813]', className)}>
-      <div className="mx-auto min-h-screen w-full max-w-[480px] bg-[linear-gradient(180deg,#fffaf1_0%,#fbf8f1_44%,#ffffff_100%)]">
+    <main className={cx('min-h-screen bg-[#f4f1ea] text-[#1c1916]', className)}>
+      <div className="mx-auto min-h-screen w-full max-w-[480px] bg-[linear-gradient(180deg,#f4f1ea_0%,#f4f1ea_44%,#ffffff_100%)]">
         {children}
       </div>
     </main>
@@ -495,13 +504,13 @@ export function PageHeader({
   className?: string
 }) {
   return (
-    <header className={cx('sticky top-0 z-30 border-b border-[#efe4d6] bg-[#fffaf1]/95 px-4 py-3 backdrop-blur', className)}>
+    <header className={cx('sticky top-0 z-30 border-b border-[#efe4d6] bg-[#f4f1ea]/95 px-4 py-3 backdrop-blur', className)}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           {left}
           <div className="min-w-0">
-            <h1 className="truncate text-base font-extrabold text-[#1d1813]">{title}</h1>
-            {subtitle && <p className="truncate text-[11px] font-medium text-[#746a60]">{subtitle}</p>}
+            <h1 className="truncate text-base font-extrabold text-[#1c1916]">{title}</h1>
+            {subtitle && <p className="truncate text-[11px] font-medium text-[#847a6c]">{subtitle}</p>}
           </div>
         </div>
         {right}
@@ -875,7 +884,7 @@ export function LockKeyIllustration({ className }: { className?: string }) {
       <rect width="280" height="220" rx="28" fill="#fff2df" />
       <path d="M58 103c28-68 64 9 92-43 28-52 80-19 68 45-12 63-79 68-135 61-31-4-42-23-25-63Z" fill="#fffaf2" />
       <rect x="72" y="116" width="54" height="56" rx="10" fill="#5b49b6" />
-      <path d="M84 116V98a15 15 0 0 1 30 0v18" fill="none" stroke="#4930a8" strokeWidth="8" strokeLinecap="round" />
+      <path d="M84 116V98a15 15 0 0 1 30 0v18" fill="none" stroke="#d6850a" strokeWidth="8" strokeLinecap="round" />
       <circle cx="99" cy="142" r="7" fill="#f5eaf4" />
       <path d="M99 148v11" stroke="#f5eaf4" strokeWidth="5" strokeLinecap="round" />
       <circle cx="181" cy="102" r="17" fill="#eab451" />
@@ -891,11 +900,11 @@ export function ReportReadyIllustration({ className }: { className?: string }) {
   return (
     <svg className={cx('w-full', className)} viewBox="0 0 280 190" role="img" aria-label="Report ready">
       <rect width="280" height="190" rx="24" fill="#fff2df" />
-      <rect x="62" y="36" width="112" height="132" rx="15" fill="#fffdf8" stroke="#eadfcd" strokeWidth="3" />
+      <rect x="62" y="36" width="112" height="132" rx="15" fill="#fffdf8" stroke="#e5decf" strokeWidth="3" />
       <path d="M91 70h54M91 94h54M91 118h36" stroke="#d0b891" strokeWidth="6" strokeLinecap="round" />
-      <rect x="91" y="136" width="52" height="12" rx="6" fill="#eaf7ef" />
-      <circle cx="194" cy="61" r="24" fill="#4930a8" opacity="0.13" />
-      <path d="m184 63 8 8 19-22" fill="none" stroke="#4930a8" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
+      <rect x="91" y="136" width="52" height="12" rx="6" fill="#dcf1e7" />
+      <circle cx="194" cy="61" r="24" fill="#d6850a" opacity="0.13" />
+      <path d="m184 63 8 8 19-22" fill="none" stroke="#d6850a" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" />
       <path d="M207 118h35" stroke="#25d366" strokeWidth="9" strokeLinecap="round" />
       <path d="m228 101 22 17-22 17" fill="none" stroke="#25d366" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
     </svg>

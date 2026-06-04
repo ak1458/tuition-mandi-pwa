@@ -87,7 +87,7 @@ function buildDescription(teacher: TeacherSummary): string {
   const bio = teacher.bio?.trim()
   if (bio && bio.length > 0) return bio.slice(0, 200)
   const subtitle = buildSubtitle(teacher)
-  return `${teacher.full_name} - ${subtitle}. Trusted private tuition teacher on Takhti.`
+  return `${teacher.full_name} - ${subtitle}. Trusted private tuition teacher on TuitionMandi.`
 }
 
 async function fetchTeacher(
@@ -166,8 +166,8 @@ function buildTeacherJsonLd(teacher: TeacherSummary, pageUrl: string, image: str
 
 function injectMetaTags(html: string, teacher: TeacherSummary, pageUrl: string): string {
   const title = teacher.is_verified
-    ? `${teacher.full_name} (Verified) - ${teacher.subjects.slice(0, 2).join(', ')} Teacher | Takhti`
-    : `${teacher.full_name} - ${teacher.subjects.slice(0, 2).join(', ')} Teacher | Takhti`
+    ? `${teacher.full_name} (Verified) - ${teacher.subjects.slice(0, 2).join(', ')} Teacher | TuitionMandi`
+    : `${teacher.full_name} - ${teacher.subjects.slice(0, 2).join(', ')} Teacher | TuitionMandi`
 
   const description = buildDescription(teacher)
   const image = safeImageUrl(teacher.profile_photo_url, ABSOLUTE_OG_IMAGE)
@@ -190,7 +190,7 @@ function injectMetaTags(html: string, teacher: TeacherSummary, pageUrl: string):
     `<meta property="og:image:width" content="1200" />`,
     `<meta property="og:image:height" content="630" />`,
     `<meta property="og:url" content="${safeUrl}" />`,
-    `<meta property="og:site_name" content="Takhti" />`,
+    `<meta property="og:site_name" content="TuitionMandi" />`,
     `<meta property="og:locale" content="hi_IN" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${safeTitle}" />`,

@@ -149,7 +149,7 @@ export function TeacherProfilePage() {
   if (loading) {
     return (
       <PageShell>
-        <div className="grid min-h-screen place-items-center px-5 text-sm font-bold text-[#746a60]">{copy.profile.loading}</div>
+        <div className="grid min-h-screen place-items-center px-5 text-sm font-bold text-[#847a6c]">{copy.profile.loading}</div>
       </PageShell>
     )
   }
@@ -158,12 +158,12 @@ export function TeacherProfilePage() {
     return (
       <PageShell>
         <div className="flex min-h-screen flex-col items-center justify-center px-5 text-center">
-          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-[#fff0ee] text-[#d84b3f]">
+          <div className="grid h-16 w-16 place-items-center rounded-2xl bg-[#fbe6e1] text-[#e14b36]">
             <Icon className="h-8 w-8" name="search" />
           </div>
-          <h1 className="mt-5 text-xl font-black text-[#1d1813]">{copy.profile.notFound}</h1>
-          <p className="mt-2 text-sm font-semibold text-[#746a60]">{error || copy.profile.notFoundDesc}</p>
-          <button className="mt-6 rounded-xl bg-[#4930a8] px-5 py-3 text-sm font-bold text-white" onClick={() => navigate('/search')} type="button">
+          <h1 className="mt-5 text-xl font-black text-[#1c1916]">{copy.profile.notFound}</h1>
+          <p className="mt-2 text-sm font-semibold text-[#847a6c]">{error || copy.profile.notFoundDesc}</p>
+          <button className="mt-6 rounded-xl bg-[#d6850a] px-5 py-3 text-sm font-bold text-white" onClick={() => navigate('/search')} type="button">
             {copy.profile.searchTeachers}
           </button>
         </div>
@@ -194,13 +194,13 @@ export function TeacherProfilePage() {
       />
 
       <section className="px-4 pb-28 pt-4">
-        <div className="rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+        <div className="rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
           <div className="flex items-start gap-4">
             <PersonAvatar name={teacher.full_name} size="lg" variant={teacherVariant(teacher.full_name)} />
             <div className="min-w-0 flex-1 pt-1">
               <div className="flex items-center gap-2">
-                <h1 className="truncate text-[18px] font-black text-[#1d1813]">{teacher.full_name}</h1>
-                {teacher.is_verified && <span className="grid h-5 w-5 place-items-center rounded-full bg-[#0d7b51] text-white"><Icon className="h-3 w-3" name="check" /></span>}
+                <h1 className="truncate text-[18px] font-black text-[#1c1916]">{teacher.full_name}</h1>
+                {teacher.is_verified && <span className="grid h-5 w-5 place-items-center rounded-full bg-[#138a5e] text-white"><Icon className="h-3 w-3" name="check" /></span>}
               </div>
               <p className="mt-1 text-[12px] font-semibold text-[#5d544c]">
                 {teacher.subjects.join(', ')}
@@ -209,7 +209,7 @@ export function TeacherProfilePage() {
                 {teacher.classes_taught.join(' & ')} - {teacher.medium}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1 text-[12px] font-black text-[#e4a01f]">
+                <span className="inline-flex items-center gap-1 text-[12px] font-black text-[#f2a114]">
                   <Icon className="h-4 w-4" name="star" />
                   {rating > 0 ? rating.toFixed(1) : 'New'} ({ratingCount} Reviews)
                 </span>
@@ -229,23 +229,23 @@ export function TeacherProfilePage() {
         </div>
 
         <section className="mt-5">
-          <h2 className="text-[13px] font-black text-[#1d1813]">{copy.profile.about}</h2>
-          <p className="mt-2 rounded-[18px] border border-[#eee4d8] bg-white p-4 text-[13px] font-semibold leading-6 text-[#4d453d]">
+          <h2 className="text-[13px] font-black text-[#1c1916]">{copy.profile.about}</h2>
+          <p className="mt-2 rounded-[18px] border border-[#e5decf] bg-white p-4 text-[13px] font-semibold leading-6 text-[#4d453d]">
             {teacher.bio || 'Teacher profile details jaldi update honge.'}
           </p>
         </section>
 
         <section className="mt-5">
-          <h2 className="text-[13px] font-black text-[#1d1813]">{copy.profile.results}</h2>
+          <h2 className="text-[13px] font-black text-[#1c1916]">{copy.profile.results}</h2>
           <div className="mt-3 grid grid-cols-3 gap-2">
             {[
               [copy.profile.successRate, stats.success],
               [copy.profile.studentsTaught, stats.students],
               [copy.profile.topRank, stats.toppers],
             ].map(([label, value]) => (
-              <div className="rounded-[16px] border border-[#eee4d8] bg-white p-3 text-center" key={label}>
-                <p className="text-[18px] font-black text-[#0d7b51]">{value}</p>
-                <p className="mt-1 text-[10px] font-bold text-[#746a60]">{label}</p>
+              <div className="rounded-[16px] border border-[#e5decf] bg-white p-3 text-center" key={label}>
+                <p className="text-[18px] font-black text-[#138a5e]">{value}</p>
+                <p className="mt-1 text-[10px] font-bold text-[#847a6c]">{label}</p>
               </div>
             ))}
           </div>
@@ -253,22 +253,22 @@ export function TeacherProfilePage() {
 
         <section className="mt-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-[13px] font-black text-[#1d1813]">{copy.profile.reviews} ({ratingCount})</h2>
-            <Link className="text-[12px] font-extrabold text-[#4930a8]" to={`/profile/${teacher.id}/review`}>
+            <h2 className="text-[13px] font-black text-[#1c1916]">{copy.profile.reviews} ({ratingCount})</h2>
+            <Link className="text-[12px] font-extrabold text-[#d6850a]" to={`/profile/${teacher.id}/review`}>
               {copy.profile.addReview}
             </Link>
           </div>
           <div className="mt-3 space-y-3">
             {(teacher.parent_ratings ?? []).slice(0, 3).map((review) => (
-              <article className="rounded-[18px] border border-[#eee4d8] bg-white p-3" key={review.id}>
+              <article className="rounded-[18px] border border-[#e5decf] bg-white p-3" key={review.id}>
                 <div className="flex items-start gap-3">
                   <PersonAvatar name={review.parent_name} size="sm" variant="student" />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2">
-                      <p className="truncate text-[12px] font-black text-[#1d1813]">{review.parent_name} (Parent)</p>
-                      <p className="shrink-0 text-[10px] font-bold text-[#746a60]">{reviewAge(review.created_at)}</p>
+                      <p className="truncate text-[12px] font-black text-[#1c1916]">{review.parent_name} (Parent)</p>
+                      <p className="shrink-0 text-[10px] font-bold text-[#847a6c]">{reviewAge(review.created_at)}</p>
                     </div>
-                    <div className="mt-1 flex gap-0.5 text-[#e4a01f]">
+                    <div className="mt-1 flex gap-0.5 text-[#f2a114]">
                       {Array.from({ length: review.rating }).map((_, index) => (
                         <Icon className="h-3.5 w-3.5" key={index} name="star" />
                       ))}
@@ -281,20 +281,20 @@ export function TeacherProfilePage() {
               </article>
             ))}
             {ratingCount === 0 && (
-              <p className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-center text-sm font-bold text-[#746a60]">
+              <p className="rounded-[18px] border border-[#e5decf] bg-white p-4 text-center text-sm font-bold text-[#847a6c]">
                 {copy.profile.noReviews}
               </p>
             )}
           </div>
         </section>
 
-        <section className="mt-5 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.06)]">
+        <section className="mt-5 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.06)]">
           {sent ? (
             <div className="py-4 text-center">
-              <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#eaf7ef] text-[#0d7b51]">
+              <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#dcf1e7] text-[#138a5e]">
                 <Icon className="h-7 w-7" name="check" />
               </div>
-              <h2 className="mt-4 text-lg font-black text-[#1d1813]">{copy.profile.connected}</h2>
+              <h2 className="mt-4 text-lg font-black text-[#1c1916]">{copy.profile.connected}</h2>
               <p className="mt-2 text-sm font-semibold text-[#5d544c]">
                 {copy.profile.connectedNote.replace('{{name}}', teacher.full_name)}
               </p>
@@ -307,45 +307,45 @@ export function TeacherProfilePage() {
             </div>
           ) : (
             <>
-              <h2 className="text-[15px] font-black text-[#1d1813]">{copy.profile.sendInquiry}</h2>
-              <p className="mt-1 text-[12px] font-semibold leading-5 text-[#746a60]">
+              <h2 className="text-[15px] font-black text-[#1c1916]">{copy.profile.sendInquiry}</h2>
+              <p className="mt-1 text-[12px] font-semibold leading-5 text-[#847a6c]">
                 {copy.profile.inquiryNote.replace('{{name}}', teacher.full_name)}
               </p>
               <form className="mt-4 space-y-3" onSubmit={sendInquiry}>
                 <div className="grid grid-cols-2 gap-2">
                   <input
-                    className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                    className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                     onChange={(event) => setStudentClass(event.target.value)}
                     placeholder="Class"
                     value={studentClass}
                   />
                   <input
-                    className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                    className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                     onChange={(event) => setSubject(event.target.value)}
                     placeholder="Subject"
                     value={subject}
                   />
                 </div>
                 <input
-                  className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                  className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                   onChange={(event) => setParentName(event.target.value)}
                   placeholder={copy.profile.parentName}
                   value={parentName}
                 />
                 <input
-                  className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                  className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                   inputMode="tel"
                   onChange={(event) => setParentPhone(event.target.value)}
                   placeholder={copy.profile.parentPhone}
                   value={parentPhone}
                 />
                 <textarea
-                  className="min-h-[96px] w-full resize-none rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold leading-6 outline-none focus:border-[#4930a8]"
+                  className="min-h-[96px] w-full resize-none rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold leading-6 outline-none focus:border-[#d6850a]"
                   onChange={(event) => setMessage(event.target.value)}
                   placeholder={copy.profile.message}
                   value={message}
                 />
-                {formError && <p className="rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{formError}</p>}
+                {formError && <p className="rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{formError}</p>}
                 <PrimaryButton disabled={sending} type="submit">
                   {sending ? copy.profile.sending : copy.profile.sendInquiry}
                 </PrimaryButton>
@@ -355,7 +355,7 @@ export function TeacherProfilePage() {
         </section>
       </section>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[480px] border-t border-[#eadfcd] bg-white/95 px-4 py-3 backdrop-blur safe-bottom">
+      <div className="fixed inset-x-0 bottom-0 z-40 mx-auto max-w-[480px] border-t border-[#e5decf] bg-white/95 px-4 py-3 backdrop-blur safe-bottom">
         <div className="grid grid-cols-[1fr_0.7fr] gap-2">
           {whatsappUrl ? (
             <LinkButton href={whatsappUrl} rel="noreferrer" target="_blank">
@@ -363,7 +363,7 @@ export function TeacherProfilePage() {
               WhatsApp
             </LinkButton>
           ) : (
-            <button className="rounded-xl bg-[#f4eee5] py-3 text-sm font-bold text-[#9a8f83]" disabled type="button">
+            <button className="rounded-xl bg-[#ece7dc] py-3 text-sm font-bold text-[#847a6c]" disabled type="button">
               {copy.common.noPhone}
             </button>
           )}
@@ -371,8 +371,8 @@ export function TeacherProfilePage() {
             className={cx(
               'rounded-xl border py-3 text-sm font-bold',
               isSaved
-                ? 'border-[#ded1f7] bg-[#4930a8] text-white'
-                : 'border-[#ded1f7] bg-white text-[#4930a8]',
+                ? 'border-[#fcefd2] bg-[#d6850a] text-white'
+                : 'border-[#fcefd2] bg-white text-[#d6850a]',
             )}
             onClick={onToggleSave}
             type="button"

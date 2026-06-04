@@ -196,7 +196,7 @@ export function ReportsPage() {
   const monthName = new Date(monthStart).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
 
   return (
-    <div className="min-h-full bg-[#fbf8f1] pb-28">
+    <div className="min-h-full bg-[#f4f1ea] pb-28">
       <PageHeader
         left={
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
@@ -210,22 +210,22 @@ export function ReportsPage() {
       <section className="px-4 py-4">
         <ReportReadyIllustration className="rounded-[24px] shadow-[0_18px_38px_rgba(106,68,25,0.08)]" />
 
-        {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
-        {message && <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-sm font-bold text-[#0d7b51]">{message}</p>}
+        {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
+        {message && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{message}</p>}
 
-        <section className="mt-4 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
-          <h2 className="text-[16px] font-black text-[#1d1813]">{copy.reports.ready}</h2>
-          <p className="mt-1 text-[12px] font-semibold leading-5 text-[#746a60]">
+        <section className="mt-4 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+          <h2 className="text-[16px] font-black text-[#1c1916]">{copy.reports.ready}</h2>
+          <p className="mt-1 text-[12px] font-semibold leading-5 text-[#847a6c]">
             {copy.reports.description}
           </p>
 
           <div className="mt-4 space-y-3">
             <div>
-              <label className="mb-1 block text-[11px] font-bold text-[#746a60]" htmlFor="report-student">
+              <label className="mb-1 block text-[11px] font-bold text-[#847a6c]" htmlFor="report-student">
                 {copy.reports.selectStudent}
               </label>
               <select
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 disabled={isLoading || students.length === 0}
                 id="report-student"
                 onChange={(event) => setSelectedStudentId(event.target.value)}
@@ -240,11 +240,11 @@ export function ReportsPage() {
               </select>
             </div>
             <div>
-              <label className="mb-1 block text-[11px] font-bold text-[#746a60]" htmlFor="report-month">
+              <label className="mb-1 block text-[11px] font-bold text-[#847a6c]" htmlFor="report-month">
                 Month
               </label>
               <input
-                className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 id="report-month"
                 onChange={(event) => setSelectedMonth(event.target.value)}
                 type="month"
@@ -255,26 +255,26 @@ export function ReportsPage() {
 
           {selectedStudent && (
             <div className="mt-4 grid grid-cols-3 gap-2">
-              <div className="rounded-[14px] bg-[#fbf8f1] p-3 text-center">
-                <p className="text-[18px] font-black text-[#0d7b51]">{metrics.attendancePercent}%</p>
-                <p className="mt-1 text-[10px] font-bold text-[#746a60]">{copy.reports.attendance}</p>
+              <div className="rounded-[14px] bg-[#f4f1ea] p-3 text-center">
+                <p className="text-[18px] font-black text-[#138a5e]">{metrics.attendancePercent}%</p>
+                <p className="mt-1 text-[10px] font-bold text-[#847a6c]">{copy.reports.attendance}</p>
               </div>
-              <div className="rounded-[14px] bg-[#fbf8f1] p-3 text-center">
-                <p className="text-[18px] font-black text-[#4930a8]">{metrics.avgScore}%</p>
-                <p className="mt-1 text-[10px] font-bold text-[#746a60]">{copy.reports.avgScore}</p>
+              <div className="rounded-[14px] bg-[#f4f1ea] p-3 text-center">
+                <p className="text-[18px] font-black text-[#d6850a]">{metrics.avgScore}%</p>
+                <p className="mt-1 text-[10px] font-bold text-[#847a6c]">{copy.reports.avgScore}</p>
               </div>
-              <div className="rounded-[14px] bg-[#fbf8f1] p-3 text-center">
+              <div className="rounded-[14px] bg-[#f4f1ea] p-3 text-center">
                 <p className="text-[18px] font-black text-[#c87b22]">{metrics.testsDone}</p>
-                <p className="mt-1 text-[10px] font-bold text-[#746a60]">{copy.reports.tests}</p>
+                <p className="mt-1 text-[10px] font-bold text-[#847a6c]">{copy.reports.tests}</p>
               </div>
             </div>
           )}
           {isLoadingMetrics && (
-            <p className="mt-3 text-center text-[11px] font-semibold text-[#746a60]">Metrics load ho rahe hain...</p>
+            <p className="mt-3 text-center text-[11px] font-semibold text-[#847a6c]">Metrics load ho rahe hain...</p>
           )}
 
           <button
-            className="mt-5 w-full rounded-xl bg-[#4930a8] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] disabled:opacity-50"
+            className="mt-5 w-full rounded-xl bg-[#d6850a] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] disabled:opacity-50"
             disabled={isGenerating || !selectedStudent || isLoading}
             onClick={onGenerateReport}
             type="button"
@@ -282,7 +282,7 @@ export function ReportsPage() {
             {isGenerating ? copy.reports.generating : copy.reports.generate}
           </button>
           <button
-            className="mt-2 w-full rounded-xl border border-[#eadfcd] bg-white px-4 py-3 text-sm font-bold text-[#4930a8] disabled:opacity-50"
+            className="mt-2 w-full rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#d6850a] disabled:opacity-50"
             disabled={isGenerating || !selectedStudent}
             onClick={() => {
               onUseManualTemplate().catch(() => {})
@@ -294,28 +294,28 @@ export function ReportsPage() {
         </section>
 
         {reportText && selectedStudent && (
-          <section className="mt-4 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.06)]">
+          <section className="mt-4 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.06)]">
             <div className="mb-3 flex items-center gap-3">
               <PersonAvatar name={selectedStudent.full_name} size="sm" variant="student" />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="truncate text-[13px] font-extrabold text-[#1d1813]">{selectedStudent.full_name}</p>
+                  <p className="truncate text-[13px] font-extrabold text-[#1c1916]">{selectedStudent.full_name}</p>
                   <DemoTrialBadge createdAt={selectedStudent.created_at} label={copy.demo.label} variant="compact" />
                 </div>
-                <p className="text-[11px] font-semibold text-[#746a60]">
+                <p className="text-[11px] font-semibold text-[#847a6c]">
                   {monthName} · {selectedStudent.class_label}
                 </p>
               </div>
             </div>
 
-            <p className="text-[12px] font-black text-[#746a60]">{copy.reports.preview}</p>
+            <p className="text-[12px] font-black text-[#847a6c]">{copy.reports.preview}</p>
             <p className="mt-2 whitespace-pre-wrap rounded-[16px] border border-[#f3e3ca] bg-[#fff8ec] p-3 text-[12px] font-semibold leading-relaxed text-[#3a3027]">
               {whatsappText}
             </p>
 
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button
-                className="rounded-xl border border-[#eadfcd] bg-white px-3 py-3 text-sm font-bold text-[#1d1813]"
+                className="rounded-xl border border-[#e5decf] bg-white px-3 py-3 text-sm font-bold text-[#1c1916]"
                 onClick={() => {
                   onCopy().catch(() => {})
                 }}
@@ -325,7 +325,7 @@ export function ReportsPage() {
               </button>
               {whatsappLinkWithTrial ? (
                 <a
-                  className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#0d7b51] px-3 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)]"
+                  className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#138a5e] px-3 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)]"
                   href={whatsappLinkWithTrial}
                   rel="noreferrer"
                   target="_blank"
@@ -335,7 +335,7 @@ export function ReportsPage() {
                 </a>
               ) : (
                 <button
-                  className={cx('rounded-xl bg-[#f4eee5] px-3 py-3 text-sm font-bold text-[#9a8f83]')}
+                  className={cx('rounded-xl bg-[#ece7dc] px-3 py-3 text-sm font-bold text-[#847a6c]')}
                   disabled
                   type="button"
                 >
@@ -344,7 +344,7 @@ export function ReportsPage() {
               )}
             </div>
             <button
-              className="mt-3 w-full text-[12px] font-bold text-[#746a60]"
+              className="mt-3 w-full text-[12px] font-bold text-[#847a6c]"
               onClick={() => setReportText('')}
               type="button"
             >

@@ -31,7 +31,7 @@ function ChoiceCard({
       className={cx(
         'flex w-full items-center gap-4 rounded-[18px] border p-4 text-left shadow-[0_14px_30px_rgba(53,38,22,0.08)] active:scale-[0.99]',
         isParent
-          ? 'border-[#ece4f6] bg-[linear-gradient(135deg,#fff_0%,#f7f3ff_100%)]'
+          ? 'border-[#ece4f6] bg-[linear-gradient(135deg,#fff_0%,#fcefd2_100%)]'
           : 'border-[#ddecdf] bg-[linear-gradient(135deg,#fff_0%,#f1fbf5_100%)]',
       )}
       onClick={onClick}
@@ -40,19 +40,19 @@ function ChoiceCard({
       <span
         className={cx(
           'grid h-12 w-12 shrink-0 place-items-center rounded-2xl',
-          isParent ? 'bg-[#eee8ff] text-[#4930a8]' : 'bg-[#e4f6ea] text-[#0d7b51]',
+          isParent ? 'bg-[#eee8ff] text-[#d6850a]' : 'bg-[#e4f6ea] text-[#138a5e]',
         )}
       >
         <Icon className="h-7 w-7" name={icon} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[16px] font-bold leading-tight text-[#1d1813]">{title}</span>
+        <span className="block text-[16px] font-bold leading-tight text-[#1c1916]">{title}</span>
         <span className="mt-1 block text-[12.5px] font-medium leading-[1.45] text-[#5e554c]">{subtitle}</span>
       </span>
       <span
         className={cx(
           'grid h-10 w-10 shrink-0 place-items-center rounded-full',
-          isParent ? 'bg-[#eee8ff] text-[#4930a8]' : 'bg-[#e4f6ea] text-[#0d7b51]',
+          isParent ? 'bg-[#eee8ff] text-[#d6850a]' : 'bg-[#e4f6ea] text-[#138a5e]',
         )}
       >
         <Icon name="chevron-right" />
@@ -76,7 +76,7 @@ export function WelcomePage() {
 
         <div className="mt-8">
           <h1 className="font-display max-w-[300px] text-[30px] font-extrabold leading-[1.1] tracking-[-0.025em] text-[#15120f]">
-            {copy.welcome.titleBefore} <span className="text-[#4930a8]">{copy.welcome.titleHighlight}</span>{' '}
+            {copy.welcome.titleBefore} <span className="text-[#d6850a]">{copy.welcome.titleHighlight}</span>{' '}
             {copy.welcome.titleAfter}
           </h1>
           <p className="mt-4 max-w-[290px] text-[14px] font-medium leading-[1.55] text-[#3a3128]">
@@ -110,7 +110,7 @@ export function WelcomePage() {
         </div>
 
         <button
-          className="mt-5 inline-flex items-center gap-2 self-start px-1 text-[12px] font-extrabold text-[#4930a8]"
+          className="mt-5 inline-flex items-center gap-2 self-start px-1 text-[12px] font-extrabold text-[#d6850a]"
           onClick={() => navigate('/help')}
           type="button"
         >

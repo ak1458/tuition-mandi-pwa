@@ -168,7 +168,7 @@ export function AttendancePage() {
   }
 
   return (
-    <div className="min-h-full bg-[#fbf8f1] pb-28">
+    <div className="min-h-full bg-[#f4f1ea] pb-28">
       <PageHeader
         left={
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
@@ -177,7 +177,7 @@ export function AttendancePage() {
         }
         right={
           <input
-            className="max-w-[128px] rounded-xl border border-[#eadfcd] bg-white px-2 py-2 text-xs font-bold text-[#1d1813]"
+            className="max-w-[128px] rounded-xl border border-[#e5decf] bg-white px-2 py-2 text-xs font-bold text-[#1c1916]"
             onChange={(event) => setSelectedDate(event.target.value)}
             type="date"
             value={selectedDate}
@@ -188,14 +188,14 @@ export function AttendancePage() {
       />
 
       <section className="px-4 py-4">
-        <div className="rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+        <div className="rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[12px] font-bold text-[#746a60]">{copy.attendance.subtitle}</p>
-              <p className="mt-1 text-[28px] font-black text-[#0d7b51]">{presentCount}/{students.length || 0}</p>
+              <p className="text-[12px] font-bold text-[#847a6c]">{copy.attendance.subtitle}</p>
+              <p className="mt-1 text-[28px] font-black text-[#138a5e]">{presentCount}/{students.length || 0}</p>
             </div>
             <select
-              className="max-w-[150px] rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-xs font-bold text-[#1d1813]"
+              className="max-w-[150px] rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-xs font-bold text-[#1c1916]"
               onChange={(event) => setSelectedBatchId(event.target.value)}
               value={selectedBatchId}
             >
@@ -209,40 +209,40 @@ export function AttendancePage() {
           </div>
         </div>
 
-        {errorMessage && <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>}
-        {message && <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-sm font-bold text-[#0d7b51]">{message}</p>}
+        {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
+        {message && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{message}</p>}
 
         <div className="mt-4 space-y-3">
           {isLoading ? (
-            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-sm font-bold text-[#746a60]">{copy.attendance.loading}</div>
+            <div className="rounded-[18px] border border-[#e5decf] bg-white p-4 text-sm font-bold text-[#847a6c]">{copy.attendance.loading}</div>
           ) : students.length === 0 ? (
-            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-6 text-center text-sm font-bold text-[#746a60]">{copy.attendance.empty}</div>
+            <div className="rounded-[18px] border border-[#e5decf] bg-white p-6 text-center text-sm font-bold text-[#847a6c]">{copy.attendance.empty}</div>
           ) : (
             students.map((student, index) => {
               const status = statusMap[student.id] ?? 'present'
               return (
                 <article
-                  className="flex flex-wrap items-center gap-3 rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-sm"
+                  className="flex flex-wrap items-center gap-3 rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-sm"
                   key={student.id}
                 >
                   <PersonAvatar name={student.full_name} size="sm" variant={index % 2 ? 'female' : 'student'} />
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <p className="truncate text-[13px] font-extrabold text-[#1d1813]">{student.full_name}</p>
+                      <p className="truncate text-[13px] font-extrabold text-[#1c1916]">{student.full_name}</p>
                       <DemoTrialBadge createdAt={student.created_at} label={copy.demo.label} variant="compact" />
                     </div>
-                    <p className="text-[11px] font-semibold text-[#746a60]">{student.class_label}</p>
+                    <p className="text-[11px] font-semibold text-[#847a6c]">{student.class_label}</p>
                   </div>
-                  <div className="flex rounded-xl bg-[#fbf8f1] p-1">
+                  <div className="flex rounded-xl bg-[#f4f1ea] p-1">
                     {(['present', 'absent'] as const).map((option) => (
                       <button
                         className={cx(
                           'rounded-lg px-3 py-1.5 text-[11px] font-black',
                           status === option
                             ? option === 'present'
-                              ? 'bg-[#eaf7ef] text-[#0d7b51]'
-                              : 'bg-[#fff0ee] text-[#d84b3f]'
-                            : 'text-[#9a8f83]',
+                              ? 'bg-[#dcf1e7] text-[#138a5e]'
+                              : 'bg-[#fbe6e1] text-[#e14b36]'
+                            : 'text-[#847a6c]',
                         )}
                         key={option}
                         onClick={() => onToggleStatus(student.id, option)}
@@ -259,9 +259,9 @@ export function AttendancePage() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-[#fbf8f1] to-transparent px-4 py-3">
+      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-[#f4f1ea] to-transparent px-4 py-3">
         <button
-          className="w-full rounded-xl bg-[#0d7b51] py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)] disabled:opacity-50"
+          className="w-full rounded-xl bg-[#138a5e] py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)] disabled:opacity-50"
           disabled={isSaving || students.length === 0}
           onClick={onSave}
           type="button"

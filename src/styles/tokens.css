@@ -1,41 +1,123 @@
-/* ── TuitionMandi Design Tokens (CSS Custom Properties) ── */
+/* ════════════════════════════════════════════════════════════════
+   TUITION MANDI — Design Tokens  ("Mandi Ledger")
+   fintech precision × marketplace warmth. Light + dark via [data-theme].
+   Existing var NAMES are preserved (remapped to new values) so all
+   var-backed Tailwind classes adopt the new brand automatically.
+   ════════════════════════════════════════════════════════════════ */
 
 :root {
-  /* Primary palette */
-  --primary: #0d7b51;
-  --primary-container: #0b6845;
-  --primary-light: #eaf7ef;
+  /* ── Brand palette (new) ── */
+  --paper: #f4f1ea;
+  --paper-2: #ece7dc;
+  --surface: #ffffff;
+  --surface-2: #fbf9f4;
+
+  --ink: #1c1916;
+  --ink-2: #4e463d;
+  --ink-soft: #847a6c;
+  --line: #e5decf;
+  --line-strong: #d7cdb9;
+
+  --marigold: #f2a114;
+  --marigold-deep: #d6850a;
+  --marigold-wash: #fcefd2;
+
+  --leaf: #138a5e;
+  --leaf-deep: #0e6e4b;
+  --leaf-wash: #dcf1e7;
+
+  --coral: #e14b36;
+  --coral-deep: #c13a27;
+  --coral-wash: #fbe6e1;
+
+  --sky: #2f6db0;
+  --sky-wash: #e5eff9;
+
+  --on-ink: #fbf7ee;
+  --on-marigold: #2a1c00;
+
+  /* ── Semantic aliases used across the existing app ── */
+  --primary: var(--leaf);
+  --primary-container: var(--leaf-deep);
+  --primary-light: var(--leaf-wash);
   --on-primary: #ffffff;
 
-  /* Semantic colors */
-  --danger: #d84b3f;
-  --danger-light: #fff0ee;
-  --warning: #c87b22;
-  --warning-light: #fff4df;
-  --whatsapp: #25D366;
-  --purple: #4930a8;
+  --danger: var(--coral);
+  --danger-light: var(--coral-wash);
+  --warning: var(--marigold-deep);
+  --warning-light: var(--marigold-wash);
+  --whatsapp: #25d366;
+  --purple: var(--marigold-deep);
 
-  /* Surfaces */
-  --bg-page: #fbf8f1;
-  --bg-card: #ffffff;
+  --bg-page: var(--paper);
+  --bg-card: var(--surface);
 
-  /* Text */
-  --text-primary: #1d1813;
-  --text-secondary: #746a60;
+  --text-primary: var(--ink);
+  --text-secondary: var(--ink-soft);
 
-  /* Borders */
-  --border: #eadfcd;
-  --border-light: #f3eadc;
+  --border: var(--line);
+  --border-light: var(--paper-2);
 
-  /* Navigation */
-  --nav-active: #0d7b51;
-  --nav-inactive: #9a8f83;
+  --nav-active: var(--ink);
+  --nav-inactive: var(--ink-soft);
 
-  /* Legacy aliases (for existing Tailwind config) */
-  --ink: #1d1813;
-  --saffron: #4930a8;
-  --cream: #fbf8f1;
-  --sage: #0d7b51;
-  --rose: #d84b3f;
-  --text-muted: #746a60;
+  /* Legacy Tailwind aliases */
+  --cream: var(--paper);
+  --sage: var(--leaf);
+  --rose: var(--coral);
+  --saffron: var(--marigold-deep);
+  --text-muted: var(--ink-soft);
+
+  /* ── Shape & elevation ── */
+  --radius-card: 22px;
+  --radius-btn: 14px;
+  --radius-field: 14px;
+  --shadow-sm: 0 2px 8px rgba(28, 25, 22, 0.06);
+  --shadow-md: 0 10px 26px rgba(28, 25, 22, 0.09);
+  --shadow-lg: 0 22px 48px rgba(28, 25, 22, 0.16);
+  --shadow-marigold: 0 14px 30px rgba(214, 133, 10, 0.3);
+  --shadow-ink: 0 14px 30px rgba(28, 25, 22, 0.28);
+
+  color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --paper: #15120e;
+  --paper-2: #1e1a14;
+  --surface: #201b15;
+  --surface-2: #262019;
+
+  --ink: #f6f1e6;
+  --ink-2: #dad1c2;
+  --ink-soft: #9c9183;
+  --line: #332c22;
+  --line-strong: #463d30;
+
+  --marigold: #f7ae2c;
+  --marigold-deep: #ffc453;
+  --marigold-wash: #3a2c12;
+
+  --leaf: #34b985;
+  --leaf-deep: #5bd3a2;
+  --leaf-wash: #123026;
+
+  --coral: #f26a56;
+  --coral-deep: #ff8773;
+  --coral-wash: #38201b;
+
+  --sky: #6ba6e0;
+  --sky-wash: #16273a;
+
+  --on-ink: #15120e;
+  --on-marigold: #2a1c00;
+
+  --on-primary: #15120e;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 10px 26px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 22px 48px rgba(0, 0, 0, 0.6);
+  --shadow-marigold: 0 14px 30px rgba(0, 0, 0, 0.45);
+  --shadow-ink: 0 14px 30px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
 }

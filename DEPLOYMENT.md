@@ -1,6 +1,6 @@
-# Takhti — Deployment Runbook
+# TuitionMandi — Deployment Runbook
 
-End-to-end checklist to get Takhti running in production on Vercel + Supabase.
+End-to-end checklist to get TuitionMandi running in production on Vercel + Supabase.
 Follow top-to-bottom. Each step has verification at the end.
 
 ---
@@ -107,7 +107,7 @@ already sets `notes.teacher_id` when opening checkout. Don't remove this; both
 ## 5. Vercel project setup
 
 **A. Connect repo** — Vercel Dashboard → Add New → Project → Import the
-`takhti-pwa` GitHub repo. Framework preset: **Vite**. Root directory: `./`.
+`tuition-mandi` GitHub repo. Framework preset: **Vite**. Root directory: `./`.
 
 **B. Set environment variables** (Settings → Environment Variables, scope:
 Production):

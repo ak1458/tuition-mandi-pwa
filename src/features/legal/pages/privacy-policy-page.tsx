@@ -24,8 +24,8 @@ export function PrivacyPolicyPage() {
 
       <article className="px-5 py-5 pb-20 space-y-6">
         {/* Consent Notice - DPDP Act 2023 */}
-        <section className="rounded-[18px] border border-[#ded1f7] bg-[#f7f3ff] p-4">
-          <h2 className="text-[14px] font-black text-[#4930a8]">🔒 Your Data, Your Choice</h2>
+        <section className="rounded-[18px] border border-[#fcefd2] bg-[#fcefd2] p-4">
+          <h2 className="text-[14px] font-black text-[#d6850a]">🔒 Your Data, Your Choice</h2>
           <p className="mt-2 text-[12px] font-semibold leading-6 text-[#5d544c]">
             By using TuitionMandi, you consent to the collection and processing of your personal data as described
             in this Privacy Policy, in accordance with the Digital Personal Data Protection (DPDP) Act, 2023
@@ -68,7 +68,7 @@ export function PrivacyPolicyPage() {
         <Section title="4. Third-Party Services">
           <ul className="list-disc pl-4 space-y-2">
             <li><strong>Supabase (Austria/US):</strong> Cloud database and authentication. Your data is encrypted at rest and in transit.</li>
-            <li><strong>Razorpay (India):</strong> Payment processing for Pro plan subscriptions. Subject to <a className="text-[#4930a8] underline" href="https://razorpay.com/privacy/" target="_blank" rel="noreferrer">Razorpay&apos;s Privacy Policy</a>.</li>
+            <li><strong>Razorpay (India):</strong> Payment processing for Pro plan subscriptions. Subject to <a className="text-[#d6850a] underline" href="https://razorpay.com/privacy/" target="_blank" rel="noreferrer">Razorpay&apos;s Privacy Policy</a>.</li>
             <li><strong>Google Gemini AI (US):</strong> Generates progress report text. Only anonymised student performance data (attendance %, average score) is sent — no personal identifiers.</li>
             <li><strong>Google Fonts:</strong> Typography loaded from Google&apos;s CDN.</li>
             <li><strong>Vercel (US):</strong> Application hosting and edge function execution.</li>
@@ -115,11 +115,11 @@ export function PrivacyPolicyPage() {
         </Section>
 
         <Section title="9. Grievance Officer (IT Rules 2021)">
-          <div className="rounded-xl border border-[#eee4d8] bg-[#fffdf8] p-3 mt-2">
+          <div className="rounded-xl border border-[#e5decf] bg-[#fffdf8] p-3 mt-2">
             <p><strong>Grievance Officer:</strong> TuitionMandi Support Team</p>
-            <p><strong>Email:</strong> <a className="text-[#4930a8] underline" href={`mailto:${GRIEVANCE_EMAIL}`}>{GRIEVANCE_EMAIL}</a></p>
+            <p><strong>Email:</strong> <a className="text-[#d6850a] underline" href={`mailto:${GRIEVANCE_EMAIL}`}>{GRIEVANCE_EMAIL}</a></p>
             <p><strong>Address:</strong> {BUSINESS_ADDRESS}</p>
-            <p className="mt-2 text-[11px] text-[#9a8f83]">
+            <p className="mt-2 text-[11px] text-[#847a6c]">
               Response time: Within 24 hours of receipt. Resolution within 15 days as per IT Rules 2021.
             </p>
           </div>
@@ -135,8 +135,8 @@ export function PrivacyPolicyPage() {
         <Section title="11. Contact Us">
           <p>
             For any questions about this Privacy Policy, contact us at{' '}
-            <a className="text-[#4930a8] underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-            {' '}or via our <button className="text-[#4930a8] underline font-bold" onClick={() => navigate('/help')} type="button">Help & Support</button> page.
+            <a className="text-[#d6850a] underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            {' '}or via our <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/help')} type="button">Help & Support</button> page.
           </p>
         </Section>
       </article>
@@ -146,8 +146,8 @@ export function PrivacyPolicyPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-[18px] border border-[#eee4d8] bg-white p-4 shadow-sm">
-      <h2 className="text-[14px] font-black text-[#1d1813]">{title}</h2>
+    <section className="rounded-[18px] border border-[#e5decf] bg-white p-4 shadow-sm">
+      <h2 className="text-[14px] font-black text-[#1c1916]">{title}</h2>
       <div className="mt-2 text-[12px] font-semibold leading-6 text-[#5d544c]">{children}</div>
     </section>
   )

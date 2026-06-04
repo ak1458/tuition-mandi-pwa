@@ -17,10 +17,10 @@ const statusLabels: Record<string, string> = {
 const statusOptions = ['new', 'contacted', 'enrolled', 'not_interested'] as const
 
 function statusClass(status: string) {
-  if (status === 'enrolled') return 'bg-[#eaf7ef] text-[#0d7b51]'
+  if (status === 'enrolled') return 'bg-[#dcf1e7] text-[#138a5e]'
   if (status === 'contacted') return 'bg-[#fff4df] text-[#c87b22]'
-  if (status === 'not_interested') return 'bg-[#f4eee5] text-[#746a60]'
-  return 'bg-[#f1edff] text-[#4930a8]'
+  if (status === 'not_interested') return 'bg-[#ece7dc] text-[#847a6c]'
+  return 'bg-[#f1edff] text-[#d6850a]'
 }
 
 function timeAgo(dateStr: string) {
@@ -104,7 +104,7 @@ export function InquiriesPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#fbf8f1] pb-24">
+    <div className="min-h-full bg-[#f4f1ea] pb-24">
       <PageHeader
         left={
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
@@ -116,15 +116,15 @@ export function InquiriesPage() {
       />
 
       <section className="px-4 py-4">
-        {error && <p className="rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{error}</p>}
+        {error && <p className="rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{error}</p>}
 
         {loading ? (
-          <div className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-sm font-bold text-[#746a60]">{copy.inquiries.loading}</div>
+          <div className="rounded-[18px] border border-[#e5decf] bg-white p-4 text-sm font-bold text-[#847a6c]">{copy.inquiries.loading}</div>
         ) : inquiries.length === 0 ? (
           <div className="py-8 text-center">
             <ProfessorIllustration className="mx-auto w-full max-w-[200px] h-auto" />
-            <h3 className="mt-6 text-[16px] font-black text-[#1d1813]">{copy.inquiries.emptyTitle}</h3>
-            <p className="mx-auto mt-2 max-w-[280px] text-[12.5px] font-semibold leading-relaxed text-[#746a60]">
+            <h3 className="mt-6 text-[16px] font-black text-[#1c1916]">{copy.inquiries.emptyTitle}</h3>
+            <p className="mx-auto mt-2 max-w-[280px] text-[12.5px] font-semibold leading-relaxed text-[#847a6c]">
               {copy.inquiries.emptySubtitle}
             </p>
           </div>
@@ -133,17 +133,17 @@ export function InquiriesPage() {
             {inquiries.map((inquiry, index) => {
               const waLink = replyLink(inquiry)
               return (
-                <article className="rounded-[20px] border border-[#eee4d8] bg-white p-4 shadow-[0_12px_26px_rgba(53,38,22,0.06)]" key={inquiry.id}>
+                <article className="rounded-[20px] border border-[#e5decf] bg-white p-4 shadow-[0_12px_26px_rgba(53,38,22,0.06)]" key={inquiry.id}>
                   <div className="flex items-start gap-3">
                     <PersonAvatar name={inquiry.parent_name || 'Parent'} size="sm" variant={index % 2 ? 'female' : 'student'} />
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-2">
-                        <p className="truncate text-[13px] font-black text-[#1d1813]">{inquiry.parent_name || copy.inquiries.unknownParent}</p>
+                        <p className="truncate text-[13px] font-black text-[#1c1916]">{inquiry.parent_name || copy.inquiries.unknownParent}</p>
                         <span className={cx('shrink-0 rounded-full px-2 py-1 text-[10px] font-black', statusClass(inquiry.status))}>
                           {copy.inquiries.statuses[inquiry.status] || statusLabels[inquiry.status] || inquiry.status}
                         </span>
                       </div>
-                      <p className="mt-1 text-[11px] font-semibold text-[#746a60]">
+                      <p className="mt-1 text-[11px] font-semibold text-[#847a6c]">
                         {inquiry.student_class || copy.inquiries.classLabel} - {inquiry.subject_needed || copy.inquiries.subjectLabel} - {timeAgo(inquiry.created_at)}
                       </p>
                       {inquiry.message && (
@@ -159,7 +159,7 @@ export function InquiriesPage() {
                       </a>
                     )}
                     <select
-                      className="flex-1 rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-2 text-[12px] font-black text-[#1d1813]"
+                      className="flex-1 rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-2 text-[12px] font-black text-[#1c1916]"
                       onChange={(event) => updateStatus(inquiry.id, event.target.value)}
                       value={inquiry.status}
                     >

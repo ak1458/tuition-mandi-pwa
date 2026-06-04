@@ -109,10 +109,10 @@ export function InstallPrompt() {
 
         {/* Text Area */}
         <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-bold text-[#1d1813] leading-tight font-display">
+          <h4 className="text-sm font-bold text-[#1c1916] leading-tight font-display">
             Install TuitionMandi App
           </h4>
-          <p className="text-xs text-[#746a60] font-medium leading-normal mt-0.5 truncate">
+          <p className="text-xs text-[#847a6c] font-medium leading-normal mt-0.5 truncate">
             {isIOS ? 'Install on iPhone for the best experience' : 'Fast access, offline mode & parent reports'}
           </p>
         </div>
@@ -120,7 +120,7 @@ export function InstallPrompt() {
         {/* Action Button */}
         <button
           onClick={handleInstallClick}
-          className="rounded-xl bg-[#0d7b51] px-3.5 py-2 text-xs font-bold text-white shadow-md transition active:scale-95 hover:bg-[#0b6845]"
+          className="rounded-xl bg-[#138a5e] px-3.5 py-2 text-xs font-bold text-white shadow-md transition active:scale-95 hover:bg-[#0e6e4b]"
           type="button"
         >
           {t('common.install', 'Install')}
@@ -129,7 +129,7 @@ export function InstallPrompt() {
         {/* Dismiss Button */}
         <button
           onClick={handleDismiss}
-          className="h-7 w-7 rounded-full flex items-center justify-center text-[#9a8f83] hover:text-[#1d1813] active:bg-[#f3eadc] transition shrink-0"
+          className="h-7 w-7 rounded-full flex items-center justify-center text-[#847a6c] hover:text-[#1c1916] active:bg-[#ece7dc] transition shrink-0"
           type="button"
           aria-label="Close"
         >
@@ -141,17 +141,17 @@ export function InstallPrompt() {
 
       {/* iOS Safari Instruction Modal */}
       {showIOSModal && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#1d1813]/60 p-4 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="animate-in slide-in-from-bottom duration-400 w-full max-w-[440px] rounded-3xl bg-[#fbf8f1] border border-[#eadfcd] p-6 shadow-[0_24px_50px_rgba(29,24,19,0.3)]">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#1c1916]/60 p-4 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="animate-in slide-in-from-bottom duration-400 w-full max-w-[440px] rounded-3xl bg-[#f4f1ea] border border-[#e5decf] p-6 shadow-[0_24px_50px_rgba(29,24,19,0.3)]">
             {/* Header */}
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-lg font-bold text-[#1d1813] font-display">Install TuitionMandi on iOS</h3>
-                <p className="text-xs text-[#746a60] font-medium mt-1">Get high-speed native app access in 3 easy steps:</p>
+                <h3 className="text-lg font-bold text-[#1c1916] font-display">Install TuitionMandi on iOS</h3>
+                <p className="text-xs text-[#847a6c] font-medium mt-1">Get high-speed native app access in 3 easy steps:</p>
               </div>
               <button
                 onClick={() => setShowIOSModal(false)}
-                className="h-8 w-8 rounded-full flex items-center justify-center bg-[#f3eadc] text-[#746a60] hover:text-[#1d1813] transition"
+                className="h-8 w-8 rounded-full flex items-center justify-center bg-[#ece7dc] text-[#847a6c] hover:text-[#1c1916] transition"
                 type="button"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
@@ -164,12 +164,12 @@ export function InstallPrompt() {
             <div className="mt-5 space-y-4">
               {/* Step 1 */}
               <div className="flex gap-3.5 items-start">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e4f6ea] text-xs font-bold text-[#0d7b51]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e4f6ea] text-xs font-bold text-[#138a5e]">
                   1
                 </span>
-                <div className="text-sm text-[#1d1813] font-medium leading-relaxed">
-                  Tap Safari's <span className="font-bold text-[#0d7b51]">Share</span> button in the bottom menu:
-                  <div className="inline-flex items-center gap-1.5 bg-white border border-[#eadfcd] rounded-lg px-2 py-1 ml-1.5 shadow-sm">
+                <div className="text-sm text-[#1c1916] font-medium leading-relaxed">
+                  Tap Safari's <span className="font-bold text-[#138a5e]">Share</span> button in the bottom menu:
+                  <div className="inline-flex items-center gap-1.5 bg-white border border-[#e5decf] rounded-lg px-2 py-1 ml-1.5 shadow-sm">
                     <svg className="h-4.5 w-4.5 text-[#007aff]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 8.25l3-3m0 0l3 3m-3-3V18.75m9-6H4.5" />
                     </svg>
@@ -180,28 +180,28 @@ export function InstallPrompt() {
 
               {/* Step 2 */}
               <div className="flex gap-3.5 items-start">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e4f6ea] text-xs font-bold text-[#0d7b51]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e4f6ea] text-xs font-bold text-[#138a5e]">
                   2
                 </span>
-                <div className="text-sm text-[#1d1813] font-medium leading-relaxed">
-                  Scroll down the menu and tap <span className="font-bold text-[#0d7b51]">Add to Home Screen</span>:
-                  <div className="inline-flex items-center gap-1.5 bg-white border border-[#eadfcd] rounded-lg px-2 py-1 ml-1.5 shadow-sm">
-                    <svg className="h-4.5 w-4.5 text-[#1d1813]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
+                <div className="text-sm text-[#1c1916] font-medium leading-relaxed">
+                  Scroll down the menu and tap <span className="font-bold text-[#138a5e]">Add to Home Screen</span>:
+                  <div className="inline-flex items-center gap-1.5 bg-white border border-[#e5decf] rounded-lg px-2 py-1 ml-1.5 shadow-sm">
+                    <svg className="h-4.5 w-4.5 text-[#1c1916]" fill="none" stroke="currentColor" strokeWidth="1.8" viewBox="0 0 24 24">
                       <rect x="5" y="5" width="14" height="14" rx="3" />
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m-3-3h6" />
                     </svg>
-                    <span className="text-[11px] font-bold text-[#1d1813]">Add to Home Screen</span>
+                    <span className="text-[11px] font-bold text-[#1c1916]">Add to Home Screen</span>
                   </div>
                 </div>
               </div>
 
               {/* Step 3 */}
               <div className="flex gap-3.5 items-start">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e4f6ea] text-xs font-bold text-[#0d7b51]">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e4f6ea] text-xs font-bold text-[#138a5e]">
                   3
                 </span>
-                <div className="text-sm text-[#1d1813] font-medium leading-relaxed">
-                  Tap <span className="font-bold text-[#0d7b51]">Add</span> in the top-right corner to complete!
+                <div className="text-sm text-[#1c1916] font-medium leading-relaxed">
+                  Tap <span className="font-bold text-[#138a5e]">Add</span> in the top-right corner to complete!
                 </div>
               </div>
             </div>
@@ -209,7 +209,7 @@ export function InstallPrompt() {
             {/* CTA Close */}
             <button
               onClick={() => setShowIOSModal(false)}
-              className="mt-6 w-full rounded-2xl bg-[#0d7b51] py-3 text-sm font-bold text-white shadow-md transition active:scale-[0.99] hover:bg-[#0b6845]"
+              className="mt-6 w-full rounded-2xl bg-[#138a5e] py-3 text-sm font-bold text-white shadow-md transition active:scale-[0.99] hover:bg-[#0e6e4b]"
               type="button"
             >
               Got It

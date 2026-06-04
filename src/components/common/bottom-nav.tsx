@@ -42,7 +42,7 @@ export function BottomNav() {
   const currentItems = isParentRoute ? parentNavItems : teacherNavItems
 
   return (
-    <nav className="pointer-events-auto mx-auto flex max-w-[480px] items-center justify-around border-t border-[#eadfcd] bg-white/95 px-2 py-1 backdrop-blur safe-bottom">
+    <nav className="pointer-events-auto mx-auto flex max-w-[480px] items-center justify-around border-t border-[#e5decf] bg-white/95 px-2 py-1 backdrop-blur safe-bottom">
       {currentItems.map((item) => {
         const isActive = location.pathname.startsWith(item.path) || (item.path === '/search' && location.pathname === '/search')
         return (
@@ -52,10 +52,10 @@ export function BottomNav() {
             onClick={() => navigate(item.path)}
             type="button"
           >
-            <span className={cx('grid h-8 w-8 place-items-center rounded-xl', isActive ? 'bg-[#eaf7ef] text-[#0d7b51]' : 'text-[#9a8f83]')}>
+            <span className={cx('grid h-8 w-8 place-items-center rounded-xl', isActive ? 'bg-[#dcf1e7] text-[#138a5e]' : 'text-[#847a6c]')}>
               <Icon className="h-5 w-5" name={item.icon} />
             </span>
-            <span className={cx('text-[10px] font-black', isActive ? 'text-[#0d7b51]' : 'text-[#9a8f83]')}>
+            <span className={cx('text-[10px] font-black', isActive ? 'text-[#138a5e]' : 'text-[#847a6c]')}>
               {labels[item.label] ?? item.label}
             </span>
           </button>

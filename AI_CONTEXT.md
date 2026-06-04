@@ -1,11 +1,11 @@
-# AI Connector Context — Takhti Project
+# AI Connector Context — TuitionMandi Project
 
 **Date:** May 8, 2026
 
 If you are an AI agent or connector reading this repository, this file is your entry point. It contains the high-level architecture, the current state of the application, and pointers to the detailed documentation you need to continue development.
 
 ## 1. Project Overview
-**Takhti — Aapka Digital Register** is a Progressive Web App (PWA) built for individual private tuition teachers in India. It handles:
+**TuitionMandi — Aapka Digital Register** is a Progressive Web App (PWA) built for individual private tuition teachers in India. It handles:
 - 90-second attendance tracking.
 - Fee management with WhatsApp reminders.
 - **Killer Feature:** AI-generated professional Hindi progress reports for parents using Google Gemini / OpenRouter.
@@ -31,7 +31,7 @@ If you are an AI agent or connector reading this repository, this file is your e
 ## 4. Essential Documentation Index
 To understand the exact schemas, phase plans, and architectural decisions, read these files located in `2026-05-08_Work` and the root directories:
 
-- `2026-05-08_Work/Complete_Takhti_Project_Report.md` -> **START HERE.** The master document synthesizing all past reports, blockers, and the V2 evolution plan.
+- `2026-05-08_Work/Complete_TuitionMandi_Project_Report.md` -> **START HERE.** The master document synthesizing all past reports, blockers, and the V2 evolution plan.
 - `2026-05-08_Work/UX_IMPROVEMENTS_LOG.md` -> Details of the latest WhatsApp & AI prompt enhancements.
 - `2026-05-08_Work/OPENROUTER_INTEGRATION_STATE.md` -> Explains how OpenRouter is wired up without needing a backend right now.
 - `VIBE_CODING_AGENT_REFERENCE.md` -> The prompt engineering rules and terminology used to generate this codebase. Must be followed strictly to avoid hallucinations.

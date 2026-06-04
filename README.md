@@ -1,4 +1,4 @@
-# Takhti App (Tuition Teacher PWA)
+# TuitionMandi App (Tuition Teacher PWA)
 
 **🤖 AI CONNECTORS: Please read `AI_CONTEXT.md` in the root of this repository before proceeding! It contains the master roadmap, current state, and index of all design documents.**
 
@@ -32,7 +32,7 @@ VITE_RAZORPAY_KEY=
 VITE_OPENROUTER_API_KEY=...
 VITE_OPENROUTER_MODEL=google/gemini-2.0-flash-lite-001
 VITE_OPENROUTER_REFERER=https://smilefotilo.com
-VITE_OPENROUTER_TITLE=Takhti App
+VITE_OPENROUTER_TITLE=TuitionMandi App
 ```
 
 `VITE_LOCAL_MODE=true` lets the app run without Supabase using local storage.

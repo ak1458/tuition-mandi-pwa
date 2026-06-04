@@ -92,7 +92,7 @@ export function StudentsPage() {
   const trialCount = countActiveDemoTrials(students)
 
   return (
-    <div className="min-h-full bg-[#fbf8f1] pb-28">
+    <div className="min-h-full bg-[#f4f1ea] pb-28">
       <PageHeader
         left={
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
@@ -101,7 +101,7 @@ export function StudentsPage() {
         }
         right={
           <IconButton className="h-9 w-9" label="Add student" onClick={() => setShowForm((value) => !value)}>
-            <Icon className="h-4 w-4 text-[#0d7b51]" name="plus" />
+            <Icon className="h-4 w-4 text-[#138a5e]" name="plus" />
           </IconButton>
         }
         subtitle={`${filtered.length || students.length} students`}
@@ -115,7 +115,7 @@ export function StudentsPage() {
               <Icon className="h-5 w-5" name="star" />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-extrabold text-[#1d1813]">
+              <p className="text-[13px] font-extrabold text-[#1c1916]">
                 {copy.demo.bannerTitle}
               </p>
               <p className="mt-0.5 text-[11px] font-semibold leading-4 text-[#7a5d2c]">
@@ -125,11 +125,11 @@ export function StudentsPage() {
           </div>
         )}
 
-        <div className="rounded-2xl border border-[#eadfcd] bg-white p-2 shadow-sm">
+        <div className="rounded-2xl border border-[#e5decf] bg-white p-2 shadow-sm">
           <div className="flex items-center gap-2">
             <Icon className="ml-2 h-5 w-5 text-[#82786d]" name="search" />
             <input
-              className="min-w-0 flex-1 bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-[#9a8f83]"
+              className="min-w-0 flex-1 bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-[#847a6c]"
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder={copy.students.search}
               value={searchQuery}
@@ -138,7 +138,7 @@ export function StudentsPage() {
         </div>
 
         {errorMessage && (
-          <p className="mt-3 rounded-xl bg-[#fff0ee] px-3 py-2 text-sm font-bold text-[#d84b3f]">{errorMessage}</p>
+          <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>
         )}
 
         {toast && (
@@ -149,15 +149,15 @@ export function StudentsPage() {
 
         {showForm && (
           <form
-            className="mt-4 space-y-2 rounded-[22px] border border-[#eee4d8] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]"
+            className="mt-4 space-y-2 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]"
             onSubmit={onCreateStudent}
           >
-            <p className="text-[13px] font-black text-[#1d1813]">{copy.students.add}</p>
+            <p className="text-[13px] font-black text-[#1c1916]">{copy.students.add}</p>
             <p className="text-[11px] font-semibold leading-4 text-[#9a5a14]">
               ✨ {copy.demo.bannerTitle} - {copy.demo.moreSettingsHint}
             </p>
             <input
-              className="w-full rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+              className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
               onChange={(event) => setFullName(event.target.value)}
               placeholder={copy.students.name}
               required
@@ -165,13 +165,13 @@ export function StudentsPage() {
             />
             <div className="grid grid-cols-2 gap-2">
               <input
-                className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 onChange={(event) => setClassLabel(event.target.value)}
                 placeholder={copy.students.class}
                 value={classLabel}
               />
               <input
-                className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 onChange={(event) => setSubject(event.target.value)}
                 placeholder={copy.students.subject}
                 value={subject}
@@ -179,14 +179,14 @@ export function StudentsPage() {
             </div>
             <div className="grid grid-cols-2 gap-2">
               <input
-                className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 inputMode="numeric"
                 onChange={(event) => setMonthlyFee(event.target.value)}
                 placeholder={copy.students.monthlyFee}
                 value={monthlyFee}
               />
               <input
-                className="rounded-xl border border-[#eadfcd] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#4930a8]"
+                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
                 inputMode="tel"
                 onChange={(event) => setGuardianPhone(event.target.value)}
                 placeholder={copy.students.parentPhone}
@@ -201,19 +201,19 @@ export function StudentsPage() {
 
         <div className="mt-4 space-y-3">
           {isLoading ? (
-            <div className="rounded-[18px] border border-[#eee4d8] bg-white p-4 text-sm font-bold text-[#746a60]">
+            <div className="rounded-[18px] border border-[#e5decf] bg-white p-4 text-sm font-bold text-[#847a6c]">
               {copy.students.loading}
             </div>
           ) : filtered.length === 0 ? (
             searchQuery ? (
-              <div className="rounded-[18px] border border-[#eee4d8] bg-white p-6 text-center text-sm font-bold text-[#746a60]">
+              <div className="rounded-[18px] border border-[#e5decf] bg-white p-6 text-center text-sm font-bold text-[#847a6c]">
                 {copy.students.noResult}
               </div>
             ) : (
               <div className="py-8 text-center">
                 <BookLoverIllustration className="mx-auto w-full max-w-[200px] h-auto" />
-                <h3 className="mt-6 text-[16px] font-black text-[#1d1813]">{copy.students.empty}</h3>
-                <p className="mx-auto mt-2 max-w-[280px] text-[12.5px] font-semibold leading-relaxed text-[#746a60]">
+                <h3 className="mt-6 text-[16px] font-black text-[#1c1916]">{copy.students.empty}</h3>
+                <p className="mx-auto mt-2 max-w-[280px] text-[12.5px] font-semibold leading-relaxed text-[#847a6c]">
                   {copy.welcome.teacherSubtitle}
                 </p>
               </div>
@@ -223,7 +223,7 @@ export function StudentsPage() {
               const inTrial = isInDemoTrial(student.created_at)
               return (
                 <article
-                  className="flex items-center gap-3 rounded-[18px] border border-[#eee4d8] bg-white p-3 shadow-sm"
+                  className="flex items-center gap-3 rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-sm"
                   key={student.id}
                 >
                   <PersonAvatar
@@ -232,15 +232,15 @@ export function StudentsPage() {
                     variant={index % 2 ? 'female' : 'student'}
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-extrabold text-[#1d1813]">{student.full_name}</p>
-                    <p className="truncate text-[11px] font-semibold text-[#746a60]">
+                    <p className="truncate text-[13px] font-extrabold text-[#1c1916]">{student.full_name}</p>
+                    <p className="truncate text-[11px] font-semibold text-[#847a6c]">
                       {student.class_label} · {student.subject}
                     </p>
                   </div>
                   {inTrial ? (
                     <DemoTrialBadge createdAt={student.created_at} label={copy.demo.label} variant="full" />
                   ) : (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#0d7b51] ring-1 ring-inset ring-[#cfe9d8]">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-[#dcf1e7] px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#138a5e] ring-1 ring-inset ring-[#cfe9d8]">
                       {copy.common.present}
                     </span>
                   )}
@@ -251,9 +251,9 @@ export function StudentsPage() {
         </div>
       </section>
 
-      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-[#fbf8f1] to-transparent px-4 py-3">
+      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-[#f4f1ea] to-transparent px-4 py-3">
         <button
-          className="w-full rounded-xl bg-[#4930a8] py-3 text-sm font-extrabold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] active:scale-[0.99]"
+          className="w-full rounded-xl bg-[#d6850a] py-3 text-sm font-extrabold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] active:scale-[0.99]"
           onClick={() => setShowForm(true)}
           type="button"
         >

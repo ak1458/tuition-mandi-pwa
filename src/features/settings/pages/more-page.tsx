@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/app/providers/auth-provider'
 import { usePlan } from '@/hooks/use-plan'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
+import { useTheme } from '@/hooks/use-theme'
 import { Icon, PageHeader, PersonAvatar, cx, type IconName } from '@/components/common/tuition-mandi-ui'
 import { ConfirmDialog } from '@/components/common/confirm-dialog'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
@@ -26,9 +27,9 @@ interface SectionProps {
 
 function Section({ title, description, children }: SectionProps) {
   return (
-    <section className="mt-4 rounded-[20px] border border-[#eee4d8] bg-white p-4 shadow-sm">
-      <h2 className="text-[13px] font-black uppercase tracking-wide text-[#1d1813]">{title}</h2>
-      {description && <p className="mt-1 text-[11px] font-semibold text-[#746a60]">{description}</p>}
+    <section className="mt-4 rounded-[20px] border border-[#e5decf] bg-white p-4 shadow-sm">
+      <h2 className="text-[13px] font-black uppercase tracking-wide text-[#1c1916]">{title}</h2>
+      {description && <p className="mt-1 text-[11px] font-semibold text-[#847a6c]">{description}</p>}
       <div className="mt-3 space-y-2">{children}</div>
     </section>
   )
@@ -53,14 +54,14 @@ function Row({
 }) {
   const tone =
     iconTone === 'green'
-      ? 'bg-[#eaf7ef] text-[#0d7b51]'
+      ? 'bg-[#dcf1e7] text-[#138a5e]'
       : iconTone === 'orange'
       ? 'bg-[#fff4df] text-[#c87b22]'
       : iconTone === 'purple'
-      ? 'bg-[#f1edff] text-[#4930a8]'
+      ? 'bg-[#f1edff] text-[#d6850a]'
       : iconTone === 'rose'
-      ? 'bg-[#fff0ee] text-[#d84b3f]'
-      : 'bg-[#fbf8f1] text-[#5d544c]'
+      ? 'bg-[#fbe6e1] text-[#e14b36]'
+      : 'bg-[#f4f1ea] text-[#5d544c]'
 
   const Component: 'button' | 'div' = onClick ? 'button' : 'div'
 
@@ -68,7 +69,7 @@ function Row({
     <Component
       className={cx(
         'flex w-full items-center gap-3 px-1 py-3 text-left',
-        divider && 'border-b border-[#f3eadc] last:border-b-0',
+        divider && 'border-b border-[#ece7dc] last:border-b-0',
       )}
       onClick={onClick}
       type={onClick ? 'button' : undefined}
@@ -79,10 +80,10 @@ function Row({
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-black text-[#1d1813]">{label}</p>
-        {hint && <p className="mt-0.5 truncate text-[11px] font-semibold text-[#9a8f83]">{hint}</p>}
+        <p className="truncate text-sm font-black text-[#1c1916]">{label}</p>
+        {hint && <p className="mt-0.5 truncate text-[11px] font-semibold text-[#847a6c]">{hint}</p>}
       </div>
-      {trailing ?? (onClick && <Icon className="h-4 w-4 text-[#9a8f83]" name="chevron-right" />)}
+      {trailing ?? (onClick && <Icon className="h-4 w-4 text-[#847a6c]" name="chevron-right" />)}
     </Component>
   )
 }
@@ -94,7 +95,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (nex
       aria-label={label}
       className={cx(
         'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors',
-        checked ? 'bg-[#0d7b51]' : 'bg-[#d8cdba]',
+        checked ? 'bg-[#138a5e]' : 'bg-[#d8cdba]',
       )}
       onClick={() => onChange(!checked)}
       role="switch"
@@ -128,6 +129,7 @@ export function MorePage() {
   const { isPro, planExpiresAt } = usePlan()
   const { t } = useTranslation()
   const copy = useTuitionMandiCopy()
+  const { theme, toggle: toggleTheme } = useTheme()
   const teacherId = session?.user.id ?? ''
   const teacherName =
     (session?.user?.user_metadata?.full_name as string | undefined) || t('common.teacher')
@@ -224,21 +226,21 @@ export function MorePage() {
   }, [copy.more.freePlan, copy.more.proPlan, isPro, planExpiresAt])
 
   return (
-    <div className="min-h-full bg-[#fbf8f1] pb-24">
+    <div className="min-h-full bg-[#f4f1ea] pb-24">
       <PageHeader subtitle={copy.more.subtitle} title={copy.more.title} />
 
       <section className="px-4 py-4">
         {/* Profile card */}
-        <div className="rounded-[22px] border border-[#eee4d8] bg-white p-5 text-center shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+        <div className="rounded-[22px] border border-[#e5decf] bg-white p-5 text-center shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
           <PersonAvatar name={teacherName} size="lg" variant="male" />
-          <p className="mt-3 text-[16px] font-black text-[#1d1813]">{teacherName}</p>
+          <p className="mt-3 text-[16px] font-black text-[#1c1916]">{teacherName}</p>
           {teacherPhone && <p className="mt-0.5 text-[12px] font-semibold text-[#5d544c]">{teacherPhone}</p>}
-          <p className="mt-2 inline-block rounded-full bg-[#fbf8f1] px-3 py-1 text-[11px] font-black text-[#0d7b51]">
+          <p className="mt-2 inline-block rounded-full bg-[#f4f1ea] px-3 py-1 text-[11px] font-black text-[#138a5e]">
             {planSubtitle}
           </p>
           <div className="mt-4 grid grid-cols-2 gap-2">
             <button
-              className="rounded-xl border border-[#eadfcd] bg-white py-2 text-[12px] font-black text-[#4930a8]"
+              className="rounded-xl border border-[#e5decf] bg-white py-2 text-[12px] font-black text-[#d6850a]"
               onClick={() => navigate('/profile/setup')}
               type="button"
             >
@@ -248,8 +250,8 @@ export function MorePage() {
               className={cx(
                 'rounded-xl py-2 text-[12px] font-black',
                 isPro
-                  ? 'border border-[#ddecdf] bg-[#f4fbf6] text-[#0d7b51]'
-                  : 'bg-[#4930a8] text-white shadow-[0_8px_18px_rgba(73,48,168,0.25)]',
+                  ? 'border border-[#ddecdf] bg-[#f4fbf6] text-[#138a5e]'
+                  : 'bg-[#d6850a] text-white shadow-[0_8px_18px_rgba(73,48,168,0.25)]',
               )}
               onClick={() => navigate('/inquiries')}
               type="button"
@@ -260,7 +262,7 @@ export function MorePage() {
         </div>
 
         {toast && (
-          <p className="mt-3 rounded-xl bg-[#eaf7ef] px-3 py-2 text-center text-sm font-bold text-[#0d7b51]">{toast}</p>
+          <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-center text-sm font-bold text-[#138a5e]">{toast}</p>
         )}
 
         {/* Notifications */}
@@ -330,8 +332,15 @@ export function MorePage() {
         {/* Preferences */}
         <Section title="Preferences">
           <div className="flex items-center justify-between gap-3 px-1 py-2">
-            <span className="text-sm font-black text-[#1d1813]">{copy.more.language}</span>
+            <span className="text-sm font-black text-[#1c1916]">{copy.more.language}</span>
             <LanguageSwitcher />
+          </div>
+          <div className="flex items-center justify-between gap-3 px-1 py-2">
+            <span className="flex items-center gap-2 text-sm font-black text-[#1c1916]">
+              <Icon name={theme === 'dark' ? 'moon' : 'sun'} className="h-4 w-4 text-marigold-deep" />
+              {theme === 'dark' ? 'Dark mode' : 'Light mode'}
+            </span>
+            <Toggle checked={theme === 'dark'} label="Toggle dark mode" onChange={toggleTheme} />
           </div>
         </Section>
 
@@ -360,7 +369,7 @@ export function MorePage() {
         </Section>
 
         <button
-          className="mt-5 w-full rounded-xl border border-[#eadfcd] bg-white py-3 text-sm font-bold text-[#d84b3f]"
+          className="mt-5 w-full rounded-xl border border-[#e5decf] bg-white py-3 text-sm font-bold text-[#e14b36]"
           onClick={() => setLogoutOpen(true)}
           type="button"
         >

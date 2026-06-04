@@ -6,57 +6,57 @@
 
 // ── Colors ──────────────────────────────────────────────
 export const colors = {
-  primary: '#0d7b51',
-  primaryContainer: '#0b6845',
-  primaryLight: '#eaf7ef',
+  primary: '#138a5e',
+  primaryContainer: '#0e6e4b',
+  primaryLight: '#dcf1e7',
   onPrimary: '#ffffff',
 
-  danger: '#d84b3f',
-  dangerLight: '#fff0ee',
+  danger: '#e14b36',
+  dangerLight: '#fbe6e1',
 
   warning: '#c87b22',
   warningLight: '#fff4df',
 
   whatsapp: '#25D366',
 
-  bgPage: '#fbf8f1',
+  bgPage: '#f4f1ea',
   bgCard: '#FFFFFF',
 
-  textPrimary: '#1d1813',
-  textSecondary: '#746a60',
+  textPrimary: '#1c1916',
+  textSecondary: '#847a6c',
 
-  border: '#eadfcd',
-  borderLight: '#f3eadc',
+  border: '#e5decf',
+  borderLight: '#ece7dc',
 
-  navActive: '#0d7b51',
-  navInactive: '#9a8f83',
+  navActive: '#138a5e',
+  navInactive: '#847a6c',
 } as const
 
 // ── Component class presets ─────────────────────────────
 export const btn = {
   primary:
-    'bg-[#0d7b51] text-white rounded-xl py-3 w-full font-semibold text-sm active:bg-[#0b6845] disabled:opacity-50',
+    'bg-[#138a5e] text-white rounded-xl py-3 w-full font-semibold text-sm active:bg-[#0e6e4b] disabled:opacity-50',
   whatsapp:
     'bg-[#25D366] text-white rounded-xl py-3 w-full font-semibold text-sm flex items-center justify-center gap-2',
   secondary:
-    'border border-[#0d7b51] text-[#0d7b51] bg-white rounded-xl py-3 w-full font-semibold text-sm',
+    'border border-[#138a5e] text-[#138a5e] bg-white rounded-xl py-3 w-full font-semibold text-sm',
   danger:
-    'bg-[#d84b3f] text-white rounded-xl py-3 w-full font-semibold text-sm',
+    'bg-[#e14b36] text-white rounded-xl py-3 w-full font-semibold text-sm',
 } as const
 
 export const pill = {
-  paid: 'bg-[#eaf7ef] text-[#0d7b51] rounded-full px-3 py-1 text-xs font-medium',
+  paid: 'bg-[#dcf1e7] text-[#138a5e] rounded-full px-3 py-1 text-xs font-medium',
   pending: 'bg-[#fff4df] text-[#c87b22] rounded-full px-3 py-1 text-xs font-medium',
   partial: 'bg-[#fff4df] text-[#c87b22] rounded-full px-3 py-1 text-xs font-medium',
-  absent: 'bg-[#fff0ee] text-[#d84b3f] rounded-full px-3 py-1 text-xs font-medium',
-  present: 'bg-[#eaf7ef] text-[#0d7b51] rounded-full px-3 py-1 text-xs font-medium',
+  absent: 'bg-[#fbe6e1] text-[#e14b36] rounded-full px-3 py-1 text-xs font-medium',
+  present: 'bg-[#dcf1e7] text-[#138a5e] rounded-full px-3 py-1 text-xs font-medium',
 } as const
 
 export const card = 'rounded-xl shadow-sm bg-white p-4' as const
 
 // ── Avatar color palette (cycle through for student initials) ──
 export const avatarColors = [
-  '#0d7b51',
+  '#138a5e',
   '#c87b22',
   '#1565C0',
   '#6A1B9A',
