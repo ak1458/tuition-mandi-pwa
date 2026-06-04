@@ -26,3 +26,9 @@ dist-ssr
 # Local development / tool directories
 .vercel
 supabase/.temp
+
+# Environment files — never commit real secrets (examples stay tracked)
+.env
+.env.*
+!.env.example
+!.env.production.example
