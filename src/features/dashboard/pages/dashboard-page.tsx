@@ -5,11 +5,12 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { getDashboardSummary } from '@/features/dashboard/services/dashboard-service'
 import { listStudents } from '@/features/students/services/students-service'
 import type { DashboardSummary, Student } from '@/types/domain'
-import { Icon, PageHeader, PersonAvatar, cx } from '@/components/common/tuition-mandi-ui'
-import { NotificationsBell, NotificationsPanel } from '@/components/common/notifications-panel'
+import { Icon } from '@/components/common/tuition-mandi-ui'
+import { Avatar, Btn, Card, IconBtn, Pill, SectionLabel, StatTile, Verified } from '@/components/common/tm-kit'
+import { NotificationsPanel } from '@/components/common/notifications-panel'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { useLocalInquiries } from '@/hooks/use-local-inquiries'
-import { countActiveDemoTrials } from '@/lib/demo-trial'
+import { useTheme } from '@/hooks/use-theme'
 
 const defaultSummary: DashboardSummary = {
   teacher_id: '',
@@ -20,32 +21,16 @@ const defaultSummary: DashboardSummary = {
   fee_pending_count: 0,
 }
 
-const quickActions = [
-  { label: 'Attendance', copyKey: 'attendance', icon: 'clipboard', path: '/attendance', tone: 'green' },
-  { label: 'Students', copyKey: 'students', icon: 'users', path: '/students', tone: 'orange' },
-  { label: 'Reports', copyKey: 'reports', icon: 'report', path: '/reports', tone: 'purple' },
-  { label: 'Fees', copyKey: 'fees', icon: 'rupee', path: '/fees', tone: 'paper' },
-  { label: 'Reminders', copyKey: 'reminders', icon: 'bell', path: '/fees', tone: 'green' },
-  { label: 'WhatsApp', copyKey: 'whatsapp', icon: 'whatsapp', path: '/inquiries', tone: 'green' },
-  { label: 'Post Vacancy', copyKey: 'postVacancy', icon: 'send', path: '/profile/setup', tone: 'orange' },
-  { label: 'More', copyKey: 'more', icon: 'dots', path: '/more', tone: 'paper' },
-] as const
-
-function actionTone(tone: (typeof quickActions)[number]['tone']) {
-  if (tone === 'green') return 'bg-[#dcf1e7] text-[#138a5e]'
-  if (tone === 'orange') return 'bg-[#fff4df] text-[#c87b22]'
-  if (tone === 'purple') return 'bg-[#f1edff] text-[#d6850a]'
-  return 'bg-[#f4f1ea] text-[#5d544c]'
-}
-
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.max(1, Math.floor(diff / 60000))
-  if (mins < 60) return `${mins} min ago`
+  if (mins < 60) return `${mins} min pehle`
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours} hr ago`
-  return `${Math.floor(hours / 24)} d ago`
+  if (hours < 24) return `${hours} ghante pehle`
+  return `${Math.floor(hours / 24)} din pehle`
 }
+
+const inr = (n: number) => '₹' + (n || 0).toLocaleString('en-IN')
 
 export function DashboardPage() {
   const { session } = useAuth()
@@ -53,22 +38,18 @@ export function DashboardPage() {
   const teacherId = session?.user.id ?? ''
   const { t } = useTranslation()
   const copy = useTuitionMandiCopy()
+  const { theme, toggle: toggleTheme } = useTheme()
   const teacherName =
     (session?.user?.user_metadata?.full_name as string | undefined) || t('common.teacher')
 
   const [summary, setSummary] = useState<DashboardSummary>(defaultSummary)
-  const [isLoading, setIsLoading] = useState(true)
   const [students, setStudents] = useState<Student[]>([])
   const allInquiries = useLocalInquiries()
-  const recentInquiries = allInquiries.slice(0, 3)
+  const recentInquiries = allInquiries.slice(0, 2)
   const [showNotifications, setShowNotifications] = useState(false)
 
   const loadSummary = useCallback(async () => {
-    if (!teacherId) {
-      setIsLoading(false)
-      return
-    }
-    setIsLoading(true)
+    if (!teacherId) return
     try {
       const [data, list] = await Promise.all([
         getDashboardSummary(teacherId),
@@ -78,8 +59,6 @@ export function DashboardPage() {
       setStudents(list)
     } catch {
       setSummary(defaultSummary)
-    } finally {
-      setIsLoading(false)
     }
   }, [teacherId])
 
@@ -90,164 +69,124 @@ export function DashboardPage() {
   const totalStudents = summary.total_students
   const presentToday = summary.present_today
   const feePendingCount = summary.fee_pending_count
+  const feesCollected = summary.fees_collected
   const inquiryCount = allInquiries.length
-  const activeTrialCount = countActiveDemoTrials(students)
+  void students
 
   return (
-    <div className="min-h-full bg-[#f4f1ea] pb-24">
-      <PageHeader
-        right={<NotificationsBell userId={teacherId} onOpen={() => setShowNotifications(true)} />}
-        subtitle={copy.dashboard.title}
-        title={copy.dashboard.greeting.replace('{{name}}', teacherName.split(' ')[0] || 'Teacher')}
-      />
+    <div className="tm-noscroll min-h-full" style={{ background: 'var(--paper)', overflowY: 'auto', paddingBottom: 96 }}>
+      {/* header */}
+      <div style={{ padding: '14px 18px 6px', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Avatar name={teacherName} size={44} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', fontWeight: 600 }}>{copy.dashboard.subtitle} 👋</div>
+          <div className="font-display" style={{ fontSize: 19, fontWeight: 800, color: 'var(--ink)', lineHeight: 1.1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{teacherName}</div>
+        </div>
+        <button onClick={toggleTheme} aria-label="Toggle theme" className="tm-btn" style={{ width: 40, height: 40, borderRadius: 13, display: 'grid', placeItems: 'center', cursor: 'pointer', background: 'var(--surface)', color: 'var(--ink)', border: '1px solid var(--line)', boxShadow: 'var(--shadow-sm)', flexShrink: 0 }}>
+          <Icon name={theme === 'dark' ? 'sun' : 'moon'} style={{ width: 19, height: 19 }} />
+        </button>
+        <IconBtn name="bell" label="Notifications" badge={inquiryCount || undefined} onClick={() => setShowNotifications(true)} />
+      </div>
 
-      <NotificationsPanel
-        onClose={() => setShowNotifications(false)}
-        open={showNotifications}
-        userId={teacherId}
-      />
+      <NotificationsPanel onClose={() => setShowNotifications(false)} open={showNotifications} userId={teacherId} />
 
-      <section className="px-4 py-4">
-        <div className="rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
-          <div className="flex items-center gap-3">
-            <PersonAvatar name={teacherName} size="sm" variant="male" />
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-[14px] font-black text-[#1c1916]">
-                {copy.dashboard.greeting.replace('{{name}}', teacherName.split(' ')[0] || 'Teacher')}
-              </p>
-              <p className="text-[12px] font-semibold text-[#847a6c]">{copy.dashboard.subtitle}</p>
-            </div>
-            <span className="rounded-full bg-[#dcf1e7] px-3 py-1 text-[11px] font-black text-[#138a5e]">Online</span>
-          </div>
-
-          <div className="mt-4 grid grid-cols-3 gap-2">
-            {[
-              [copy.dashboard.students, totalStudents],
-              [copy.dashboard.classes, totalStudents > 0 ? Math.max(1, Math.ceil(totalStudents / 5)) : 0],
-              [copy.dashboard.inquiries, inquiryCount],
-            ].map(([label, value]) => (
-              <div className="rounded-[16px] bg-[#f4f1ea] p-3 text-center" key={label}>
-                <p className="text-[22px] font-black text-[#138a5e]">{value}</p>
-                <p className="mt-1 text-[10px] font-bold text-[#847a6c]">{label}</p>
+      <div style={{ padding: '8px 18px 0' }}>
+        {/* ink hero — today's teaching at a glance */}
+        <Card pad={0} style={{ overflow: 'hidden', background: 'var(--ink)', border: 'none', boxShadow: 'var(--shadow-ink)' }}>
+          <div style={{ padding: 18, position: 'relative' }}>
+            <div style={{ position: 'absolute', right: -20, top: -20, width: 130, height: 130, borderRadius: 999, background: 'radial-gradient(circle, rgba(242,161,20,.26), transparent 70%)' }} />
+            <div style={{ display: 'flex', gap: 16 }}>
+              <div>
+                <div className="font-mono" style={{ fontSize: 30, fontWeight: 700, color: 'var(--on-ink)', lineHeight: 1 }}>{presentToday}</div>
+                <div style={{ fontSize: 11.5, color: 'rgba(251,247,238,.66)', fontWeight: 600, marginTop: 4 }}>{copy.dashboard.presentToday}</div>
               </div>
-            ))}
+              <div style={{ width: 1, background: 'rgba(255,255,255,.14)' }} />
+              <div>
+                <div className="font-mono" style={{ fontSize: 30, fontWeight: 700, color: '#F7AE2C', lineHeight: 1 }}>{inquiryCount}</div>
+                <div style={{ fontSize: 11.5, color: 'rgba(251,247,238,.66)', fontWeight: 600, marginTop: 4 }}>{copy.dashboard.inquiries}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 16, padding: '11px 13px', borderRadius: 13, background: 'rgba(255,255,255,.08)' }}>
+              <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(247,174,44,.18)', color: '#F7AE2C', display: 'grid', placeItems: 'center', flexShrink: 0 }}><Icon name="clock" style={{ width: 18, height: 18 }} /></div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 10.5, color: 'rgba(251,247,238,.6)', fontWeight: 600 }}>{feePendingCount > 0 ? copy.dashboard.feePending : copy.dashboard.todayStatus}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--on-ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {feePendingCount > 0 ? `${feePendingCount} ${feePendingCount === 1 ? 'student' : 'students'}` : `${totalStudents} ${totalStudents === 1 ? 'student' : 'students'}`}
+                </div>
+              </div>
+              <button onClick={() => navigate(feePendingCount > 0 ? '/fees' : '/attendance')} className="tm-btn" style={{ padding: '8px 13px', borderRadius: 10, border: 'none', cursor: 'pointer', background: 'var(--marigold)', color: 'var(--on-marigold)', fontWeight: 800, fontSize: 12.5, flexShrink: 0 }}>{copy.dashboard.view}</button>
+            </div>
           </div>
+        </Card>
+
+        {/* quick stats */}
+        <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
+          <StatTile value={totalStudents} label={copy.dashboard.students} tone="var(--marigold-deep)" icon="users" onClick={() => navigate('/students')} />
+          <StatTile value={presentToday} label={copy.dashboard.presentToday} tone="var(--leaf)" icon="check-circle" onClick={() => navigate('/attendance')} />
+          <StatTile value={inquiryCount} label={copy.dashboard.inquiries} tone="var(--sky)" icon="message" onClick={() => navigate('/inquiries')} />
         </div>
 
-        {isLoading && (
-          <p className="mt-3 rounded-xl bg-white px-3 py-2 text-sm font-bold text-[#847a6c]">{copy.common.loading}</p>
-        )}
+        {/* profile / verification CTA */}
+        <Card pad={13} onClick={() => navigate('/profile/setup')} style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 12, background: 'var(--leaf-wash)', border: 'none' }}>
+          <Verified size={26} />
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--leaf-deep)' }}>Profile complete karein</div>
+            <div style={{ fontSize: 11.5, color: 'var(--ink-2)', marginTop: 1 }}>Verified tutor banein, zyada leads payein</div>
+          </div>
+          <Icon name="chevron" style={{ width: 18, height: 18, color: 'var(--leaf-deep)' }} />
+        </Card>
 
-        <section className="mt-5">
-          <h2 className="text-[13px] font-black text-[#1c1916]">{copy.dashboard.quickActions}</h2>
-          <div className="mt-3 grid grid-cols-4 gap-2">
-            {quickActions.map((action) => (
-              <button
-                className="min-h-[76px] rounded-[16px] border border-[#e5decf] bg-white p-2 text-center shadow-[0_8px_18px_rgba(53,38,22,0.05)] active:scale-[0.98]"
-                key={action.label}
-                onClick={() => navigate(action.path)}
-                type="button"
-              >
-                <span className={cx('mx-auto grid h-9 w-9 place-items-center rounded-xl', actionTone(action.tone))}>
-                  <Icon className="h-5 w-5" name={action.icon} />
-                </span>
-                <span className="mt-2 block text-[10px] font-black leading-3 text-[#4d453d]">
-                  {copy.actions[action.copyKey]}
-                </span>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        <section className="mt-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[13px] font-black text-[#1c1916]">{copy.dashboard.todayStatus}</h2>
-            <button className="text-[12px] font-black text-[#d6850a]" onClick={() => navigate('/attendance')} type="button">
-              {copy.dashboard.view}
-            </button>
-          </div>
-          <div className="mt-3 grid grid-cols-2 gap-3">
-            <button className="rounded-[18px] border border-[#ddecdf] bg-[#f4fbf6] p-4 text-left" onClick={() => navigate('/attendance')} type="button">
-              <p className="text-[12px] font-bold text-[#847a6c]">{copy.dashboard.presentToday}</p>
-              <p className="mt-2 text-3xl font-black text-[#138a5e]">{presentToday}</p>
-            </button>
-            <button className="rounded-[18px] border border-[#f0dfc2] bg-[#fff8e8] p-4 text-left" onClick={() => navigate('/fees')} type="button">
-              <p className="text-[12px] font-bold text-[#847a6c]">{copy.dashboard.feePending}</p>
-              <p className="mt-2 text-3xl font-black text-[#c87b22]">{feePendingCount}</p>
-            </button>
-          </div>
-          {activeTrialCount > 0 && (
-            <button
-              className="mt-3 flex w-full items-center gap-3 rounded-[18px] border border-[#f0dfc2] bg-gradient-to-br from-[#fff8e8] to-[#fff4df] p-4 text-left shadow-[0_8px_18px_rgba(200,123,34,0.06)]"
-              onClick={() => navigate('/students')}
-              type="button"
-            >
-              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-[#c87b22] shadow-sm">
-                <Icon className="h-5 w-5" name="star" />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-[12px] font-extrabold uppercase tracking-wide text-[#9a5a14]">
-                  {copy.demo.dashboardCard}
-                </p>
-                <p className="mt-0.5 text-[18px] font-black leading-tight text-[#1c1916]">
-                  {activeTrialCount} {activeTrialCount === 1 ? 'student' : 'students'}
-                </p>
-                <p className="mt-0.5 truncate text-[11px] font-semibold text-[#7a5d2c]">
-                  {copy.demo.dashboardHint.replace('{{count}}', String(activeTrialCount))}
-                </p>
-              </div>
-              <Icon className="h-4 w-4 shrink-0 text-[#9a5a14]" name="chevron-right" />
-            </button>
-          )}
-        </section>
-
-        <section className="mt-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-[13px] font-black text-[#1c1916]">{copy.dashboard.recentInquiries}</h2>
-            <button className="text-[12px] font-black text-[#138a5e]" onClick={() => navigate('/inquiries')} type="button">
-              {copy.dashboard.viewAll}
-            </button>
-          </div>
-          <div className="mt-3 space-y-3">
+        {/* new leads (real parent inquiries) */}
+        <div style={{ marginTop: 22 }}>
+          <SectionLabel action={copy.dashboard.viewAll} onAction={() => navigate('/inquiries')}>{copy.dashboard.recentInquiries}</SectionLabel>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {recentInquiries.length === 0 ? (
-              <article className="rounded-[18px] border border-[#e5decf] bg-white p-5 text-center text-sm font-semibold text-[#847a6c]">
-                Abhi koi parent inquiry nahi aayi.
-                <p className="mt-1 text-[11px] font-medium text-[#847a6c]">
-                  Apni profile share karein taaki parents reach kar sakein.
-                </p>
-              </article>
+              <Card pad={18} style={{ textAlign: 'center' }}>
+                <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--ink-2)' }}>Abhi koi lead nahi</div>
+                <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 4 }}>Apni profile share karein taaki parents reach kar sakein.</div>
+              </Card>
             ) : (
-              recentInquiries.map((inquiry, index) => (
-                <article
-                  className="flex items-center gap-3 rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-sm"
-                  key={inquiry.id}
-                >
-                  <PersonAvatar
-                    name={inquiry.parent_name || 'Parent'}
-                    size="sm"
-                    variant={index % 2 ? 'female' : 'student'}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-black text-[#1c1916]">
-                      {inquiry.parent_name || 'Unknown Parent'}
-                    </p>
-                    <p className="truncate text-[11px] font-semibold text-[#847a6c]">
-                      {inquiry.student_class || 'Class'} - {inquiry.subject_needed || 'Subject'} - {timeAgo(inquiry.created_at)}
-                    </p>
+              recentInquiries.map((q) => (
+                <Card key={q.id} pad={14} onClick={() => navigate('/inquiries')}>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    <Avatar name={q.parent_name || 'Parent'} size={44} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                        <span className="font-display" style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)' }}>{q.subject_needed || 'Tuition'}</span>
+                        <Pill tone="gold" style={{ fontSize: 10 }}>Naya</Pill>
+                      </div>
+                      <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 3 }}>{q.parent_name || 'Parent'} · {q.student_class || 'Class'}</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 9, fontSize: 11.5, fontWeight: 600, color: 'var(--ink-2)' }}>
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}><Icon name="clock" style={{ width: 13, height: 13, color: 'var(--ink-soft)' }} />{timeAgo(q.created_at)}</span>
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    className="grid h-9 w-9 place-items-center rounded-full bg-[#dcf1e7] text-[#138a5e]"
-                    onClick={() => navigate('/inquiries')}
-                    type="button"
-                  >
-                    <Icon className="h-5 w-5" name="whatsapp" />
-                  </button>
-                </article>
+                </Card>
               ))
             )}
           </div>
-        </section>
-      </section>
+        </div>
+
+        {/* earnings — secondary card (real fees collected this month) */}
+        <Card pad={15} style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 13 }} onClick={() => navigate('/fees')}>
+          <div style={{ width: 44, height: 44, borderRadius: 13, background: 'var(--leaf-wash)', color: 'var(--leaf-deep)', display: 'grid', placeItems: 'center', flexShrink: 0 }}><Icon name="wallet" style={{ width: 22, height: 22 }} /></div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 11.5, color: 'var(--ink-soft)', fontWeight: 600 }}>{copy.fees.collected}</div>
+            <div className="font-mono" style={{ fontSize: 19, fontWeight: 700, color: 'var(--ink)' }}>{inr(feesCollected)}</div>
+          </div>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 12.5, fontWeight: 700, color: 'var(--marigold-deep)' }}>{copy.dashboard.view}<Icon name="chevron" style={{ width: 15, height: 15 }} /></span>
+        </Card>
+
+        {/* share profile prompt */}
+        <Card pad={15} soft style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
+          <div style={{ width: 44, height: 44, borderRadius: 13, background: 'var(--marigold-wash)', color: 'var(--marigold-deep)', display: 'grid', placeItems: 'center', flexShrink: 0 }}><Icon name="gift" style={{ width: 22, height: 22 }} /></div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--ink)' }}>Apna profile share karein</div>
+            <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 1 }}>Zyada parents tak pahunchein</div>
+          </div>
+          <Btn variant="ink" size="sm" onClick={() => navigate('/profile/setup')}>Share</Btn>
+        </Card>
+      </div>
     </div>
   )
 }

@@ -9,8 +9,19 @@ export type IconName =
   | 'arrow-left'
   | 'bell'
   | 'bookmark'
+  | 'badge'
+  | 'book'
   | 'calendar'
   | 'chart'
+  | 'check-circle'
+  | 'chevron'
+  | 'clock'
+  | 'flame'
+  | 'gift'
+  | 'globe'
+  | 'sparkle'
+  | 'trending'
+  | 'wallet'
   | 'check'
   | 'chevron-right'
   | 'clipboard'
@@ -76,6 +87,75 @@ export function Icon({ name, className, ...props }: IconProps) {
           <>
             <circle cx="12" cy="12" r="4" />
             <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </>
+        )
+      case 'clock':
+        return (
+          <>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+          </>
+        )
+      case 'wallet':
+        return (
+          <>
+            <path d="M3 7a2 2 0 0 1 2-2h12v4" />
+            <path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7H6a3 3 0 0 1-3-3Z" />
+          </>
+        )
+      case 'gift':
+        return (
+          <>
+            <rect x="3" y="8" width="18" height="4" rx="1" />
+            <path d="M5 12v9h14v-9M12 8v13" />
+            <path d="M12 8S10 3 7.5 4.5 9.5 8 12 8ZM12 8s2-5 4.5-3.5S14.5 8 12 8Z" />
+          </>
+        )
+      case 'sparkle':
+        return (
+          <>
+            <path d="M12 2v6M12 16v6M2 12h6M16 12h6" />
+            <path d="m6.5 6.5 3 3M14.5 14.5l3 3M17.5 6.5l-3 3M9.5 14.5l-3 3" />
+          </>
+        )
+      case 'globe':
+        return (
+          <>
+            <circle cx="12" cy="12" r="9" />
+            <path d="M3 12h18M12 3a14 14 0 0 1 0 18 14 14 0 0 1 0-18Z" />
+          </>
+        )
+      case 'book':
+        return (
+          <>
+            <path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3Z" />
+            <path d="M18 7a3 3 0 0 1 3-3v13a3 3 0 0 0-3 3" />
+          </>
+        )
+      case 'badge':
+        return (
+          <>
+            <circle cx="12" cy="9" r="6" />
+            <path d="m9 14-2 7 5-3 5 3-2-7" />
+            <path d="m9.5 9 1.7 1.7L15 7" />
+          </>
+        )
+      case 'check-circle':
+        return (
+          <>
+            <circle cx="12" cy="12" r="9" />
+            <path d="m8.5 12 2.5 2.5 4.5-5" />
+          </>
+        )
+      case 'flame':
+        return <path d="M12 3c1 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3 1-4 1 1 2 1 3 0Z" />
+      case 'chevron':
+        return <path d="m9 6 6 6-6 6" />
+      case 'trending':
+        return (
+          <>
+            <path d="m3 17 6-6 4 4 8-8" />
+            <path d="M17 7h4v4" />
           </>
         )
       case 'calendar':
