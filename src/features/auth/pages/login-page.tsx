@@ -258,22 +258,22 @@ export function LoginPage() {
         </div>
 
         <div className="mt-6 text-center">
-          <h1 className="text-[24px] font-black leading-tight text-[#1c1916]">{copy.login.title}</h1>
-          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-[#5d544c]">
+          <h1 className="text-[24px] font-black leading-tight text-ink">{copy.login.title}</h1>
+          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-ink-soft">
             {copy.login.subtitle}
           </p>
         </div>
 
         {!hasSupabaseConfig && (
-          <div className="mt-4 rounded-xl border border-[#fcefd2] bg-[#fff9ee] px-3 py-2.5">
-            <p className="text-[11px] font-bold text-[#d6850a]">
+          <div className="mt-4 rounded-xl border border-marigold-wash bg-surface-2 px-3 py-2.5">
+            <p className="text-[11px] font-bold text-marigold-deep">
               Setup needed: Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your .env.local file to enable login.
             </p>
           </div>
         )}
 
-        <section className="mt-4 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
-          <div className="grid grid-cols-2 rounded-xl bg-[#f4f1ea] p-1">
+        <section className="mt-4 rounded-[22px] border border-line bg-surface p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+          <div className="grid grid-cols-2 rounded-xl bg-paper p-1">
             {[
               ['phone', copy.common.mobile],
               ['email', copy.common.email],
@@ -281,7 +281,7 @@ export function LoginPage() {
               <button
                 className={cx(
                   'rounded-lg px-3 py-2 text-sm font-black',
-                  mode === value ? 'bg-white text-[#d6850a] shadow-sm' : 'text-[#847a6c]',
+                  mode === value ? 'bg-surface text-marigold-deep shadow-sm' : 'text-ink-soft',
                 )}
                 key={value}
                 onClick={() => {
@@ -299,17 +299,17 @@ export function LoginPage() {
 
           {/* Status messages — shown at top so they're always visible without scrolling */}
           <div ref={messageRef}>
-            {infoMessage && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{infoMessage}</p>}
+            {infoMessage && <p className="mt-3 rounded-xl bg-leaf-wash px-3 py-2 text-sm font-bold text-leaf">{infoMessage}</p>}
             {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
           </div>
 
           {mode === 'phone' && !otpRequested && (
             <form className="mt-4 space-y-3" onSubmit={sendOtp}>
               <div className="flex items-center justify-between">
-                <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="phone">
+                <label className="block text-[12px] font-black text-ink" htmlFor="phone">
                   {copy.login.mobileNumber}
                 </label>
-                <label className="flex items-center gap-1 text-[10px] font-bold text-[#847a6c]">
+                <label className="flex items-center gap-1 text-[10px] font-bold text-ink-soft">
                   <input
                     checked={phoneIsSignup}
                     className="h-3 w-3"
@@ -319,10 +319,10 @@ export function LoginPage() {
                   New account?
                 </label>
               </div>
-              <div className="flex overflow-hidden rounded-xl border border-[#e5decf] bg-[#fffdf8] focus-within:border-[#d6850a]">
-                <span className="grid w-14 place-items-center border-r border-[#e5decf] text-sm font-black text-[#d6850a]">+91</span>
+              <div className="flex overflow-hidden rounded-xl border border-line bg-surface-2 focus-within:border-marigold-deep">
+                <span className="grid w-14 place-items-center border-r border-line text-sm font-black text-marigold-deep">+91</span>
                 <input
-                  className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold outline-none"
+                  className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold text-ink outline-none"
                   id="phone"
                   inputMode="numeric"
                   maxLength={10}
@@ -339,11 +339,11 @@ export function LoginPage() {
 
           {mode === 'phone' && otpRequested && (
             <form className="mt-4 space-y-3" onSubmit={verifyOtp}>
-              <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="otp">
+              <label className="block text-[12px] font-black text-ink" htmlFor="otp">
                 OTP
               </label>
               <input
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none focus:border-marigold-deep"
                 id="otp"
                 inputMode="numeric"
                 maxLength={6}
@@ -362,7 +362,7 @@ export function LoginPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#847a6c]"
+                  className="rounded-xl border border-line bg-surface px-4 py-3 text-sm font-bold text-ink-soft"
                   onClick={() => setOtpRequested(false)}
                   type="button"
                 >
@@ -373,7 +373,7 @@ export function LoginPage() {
                 </PrimaryButton>
               </div>
               <button
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-4 py-3 text-sm font-bold text-[#d6850a] disabled:opacity-50"
+                className="w-full rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm font-bold text-marigold-deep disabled:opacity-50"
                 disabled={otpCooldown > 0 || isSubmitting}
                 onClick={sendOtp}
                 type="button"
@@ -386,7 +386,7 @@ export function LoginPage() {
           {mode === 'email' && !showForgotPassword && (
             <form className="mt-4 space-y-3" onSubmit={handleEmailSubmit}>
               {/* Login / Sign Up toggle */}
-              <div className="grid grid-cols-2 rounded-lg bg-[#f4f1ea] p-0.5">
+              <div className="grid grid-cols-2 rounded-lg bg-paper p-0.5">
                 {[
                   ['login', 'Login'] as const,
                   ['signup', 'Sign Up'] as const,
@@ -394,7 +394,7 @@ export function LoginPage() {
                   <button
                     className={cx(
                       'rounded-md px-3 py-1.5 text-[12px] font-black',
-                      emailAction === value ? 'bg-white text-[#d6850a] shadow-sm' : 'text-[#847a6c]',
+                      emailAction === value ? 'bg-surface text-marigold-deep shadow-sm' : 'text-ink-soft',
                     )}
                     key={value}
                     onClick={() => {
@@ -411,7 +411,7 @@ export function LoginPage() {
 
               <input
                 autoComplete="email"
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none focus:border-marigold-deep"
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="teacher@example.com"
                 type="email"
@@ -419,7 +419,7 @@ export function LoginPage() {
               />
               <input
                 autoComplete={emailAction === 'signup' ? 'new-password' : 'current-password'}
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none focus:border-marigold-deep"
                 minLength={emailAction === 'signup' ? PASSWORD_MIN_LENGTH : undefined}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder={emailAction === 'signup' ? `Create password (min ${PASSWORD_MIN_LENGTH} chars)` : copy.common.password}
@@ -445,7 +445,7 @@ export function LoginPage() {
 
               {emailAction === 'login' && (
                 <button
-                  className="w-full text-center text-[12px] font-bold text-[#d6850a]"
+                  className="w-full text-center text-[12px] font-bold text-marigold-deep"
                   onClick={() => {
                     setShowForgotPassword(true)
                     setForgotEmail(email)
@@ -462,13 +462,13 @@ export function LoginPage() {
 
           {mode === 'email' && showForgotPassword && (
             <form className="mt-4 space-y-3" onSubmit={handleForgotPassword}>
-              <p className="text-[12px] font-black text-[#1c1916]">Reset Password</p>
-              <p className="text-[11px] font-semibold text-[#5d544c]">
+              <p className="text-[12px] font-black text-ink">Reset Password</p>
+              <p className="text-[11px] font-semibold text-ink-soft">
                 Email dalein — hum reset link bhejenge.
               </p>
               <input
                 autoComplete="email"
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none focus:border-marigold-deep"
                 onChange={(event) => setForgotEmail(event.target.value)}
                 placeholder="teacher@example.com"
                 type="email"
@@ -476,7 +476,7 @@ export function LoginPage() {
               />
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#847a6c]"
+                  className="rounded-xl border border-line bg-surface px-4 py-3 text-sm font-bold text-ink-soft"
                   onClick={() => {
                     setShowForgotPassword(false)
                     setErrorMessage('')
@@ -495,25 +495,25 @@ export function LoginPage() {
 
           {/* Google OAuth */}
           <button
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#1c1916]"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-4 py-3 text-sm font-bold text-ink"
             onClick={handleGoogleLogin}
             type="button"
           >
-            <span className="grid h-5 w-5 place-items-center rounded-full border border-[#e5decf] text-[12px] font-black text-[#e14b36]">G</span>
+            <span className="grid h-5 w-5 place-items-center rounded-full border border-line text-[12px] font-black text-coral">G</span>
             {copy.login.google}
           </button>
 
           {/* If user clicks Google but consent block not shown above, surface a hint */}
           {!showConsentBlock && (
-            <p className="mt-2 text-center text-[10px] font-semibold text-[#847a6c]">
-              Google se sign in karne par <button className="underline text-[#d6850a]" onClick={() => navigate('/privacy')} type="button">Privacy</button> aur <button className="underline text-[#d6850a]" onClick={() => navigate('/terms')} type="button">Terms</button> accept honge.
+            <p className="mt-2 text-center text-[10px] font-semibold text-ink-soft">
+              Google se sign in karne par <button className="underline text-marigold-deep" onClick={() => navigate('/privacy')} type="button">Privacy</button> aur <button className="underline text-marigold-deep" onClick={() => navigate('/terms')} type="button">Terms</button> accept honge.
             </p>
           )}
 
         </section>
 
         <button
-          className="mt-5 w-full text-center text-[13px] font-black text-[#138a5e]"
+          className="mt-5 w-full text-center text-[13px] font-black text-leaf"
           onClick={() => navigate('/search')}
           type="button"
         >
@@ -534,8 +534,8 @@ interface ConsentBlockProps {
 
 function ConsentBlock({ agreeToTerms, setAgreeToTerms, confirmAge, setConfirmAge, navigate }: ConsentBlockProps) {
   return (
-    <div className="space-y-2 rounded-xl border border-[#fcefd2] bg-[#fcefd2] p-3">
-      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-[#5d544c]">
+    <div className="space-y-2 rounded-xl border border-marigold-wash bg-marigold-wash p-3">
+      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-ink-soft">
         <input
           checked={agreeToTerms}
           className="mt-0.5 h-4 w-4 shrink-0"
@@ -545,17 +545,17 @@ function ConsentBlock({ agreeToTerms, setAgreeToTerms, confirmAge, setConfirmAge
         />
         <span>
           Maine{' '}
-          <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/privacy')} type="button">
+          <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/privacy')} type="button">
             Privacy Policy
           </button>{' '}
           aur{' '}
-          <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/terms')} type="button">
+          <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/terms')} type="button">
             Terms
           </button>{' '}
           padhi hain aur accept karta hoon.
         </span>
       </label>
-      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-[#5d544c]">
+      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-ink-soft">
         <input
           checked={confirmAge}
           className="mt-0.5 h-4 w-4 shrink-0"
