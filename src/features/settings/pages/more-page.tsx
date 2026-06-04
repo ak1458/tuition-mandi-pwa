@@ -5,7 +5,8 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { usePlan } from '@/hooks/use-plan'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { useTheme } from '@/hooks/use-theme'
-import { Icon, PageHeader, PersonAvatar, cx, type IconName } from '@/components/common/tuition-mandi-ui'
+import { Icon, PageHeader, cx, type IconName } from '@/components/common/tuition-mandi-ui'
+import { Avatar, Btn, Card, Pill, Verified } from '@/components/common/tm-kit'
 import { ConfirmDialog } from '@/components/common/confirm-dialog'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 import { hasSupabaseConfig } from '@/lib/env'
@@ -230,36 +231,24 @@ export function MorePage() {
       <PageHeader subtitle={copy.more.subtitle} title={copy.more.title} />
 
       <section className="px-4 py-4">
-        {/* Profile card */}
-        <div className="rounded-[22px] border border-[#e5decf] bg-white p-5 text-center shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
-          <PersonAvatar name={teacherName} size="lg" variant="male" />
-          <p className="mt-3 text-[16px] font-black text-[#1c1916]">{teacherName}</p>
-          {teacherPhone && <p className="mt-0.5 text-[12px] font-semibold text-[#5d544c]">{teacherPhone}</p>}
-          <p className="mt-2 inline-block rounded-full bg-[#f4f1ea] px-3 py-1 text-[11px] font-black text-[#138a5e]">
-            {planSubtitle}
-          </p>
-          <div className="mt-4 grid grid-cols-2 gap-2">
-            <button
-              className="rounded-xl border border-[#e5decf] bg-white py-2 text-[12px] font-black text-[#d6850a]"
-              onClick={() => navigate('/profile/setup')}
-              type="button"
-            >
-              Edit Profile
-            </button>
-            <button
-              className={cx(
-                'rounded-xl py-2 text-[12px] font-black',
-                isPro
-                  ? 'border border-[#ddecdf] bg-[#f4fbf6] text-[#138a5e]'
-                  : 'bg-[#d6850a] text-white shadow-[0_8px_18px_rgba(73,48,168,0.25)]',
-              )}
-              onClick={() => navigate('/inquiries')}
-              type="button"
-            >
-              {isPro ? 'Manage Plan' : copy.more.premium}
-            </button>
+        {/* Profile header — Clone-design */}
+        <Card pad={18}>
+          <div style={{ display: 'flex', gap: 14, alignItems: 'center' }}>
+            <Avatar name={teacherName} size={66} radius={20} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <span className="font-display" style={{ fontSize: 20, fontWeight: 800, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{teacherName}</span>
+                {isPro && <Verified size={18} />}
+              </div>
+              {teacherPhone && <div className="font-mono" style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 2 }}>{teacherPhone}</div>}
+              <div style={{ marginTop: 7 }}><Pill tone={isPro ? 'leaf' : 'gold'} dot>{planSubtitle}</Pill></div>
+            </div>
           </div>
-        </div>
+          <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+            <Btn variant="ghost" full onClick={() => navigate('/profile/setup')}>Edit Profile</Btn>
+            <Btn variant={isPro ? 'soft' : 'ink'} full onClick={() => navigate('/inquiries')}>{isPro ? 'Manage Plan' : copy.more.premium}</Btn>
+          </div>
+        </Card>
 
         {toast && (
           <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-center text-sm font-bold text-[#138a5e]">{toast}</p>
