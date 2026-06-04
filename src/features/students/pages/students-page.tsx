@@ -3,11 +3,17 @@ import { useNavigate } from 'react-router'
 import { useAuth } from '@/app/providers/auth-provider'
 import { createStudent, listStudents } from '@/features/students/services/students-service'
 import type { Student } from '@/types/domain'
-import { Icon, IconButton, PageHeader, PersonAvatar, PrimaryButton } from '@/components/common/tuition-mandi-ui'
+import { Icon } from '@/components/common/tuition-mandi-ui'
+import { Avatar, Btn, Card, EmptyState, IconBtn, Pill, TopBar } from '@/components/common/tm-kit'
 import { DemoTrialBadge } from '@/components/common/demo-trial-badge'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
-import { BookLoverIllustration } from '@/components/common/illustrations'
 import { countActiveDemoTrials, isInDemoTrial } from '@/lib/demo-trial'
+
+const fieldStyle: React.CSSProperties = {
+  width: '100%', border: '1.5px solid var(--line)', background: 'var(--surface-2)', color: 'var(--ink)',
+  borderRadius: 'var(--radius-field)', padding: '12px 14px', fontSize: 15, fontWeight: 500,
+  fontFamily: 'var(--font-stack-latin)', outline: 'none',
+}
 
 export function StudentsPage() {
   const { session } = useAuth()
@@ -51,7 +57,6 @@ export function StudentsPage() {
   const onCreateStudent = async (event: FormEvent) => {
     event.preventDefault()
     if (!teacherId || !fullName.trim()) return
-
     setIsSubmitting(true)
     setErrorMessage('')
     try {
@@ -63,14 +68,9 @@ export function StudentsPage() {
         monthlyFee: Number(monthlyFee) || 0,
         guardianPhone: guardianPhone.trim(),
       })
-      setFullName('')
-      setClassLabel('')
-      setSubject('')
-      setMonthlyFee('')
-      setGuardianPhone('')
+      setFullName(''); setClassLabel(''); setSubject(''); setMonthlyFee(''); setGuardianPhone('')
       setShowForm(false)
-      const trialMsg = copy.demo.activatedToast.replace('{{name}}', created.full_name)
-      setToast(trialMsg)
+      setToast(copy.demo.activatedToast.replace('{{name}}', created.full_name))
       window.setTimeout(() => setToast(null), 4000)
       await loadStudents()
     } catch (error) {
@@ -82,183 +82,129 @@ export function StudentsPage() {
 
   const filtered = searchQuery
     ? students.filter(
-        (student) =>
-          student.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          student.class_label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          student.subject.toLowerCase().includes(searchQuery.toLowerCase()),
+        (s) =>
+          s.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.class_label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          s.subject.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : students
 
   const trialCount = countActiveDemoTrials(students)
+  const inr = (n: number) => '₹' + (n || 0).toLocaleString('en-IN')
 
   return (
-    <div className="min-h-full bg-[#f4f1ea] pb-28">
-      <PageHeader
-        left={
-          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
-            <Icon className="h-4 w-4" name="arrow-left" />
-          </IconButton>
-        }
-        right={
-          <IconButton className="h-9 w-9" label="Add student" onClick={() => setShowForm((value) => !value)}>
-            <Icon className="h-4 w-4 text-[#138a5e]" name="plus" />
-          </IconButton>
-        }
-        subtitle={`${filtered.length || students.length} students`}
+    <div className="tm-noscroll" style={{ height: '100%', overflowY: 'auto', background: 'var(--paper)' }}>
+      <TopBar
         title={copy.students.title}
+        subtitle={`${students.length} students`}
+        onBack={() => navigate(-1)}
+        right={<IconBtn name="plus" label="Add student" active={showForm} onClick={() => setShowForm((v) => !v)} />}
       />
 
-      <section className="px-4 py-4">
+      <div style={{ padding: '12px 18px 110px' }}>
         {trialCount > 0 && (
-          <div className="mb-3 flex items-start gap-3 rounded-2xl border border-[#f0dfc2] bg-gradient-to-br from-[#fff8e8] to-[#fff4df] p-3 shadow-[0_8px_18px_rgba(200,123,34,0.06)]">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-white text-[#c87b22] shadow-sm">
-              <Icon className="h-5 w-5" name="star" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-[13px] font-extrabold text-[#1c1916]">
-                {copy.demo.bannerTitle}
-              </p>
-              <p className="mt-0.5 text-[11px] font-semibold leading-4 text-[#7a5d2c]">
-                {copy.demo.dashboardHint.replace('{{count}}', String(trialCount))}
-              </p>
+          <Card pad={13} style={{ marginBottom: 14, background: 'var(--marigold-wash)', border: 'none', display: 'flex', gap: 11 }}>
+            <Icon name="star" style={{ width: 20, height: 20, color: 'var(--marigold-deep)', flexShrink: 0, marginTop: 1 }} />
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ink)' }}>{copy.demo.bannerTitle}</div>
+              <div style={{ fontSize: 11.5, color: 'var(--ink-2)', marginTop: 1 }}>{copy.demo.dashboardHint.replace('{{count}}', String(trialCount))}</div>
             </div>
-          </div>
+          </Card>
         )}
 
-        <div className="rounded-2xl border border-[#e5decf] bg-white p-2 shadow-sm">
-          <div className="flex items-center gap-2">
-            <Icon className="ml-2 h-5 w-5 text-[#82786d]" name="search" />
+        {/* search */}
+        <Card pad={4} style={{ marginBottom: 14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 10px' }}>
+            <Icon name="search" style={{ width: 18, height: 18, color: 'var(--ink-soft)' }} />
             <input
-              className="min-w-0 flex-1 bg-transparent py-3 text-sm font-semibold outline-none placeholder:text-[#847a6c]"
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder={copy.students.search}
               value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={copy.students.search}
+              style={{ flex: 1, minWidth: 0, border: 'none', outline: 'none', background: 'transparent', padding: '12px 0', fontSize: 15, fontWeight: 500, color: 'var(--ink)', fontFamily: 'var(--font-stack-latin)' }}
             />
           </div>
-        </div>
+        </Card>
 
         {errorMessage && (
-          <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>
+          <Card pad={12} style={{ marginBottom: 12, background: 'var(--coral-wash)', border: 'none' }}>
+            <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--coral-deep)' }}>{errorMessage}</span>
+          </Card>
         )}
-
         {toast && (
-          <p className="mt-3 animate-fade-in-up rounded-xl border border-[#f0dfc2] bg-[#fff8e8] px-3 py-2 text-sm font-bold leading-5 text-[#9a5a14]">
-            🎁 {toast}
-          </p>
+          <Card pad={12} style={{ marginBottom: 12, background: 'var(--marigold-wash)', border: 'none' }}>
+            <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--marigold-deep)' }}>🎁 {toast}</span>
+          </Card>
         )}
 
         {showForm && (
-          <form
-            className="mt-4 space-y-2 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]"
-            onSubmit={onCreateStudent}
-          >
-            <p className="text-[13px] font-black text-[#1c1916]">{copy.students.add}</p>
-            <p className="text-[11px] font-semibold leading-4 text-[#9a5a14]">
-              ✨ {copy.demo.bannerTitle} - {copy.demo.moreSettingsHint}
-            </p>
-            <input
-              className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
-              onChange={(event) => setFullName(event.target.value)}
-              placeholder={copy.students.name}
-              required
-              value={fullName}
-            />
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
-                onChange={(event) => setClassLabel(event.target.value)}
-                placeholder={copy.students.class}
-                value={classLabel}
-              />
-              <input
-                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
-                onChange={(event) => setSubject(event.target.value)}
-                placeholder={copy.students.subject}
-                value={subject}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <input
-                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
-                inputMode="numeric"
-                onChange={(event) => setMonthlyFee(event.target.value)}
-                placeholder={copy.students.monthlyFee}
-                value={monthlyFee}
-              />
-              <input
-                className="rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
-                inputMode="tel"
-                onChange={(event) => setGuardianPhone(event.target.value)}
-                placeholder={copy.students.parentPhone}
-                value={guardianPhone}
-              />
-            </div>
-            <PrimaryButton disabled={isSubmitting} type="submit">
-              {isSubmitting ? copy.students.saving : copy.students.save}
-            </PrimaryButton>
-          </form>
+          <Card pad={15} style={{ marginBottom: 14 }}>
+            <form onSubmit={onCreateStudent} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              <div className="font-display" style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)' }}>{copy.students.add}</div>
+              <input style={fieldStyle} value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder={copy.students.name} required />
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <input style={fieldStyle} value={classLabel} onChange={(e) => setClassLabel(e.target.value)} placeholder={copy.students.class} />
+                <input style={fieldStyle} value={subject} onChange={(e) => setSubject(e.target.value)} placeholder={copy.students.subject} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                <input style={fieldStyle} inputMode="numeric" value={monthlyFee} onChange={(e) => setMonthlyFee(e.target.value)} placeholder={copy.students.monthlyFee} />
+                <input style={fieldStyle} inputMode="tel" value={guardianPhone} onChange={(e) => setGuardianPhone(e.target.value)} placeholder={copy.students.parentPhone} />
+              </div>
+              <Btn variant="ink" full disabled={isSubmitting} onClick={() => {}} style={{ marginTop: 2 }}>
+                {isSubmitting ? copy.students.saving : copy.students.save}
+              </Btn>
+            </form>
+          </Card>
         )}
 
-        <div className="mt-4 space-y-3">
-          {isLoading ? (
-            <div className="rounded-[18px] border border-[#e5decf] bg-white p-4 text-sm font-bold text-[#847a6c]">
-              {copy.students.loading}
-            </div>
-          ) : filtered.length === 0 ? (
-            searchQuery ? (
-              <div className="rounded-[18px] border border-[#e5decf] bg-white p-6 text-center text-sm font-bold text-[#847a6c]">
-                {copy.students.noResult}
-              </div>
-            ) : (
-              <div className="py-8 text-center">
-                <BookLoverIllustration className="mx-auto w-full max-w-[200px] h-auto" />
-                <h3 className="mt-6 text-[16px] font-black text-[#1c1916]">{copy.students.empty}</h3>
-                <p className="mx-auto mt-2 max-w-[280px] text-[12.5px] font-semibold leading-relaxed text-[#847a6c]">
-                  {copy.welcome.teacherSubtitle}
-                </p>
-              </div>
-            )
-          ) : (
-            filtered.map((student, index) => {
-              const inTrial = isInDemoTrial(student.created_at)
+        {isLoading ? (
+          <Card pad={16}><span style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-soft)' }}>{copy.students.loading}</span></Card>
+        ) : filtered.length === 0 ? (
+          <EmptyState
+            icon={searchQuery ? 'search' : 'users'}
+            title={searchQuery ? copy.students.noResult : copy.students.empty}
+            body={searchQuery ? '' : copy.welcome.teacherSubtitle}
+            action={!searchQuery ? <Btn variant="ink" icon="plus" onClick={() => setShowForm(true)}>{copy.students.add}</Btn> : undefined}
+          />
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+            {filtered.map((s) => {
+              const inTrial = isInDemoTrial(s.created_at)
               return (
-                <article
-                  className="flex items-center gap-3 rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-sm"
-                  key={student.id}
-                >
-                  <PersonAvatar
-                    name={student.full_name}
-                    size="sm"
-                    variant={index % 2 ? 'female' : 'student'}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-[13px] font-extrabold text-[#1c1916]">{student.full_name}</p>
-                    <p className="truncate text-[11px] font-semibold text-[#847a6c]">
-                      {student.class_label} · {student.subject}
-                    </p>
+                <Card key={s.id} pad={14}>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                    <Avatar name={s.full_name} size={46} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="font-display" style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.full_name}</div>
+                      <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 2 }}>{s.class_label || '—'}{s.subject ? ` · ${s.subject}` : ''}</div>
+                    </div>
+                    {inTrial ? (
+                      <DemoTrialBadge createdAt={s.created_at} label={copy.demo.label} variant="full" />
+                    ) : (
+                      <Pill tone="leaf">{copy.common.present}</Pill>
+                    )}
                   </div>
-                  {inTrial ? (
-                    <DemoTrialBadge createdAt={student.created_at} label={copy.demo.label} variant="full" />
-                  ) : (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[#dcf1e7] px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-[#138a5e] ring-1 ring-inset ring-[#cfe9d8]">
-                      {copy.common.present}
-                    </span>
+                  {s.monthly_fee > 0 && (
+                    <div style={{ display: 'flex', gap: 16, marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--line)', fontSize: 11.5, color: 'var(--ink-2)', fontWeight: 600 }}>
+                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                        <Icon name="rupee" style={{ width: 13, height: 13, color: 'var(--leaf)' }} /><b className="font-mono">{inr(s.monthly_fee)}</b>/mo
+                      </span>
+                      {s.guardian_phone && (
+                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
+                          <Icon name="phone" style={{ width: 13, height: 13, color: 'var(--ink-soft)' }} />{s.guardian_phone}
+                        </span>
+                      )}
+                    </div>
                   )}
-                </article>
+                </Card>
               )
-            })
-          )}
-        </div>
-      </section>
+            })}
+          </div>
+        )}
+      </div>
 
-      <div className="fixed inset-x-0 bottom-16 z-30 mx-auto max-w-[480px] bg-gradient-to-t from-[#f4f1ea] to-transparent px-4 py-3">
-        <button
-          className="w-full rounded-xl bg-[#d6850a] py-3 text-sm font-extrabold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] active:scale-[0.99]"
-          onClick={() => setShowForm(true)}
-          type="button"
-        >
-          + {copy.students.add}
-        </button>
+      {/* sticky add */}
+      <div style={{ position: 'absolute', insetInline: 0, bottom: 64, padding: '12px 18px', background: 'linear-gradient(to top, var(--paper), transparent)' }}>
+        <Btn variant="gold" full icon="plus" onClick={() => setShowForm(true)}>{copy.students.add}</Btn>
       </div>
     </div>
   )
