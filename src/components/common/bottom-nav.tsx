@@ -9,10 +9,11 @@ interface NavItem {
 }
 
 const teacherNavItems: NavItem[] = [
-  { label: 'Dashboard', path: '/dashboard', icon: 'home' },
-  { label: 'Students', path: '/students', icon: 'users' },
-  { label: 'Reports', path: '/reports', icon: 'report' },
-  { label: 'More', path: '/more', icon: 'dots' },
+  { label: 'Home', path: '/dashboard', icon: 'home' },
+  { label: 'Leads', path: '/inquiries', icon: 'clipboard' },
+  { label: 'Classes', path: '/students', icon: 'calendar' },
+  { label: 'Messages', path: '/messages', icon: 'message' },
+  { label: 'Profile', path: '/more', icon: 'users' },
 ]
 
 const parentNavItems: NavItem[] = [
@@ -28,34 +29,40 @@ export function BottomNav() {
   const copy = useTuitionMandiCopy()
 
   const labels: Record<string, string> = {
-    Dashboard: copy.nav.dashboard,
+    Home: copy.nav.dashboard,
+    Leads: 'Leads',
+    Classes: 'Classes',
     Students: copy.nav.students,
     Reports: copy.nav.reports,
     More: copy.nav.more,
-    Home: 'Home',
     Saved: 'Saved',
     Messages: 'Messages',
     Profile: 'Profile',
   }
 
-  const isParentRoute = location.pathname.startsWith('/search') || location.pathname.startsWith('/profile') || location.pathname.startsWith('/saved') || location.pathname.startsWith('/messages')
+  const isParentRoute =
+    location.pathname.startsWith('/search') ||
+    location.pathname.startsWith('/saved')
   const currentItems = isParentRoute ? parentNavItems : teacherNavItems
 
   return (
-    <nav className="pointer-events-auto mx-auto flex max-w-[480px] items-center justify-around border-t border-[#e5decf] bg-white/95 px-2 py-1 backdrop-blur safe-bottom">
+    <nav
+      className="pointer-events-auto mx-auto flex max-w-[480px] items-center justify-around border-t px-2 py-1 backdrop-blur safe-bottom"
+      style={{ background: 'color-mix(in srgb, var(--surface) 92%, transparent)', borderColor: 'var(--line)' }}
+    >
       {currentItems.map((item) => {
-        const isActive = location.pathname.startsWith(item.path) || (item.path === '/search' && location.pathname === '/search')
+        const isActive =
+          location.pathname === item.path || location.pathname.startsWith(item.path + '/')
         return (
           <button
-            className="flex min-w-[68px] flex-col items-center justify-center gap-0.5 px-2 py-1.5"
+            className="flex min-w-[60px] flex-col items-center justify-center gap-0.5 px-2 py-1.5"
             key={item.path}
             onClick={() => navigate(item.path)}
             type="button"
+            style={{ color: isActive ? 'var(--ink)' : 'var(--ink-soft)' }}
           >
-            <span className={cx('grid h-8 w-8 place-items-center rounded-xl', isActive ? 'bg-[#dcf1e7] text-[#138a5e]' : 'text-[#847a6c]')}>
-              <Icon className="h-5 w-5" name={item.icon} />
-            </span>
-            <span className={cx('text-[10px] font-black', isActive ? 'text-[#138a5e]' : 'text-[#847a6c]')}>
+            <Icon className="h-[23px] w-[23px]" name={item.icon} />
+            <span className={cx('text-[10.5px]', isActive ? 'font-extrabold' : 'font-semibold')}>
               {labels[item.label] ?? item.label}
             </span>
           </button>
