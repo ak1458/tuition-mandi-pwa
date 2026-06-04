@@ -1,91 +1,67 @@
 import { useNavigate } from 'react-router'
-import { Icon, IconButton, PageHeader, PageShell, PersonAvatar } from '@/components/common/tuition-mandi-ui'
+import { Avatar, Btn, EmptyState, IconBtn, TopBar } from '@/components/common/tm-kit'
 import { useLocalInquiries } from '@/hooks/use-local-inquiries'
 
 function timeAgo(dateStr: string) {
   const diff = Date.now() - new Date(dateStr).getTime()
   const mins = Math.max(1, Math.floor(diff / 60000))
-  if (mins < 60) return `${mins} min ago`
+  if (mins < 60) return `${mins}m`
   const hours = Math.floor(mins / 60)
-  if (hours < 24) return `${hours} hr ago`
-  return `${Math.floor(hours / 24)} d ago`
-}
-
-function teacherVariant(index: number) {
-  return index % 2 ? 'female' : 'student'
+  if (hours < 24) return `${hours}h`
+  return `${Math.floor(hours / 24)}d`
 }
 
 export function MessagesPage() {
   const navigate = useNavigate()
   const items = useLocalInquiries()
+  const newCount = items.filter((i) => i.status === 'new').length
 
   return (
-    <PageShell>
-      <PageHeader
-        left={
-          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
-            <Icon className="h-4 w-4" name="arrow-left" />
-          </IconButton>
-        }
-        subtitle={`${items.length} message${items.length === 1 ? '' : 's'}`}
-        title="My Inquiries"
+    <div className="tm-noscroll" style={{ height: '100%', overflowY: 'auto', background: 'var(--paper)' }}>
+      <TopBar
+        title="Messages"
+        subtitle={newCount > 0 ? `${newCount} naye` : `${items.length} message${items.length === 1 ? '' : 's'}`}
+        onBack={() => navigate(-1)}
+        right={<IconBtn name="search" label="Search" />}
       />
 
-      <section className="px-4 py-4 pb-24">
+      <div style={{ padding: '8px 0 100px' }}>
         {items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
-            <div className="grid h-20 w-20 place-items-center rounded-full bg-[#f4f1ea] text-[#847a6c]">
-              <Icon className="h-10 w-10" name="message" />
-            </div>
-            <h2 className="mt-6 text-lg font-black text-[#1c1916]">No inquiries yet</h2>
-            <p className="mt-2 text-sm font-semibold text-[#847a6c]">
-              Teachers ke profile pe Send Inquiry tap karein - aapke messages yahan dikhenge.
-            </p>
-            <button
-              className="mt-5 rounded-xl bg-[#138a5e] px-5 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)]"
-              onClick={() => navigate('/search')}
-              type="button"
-            >
-              Find Teachers
-            </button>
-          </div>
+          <EmptyState
+            icon="message"
+            title="Abhi koi message nahi"
+            body="Teacher ke profile par Send Inquiry tap karein — aapke messages yahan dikhenge."
+            action={<Btn variant="ink" icon="search" onClick={() => navigate('/search')}>Find Teachers</Btn>}
+          />
         ) : (
-          <div className="space-y-3">
-            {items.map((inquiry, index) => (
-              <article
-                className="rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)]"
-                key={inquiry.id}
+          items.map((m) => {
+            const unread = m.status === 'new'
+            return (
+              <button
+                key={m.id}
+                onClick={() => navigate('/inquiries')}
+                className="tm-btn"
+                style={{ width: '100%', display: 'flex', gap: 13, alignItems: 'center', padding: '13px 18px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
               >
-                <div className="flex items-start gap-3">
-                  <PersonAvatar
-                    name={inquiry.parent_name || 'Parent'}
-                    size="sm"
-                    variant={teacherVariant(index)}
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="truncate text-[13px] font-black text-[#1c1916]">
-                        {inquiry.subject_needed || 'Tuition'} - {inquiry.student_class || 'Class'}
-                      </p>
-                      <span className="shrink-0 text-[10px] font-bold text-[#847a6c]">
-                        {timeAgo(inquiry.created_at)}
-                      </span>
-                    </div>
-                    <p className="mt-0.5 truncate text-[11px] font-semibold text-[#847a6c]">
-                      Status: {inquiry.status}
-                    </p>
-                    {inquiry.message && (
-                      <p className="mt-2 line-clamp-3 rounded-[12px] bg-[#fff8ec] p-2 text-[12px] font-semibold leading-5 text-[#4d453d]">
-                        {inquiry.message}
-                      </p>
-                    )}
+                <Avatar name={m.parent_name || 'Parent'} size={50} radius={16} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
+                    <span className="font-display" style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{m.parent_name || 'Parent'}</span>
+                    <span style={{ fontSize: 11, color: unread ? 'var(--marigold-deep)' : 'var(--ink-soft)', fontWeight: 700, flexShrink: 0 }}>{timeAgo(m.created_at)}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 600 }}>{m.subject_needed || 'Tuition'} · {m.student_class || 'Class'}</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 8, marginTop: 3 }}>
+                    <span style={{ fontSize: 12.5, color: unread ? 'var(--ink-2)' : 'var(--ink-soft)', fontWeight: unread ? 600 : 400, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flex: 1 }}>
+                      {m.message || `Status: ${m.status}`}
+                    </span>
+                    {unread && <span style={{ width: 9, height: 9, borderRadius: 999, background: 'var(--marigold)', flexShrink: 0 }} />}
                   </div>
                 </div>
-              </article>
-            ))}
-          </div>
+              </button>
+            )
+          })
         )}
-      </section>
-    </PageShell>
+      </div>
+    </div>
   )
 }

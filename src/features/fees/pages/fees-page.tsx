@@ -4,7 +4,8 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { getFeeRows, saveFeeMutation, toMonthStart, type FeeMutationPayload, type FeeRow } from '@/features/fees/services/fees-service'
 import { enqueueMutation, flushQueuedMutations, type OfflineMutation } from '@/lib/offline/mutation-queue'
 import { buildFeeReminderLink } from '@/utils/whatsapp'
-import { Icon, IconButton, PageHeader, PersonAvatar, cx } from '@/components/common/tuition-mandi-ui'
+import { Icon } from '@/components/common/tuition-mandi-ui'
+import { Avatar, Btn, Card, Pill, TopBar } from '@/components/common/tm-kit'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
 
 function isNetworkError(error: unknown): boolean {
@@ -16,11 +17,13 @@ function monthLabel(monthStr: string): string {
   return new Date(`${monthStr}-01T00:00:00`).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' })
 }
 
-function statusClass(status: string) {
-  if (status === 'paid') return 'bg-[#dcf1e7] text-[#138a5e]'
-  if (status === 'partial') return 'bg-[#fff4df] text-[#c87b22]'
-  return 'bg-[#fbe6e1] text-[#e14b36]'
+function pillTone(status: string): 'leaf' | 'gold' | 'coral' {
+  if (status === 'paid') return 'leaf'
+  if (status === 'partial') return 'gold'
+  return 'coral'
 }
+
+const inr = (n: number) => '₹' + (n || 0).toLocaleString('en-IN')
 
 export function FeesPage() {
   const { session } = useAuth()
@@ -87,12 +90,13 @@ export function FeesPage() {
     )
   }, [rows])
 
+  const pendingCount = rows.filter((r) => r.status !== 'paid').length
+
   const onSavePayment = async (row: FeeRow, amount: number) => {
     if (!teacherId) return
     setIsSaving(true)
     setErrorMessage('')
     setMessage('')
-
     const payload: FeeMutationPayload = {
       teacherId,
       studentId: row.studentId,
@@ -100,7 +104,6 @@ export function FeesPage() {
       amountDue: row.amountDue,
       amountPaid: amount,
     }
-
     try {
       if (!navigator.onLine) {
         await enqueueMutation('fees', payload)
@@ -124,97 +127,100 @@ export function FeesPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#f4f1ea] pb-28">
-      <PageHeader
-        left={
-          <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
-            <Icon className="h-4 w-4" name="arrow-left" />
-          </IconButton>
-        }
+    <div className="tm-noscroll" style={{ height: '100%', overflowY: 'auto', background: 'var(--paper)' }}>
+      <TopBar
+        title={copy.fees.title}
+        subtitle={monthLabel(selectedMonth)}
+        onBack={() => navigate(-1)}
         right={
           <input
-            className="max-w-[128px] rounded-xl border border-[#e5decf] bg-white px-2 py-2 text-xs font-bold"
-            onChange={(event) => setSelectedMonth(event.target.value)}
             type="month"
             value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            style={{ maxWidth: 132, borderRadius: 12, border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', padding: '8px 10px', fontSize: 12, fontWeight: 700, fontFamily: 'var(--font-stack-latin)' }}
           />
         }
-        subtitle={monthLabel(selectedMonth)}
-        title={copy.fees.title}
       />
 
-      <section className="px-4 py-4">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-[18px] border border-[#ddecdf] bg-[#f4fbf6] p-4">
-            <p className="text-[12px] font-bold text-[#847a6c]">{copy.fees.collected}</p>
-            <p className="mt-2 text-2xl font-black text-[#138a5e]">₹{summary.collected.toLocaleString('en-IN')}</p>
+      <div style={{ padding: '14px 18px 100px' }}>
+        {/* leaf balance card — collected this month (real) */}
+        <Card pad={0} style={{ overflow: 'hidden', background: 'var(--leaf)', border: 'none', boxShadow: '0 16px 34px rgba(19,138,94,.32)' }}>
+          <div style={{ padding: 20, position: 'relative' }}>
+            <div style={{ position: 'absolute', right: -30, top: -30, width: 130, height: 130, borderRadius: 999, background: 'rgba(255,255,255,.12)' }} />
+            <div style={{ fontSize: 12, color: 'rgba(255,255,255,.8)', fontWeight: 600 }}>{copy.fees.collected} · {monthLabel(selectedMonth)}</div>
+            <div className="font-mono" style={{ fontSize: 36, fontWeight: 700, color: '#fff', marginTop: 4, lineHeight: 1 }}>{inr(summary.collected)}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 14, fontSize: 13, color: 'rgba(255,255,255,.92)', fontWeight: 600 }}>
+              <Icon name="clock" style={{ width: 16, height: 16 }} />{copy.fees.due}: <b className="font-mono">{inr(summary.due)}</b>
+            </div>
           </div>
-          <div className="rounded-[18px] border border-[#f1d8d3] bg-[#fff7f4] p-4">
-            <p className="text-[12px] font-bold text-[#847a6c]">{copy.fees.due}</p>
-            <p className="mt-2 text-2xl font-black text-[#e14b36]">₹{summary.due.toLocaleString('en-IN')}</p>
+        </Card>
+
+        {/* pending summary */}
+        {pendingCount > 0 && (
+          <Card pad={14} style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 12, background: 'var(--marigold-wash)', border: 'none' }}>
+            <div style={{ width: 42, height: 42, borderRadius: 12, background: 'var(--marigold)', color: 'var(--on-marigold)', display: 'grid', placeItems: 'center', flexShrink: 0 }}><Icon name="clock" style={{ width: 20, height: 20 }} /></div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 800, color: 'var(--ink)' }}>{inr(summary.due)} pending</div>
+              <div style={{ fontSize: 11.5, color: 'var(--ink-2)' }}>{pendingCount} {pendingCount === 1 ? 'student' : 'students'} se baaki · WhatsApp reminder bhejein</div>
+            </div>
+          </Card>
+        )}
+
+        {errorMessage && <Card pad={12} style={{ marginTop: 12, background: 'var(--coral-wash)', border: 'none' }}><span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--coral-deep)' }}>{errorMessage}</span></Card>}
+        {message && <Card pad={12} style={{ marginTop: 12, background: 'var(--leaf-wash)', border: 'none' }}><span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--leaf-deep)' }}>{message}</span></Card>}
+
+        {/* per-student rows */}
+        <div style={{ marginTop: 22 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '0 0 12px' }}>
+            <h3 className="font-display" style={{ fontSize: 16.5, fontWeight: 800, color: 'var(--ink)', margin: 0 }}>Students</h3>
           </div>
-        </div>
-
-        {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
-        {message && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{message}</p>}
-
-        <div className="mt-4 space-y-3">
           {isLoading ? (
-            <div className="rounded-[18px] border border-[#e5decf] bg-white p-4 text-sm font-bold text-[#847a6c]">{copy.fees.loading}</div>
+            <Card pad={16}><span style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-soft)' }}>{copy.fees.loading}</span></Card>
           ) : rows.length === 0 ? (
-            <div className="rounded-[18px] border border-[#e5decf] bg-white p-6 text-center text-sm font-bold text-[#847a6c]">{copy.fees.empty}</div>
+            <Card pad={18} style={{ textAlign: 'center' }}><span style={{ fontSize: 13, fontWeight: 700, color: 'var(--ink-soft)' }}>{copy.fees.empty}</span></Card>
           ) : (
-            rows.map((row, index) => {
-              const waLink =
-                row.guardianPhone && row.status !== 'paid'
-                  ? buildFeeReminderLink(row.guardianPhone, row.fullName, row.amountDue - row.amountPaid, selectedMonth)
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
+              {rows.map((row) => {
+                const pending = Math.max(row.amountDue - row.amountPaid, 0)
+                const waLink = row.guardianPhone && row.status !== 'paid'
+                  ? buildFeeReminderLink(row.guardianPhone, row.fullName, pending, selectedMonth)
                   : null
-              return (
-                <article className="rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-sm" key={row.studentId}>
-                  <div className="flex items-center gap-3">
-                    <PersonAvatar name={row.fullName} size="sm" variant={index % 2 ? 'female' : 'student'} />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-[13px] font-black text-[#1c1916]">{row.fullName}</p>
-                      <p className="text-[11px] font-semibold text-[#847a6c]">
-                        ₹{row.amountPaid} paid / ₹{Math.max(row.amountDue - row.amountPaid, 0)} pending
-                      </p>
-                    </div>
-                    {waLink && (
-                      <a className="grid h-9 w-9 place-items-center rounded-full bg-[#dcf1e7] text-[#138a5e]" href={waLink} rel="noreferrer" target="_blank">
-                        <Icon className="h-5 w-5" name="whatsapp" />
-                      </a>
-                    )}
-                    <button
-                      className={cx('rounded-full px-3 py-1 text-[11px] font-black capitalize', statusClass(row.status))}
-                      onClick={() => {
-                        setEditingStudentId(editingStudentId === row.studentId ? null : row.studentId)
-                        setEditAmount(String(row.amountPaid))
-                      }}
-                      type="button"
-                    >
-                      {copy.fees[row.status]}
-                    </button>
-                  </div>
-                  {editingStudentId === row.studentId && (
-                    <div className="mt-3 flex gap-2">
-                      <input
-                        className="min-w-0 flex-1 rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
-                        inputMode="numeric"
-                        onChange={(event) => setEditAmount(event.target.value)}
-                        placeholder={copy.fees.amountPaid}
-                        value={editAmount}
-                      />
-                      <button className="rounded-xl bg-[#138a5e] px-4 py-3 text-sm font-bold text-white disabled:opacity-50" disabled={isSaving} onClick={() => onSavePayment(row, Number(editAmount) || 0)} type="button">
-                        {copy.fees.save}
+                return (
+                  <Card key={row.studentId} pad={14}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <Avatar name={row.fullName} size={44} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="font-display" style={{ fontSize: 14.5, fontWeight: 800, color: 'var(--ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{row.fullName}</div>
+                        <div className="font-mono" style={{ fontSize: 11.5, color: 'var(--ink-soft)', marginTop: 2 }}>{inr(row.amountPaid)} paid · {inr(pending)} due</div>
+                      </div>
+                      {waLink && (
+                        <a className="tm-btn" href={waLink} rel="noreferrer" target="_blank" aria-label="WhatsApp reminder" style={{ width: 38, height: 38, borderRadius: 11, display: 'grid', placeItems: 'center', background: 'var(--leaf-wash)', color: 'var(--leaf-deep)', flexShrink: 0 }}>
+                          <Icon name="whatsapp" style={{ width: 19, height: 19 }} />
+                        </a>
+                      )}
+                      <button onClick={() => { setEditingStudentId(editingStudentId === row.studentId ? null : row.studentId); setEditAmount(String(row.amountPaid)) }} className="tm-btn" style={{ border: 'none', background: 'transparent', cursor: 'pointer' }}>
+                        <Pill tone={pillTone(row.status)}>{copy.fees[row.status as 'paid' | 'partial' | 'pending']}</Pill>
                       </button>
                     </div>
-                  )}
-                </article>
-              )
-            })
+                    {editingStudentId === row.studentId && (
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
+                        <input
+                          inputMode="numeric"
+                          value={editAmount}
+                          onChange={(e) => setEditAmount(e.target.value)}
+                          placeholder={copy.fees.amountPaid}
+                          style={{ flex: 1, minWidth: 0, borderRadius: 'var(--radius-field)', border: '1.5px solid var(--line)', background: 'var(--surface-2)', color: 'var(--ink)', padding: '11px 14px', fontSize: 15, fontWeight: 500, outline: 'none', fontFamily: 'var(--font-stack-latin)' }}
+                        />
+                        <Btn variant="leaf" disabled={isSaving} onClick={() => onSavePayment(row, Number(editAmount) || 0)}>{copy.fees.save}</Btn>
+                      </div>
+                    )}
+                  </Card>
+                )
+              })}
+            </div>
           )}
         </div>
-      </section>
+      </div>
     </div>
   )
 }
