@@ -78,6 +78,12 @@
   --shadow-marigold: 0 14px 30px rgba(214, 133, 10, 0.3);
   --shadow-ink: 0 14px 30px rgba(28, 25, 22, 0.28);
 
+  /* Hero card styles */
+  --hero-bg: var(--ink);
+  --hero-fg: var(--on-ink);
+  --hero-border: none;
+  --hero-shadow: var(--shadow-ink);
+
   color-scheme: light;
 }
 
@@ -118,6 +124,12 @@
   --shadow-lg: 0 22px 48px rgba(0, 0, 0, 0.6);
   --shadow-marigold: 0 14px 30px rgba(0, 0, 0, 0.45);
   --shadow-ink: 0 14px 30px rgba(0, 0, 0, 0.55);
+
+  /* Hero card styles */
+  --hero-bg: var(--surface);
+  --hero-fg: var(--ink);
+  --hero-border: 1px solid var(--line);
+  --hero-shadow: var(--shadow-sm);
 
   color-scheme: dark;
 }

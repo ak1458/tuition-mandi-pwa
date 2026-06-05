@@ -12,7 +12,6 @@ import {
   PrimaryButton,
   ThemeToggleButton,
   TuitionMandiLogo,
-  TeacherWelcomeIllustration,
   cx,
 } from '@/components/common/tuition-mandi-ui'
 import { isGoogleAuthEnabled, isPhoneAuthEnabled } from '@/lib/env'
@@ -252,7 +251,13 @@ export function LoginPage() {
         </div>
 
         <div className="mt-6 flex items-center justify-center py-2">
-          <TeacherWelcomeIllustration className="w-full max-w-[280px] xs:max-w-[320px] h-auto" />
+          <img
+            src="/teacher.webp"
+            alt="Teacher Welcome"
+            loading="eager"
+            decoding="async"
+            className="w-full max-w-[280px] xs:max-w-[320px] h-auto rounded-[24px]"
+          />
         </div>
 
         <div className="mt-6 text-center">

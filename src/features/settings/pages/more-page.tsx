@@ -55,14 +55,14 @@ function Row({
 }) {
   const tone =
     iconTone === 'green'
-      ? 'bg-[#dcf1e7] text-[#138a5e]'
+      ? 'bg-leaf-wash text-leaf'
       : iconTone === 'orange'
       ? 'bg-[#fff4df] text-[#c87b22]'
       : iconTone === 'purple'
-      ? 'bg-[#f1edff] text-[#d6850a]'
+      ? 'bg-[#f1edff] text-marigold-deep'
       : iconTone === 'rose'
-      ? 'bg-[#fbe6e1] text-[#e14b36]'
-      : 'bg-[#f4f1ea] text-[#5d544c]'
+      ? 'bg-coral-wash text-coral'
+      : 'bg-paper text-ink-2'
 
   const Component: 'button' | 'div' = onClick ? 'button' : 'div'
 
@@ -104,7 +104,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (nex
     >
       <span
         className={cx(
-          'inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform',
+          'inline-block h-5 w-5 transform rounded-full bg-surface shadow-md transition-transform',
           checked ? 'translate-x-[22px]' : 'translate-x-[2px]',
         )}
       />
@@ -251,7 +251,7 @@ export function MorePage() {
         </Card>
 
         {toast && (
-          <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-center text-sm font-bold text-[#138a5e]">{toast}</p>
+          <p className="mt-3 rounded-xl bg-leaf-wash px-3 py-2 text-center text-sm font-bold text-leaf">{toast}</p>
         )}
 
         {/* Notifications */}
@@ -358,7 +358,7 @@ export function MorePage() {
         </Section>
 
         <button
-          className="mt-5 w-full rounded-xl border border-[#e5decf] bg-white py-3 text-sm font-bold text-[#e14b36]"
+          className="mt-5 w-full rounded-xl border border-line bg-surface py-3 text-sm font-bold text-coral"
           onClick={() => setLogoutOpen(true)}
           type="button"
         >

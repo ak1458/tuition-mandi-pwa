@@ -101,7 +101,7 @@ export function UpgradeModal({ reason, onClose, onUpgradeSuccess }: UpgradeModal
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/55 px-4 py-6 md:items-center">
-      <div className="w-full max-w-md rounded-3xl bg-white p-5 shadow-[0_30px_60px_rgba(28,27,53,0.35)]">
+      <div className="w-full max-w-md rounded-3xl bg-surface p-5 shadow-[0_30px_60px_rgba(28,27,53,0.35)]">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h2 className="font-display text-2xl text-ink">{REASONS[reason].title}</h2>
@@ -136,7 +136,7 @@ export function UpgradeModal({ reason, onClose, onUpgradeSuccess }: UpgradeModal
             </button>
           ))}
           <button
-            className="w-full rounded-xl border border-[#dfd4bc] bg-white px-4 py-3 text-sm font-semibold text-muted"
+            className="w-full rounded-xl border border-[#dfd4bc] bg-surface px-4 py-3 text-sm font-semibold text-muted"
             disabled={isProcessing}
             onClick={onClose}
             type="button"

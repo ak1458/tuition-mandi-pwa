@@ -22,8 +22,8 @@ export function RefundPolicyPage() {
       <article className="px-5 py-5 pb-20 space-y-6">
         {/* Summary card */}
         <section className="rounded-[18px] border border-[#ddecdf] bg-[#f4fbf6] p-4">
-          <h2 className="text-[14px] font-black text-[#138a5e]">📋 Quick Summary</h2>
-          <ul className="mt-2 text-[12px] font-semibold leading-6 text-[#5d544c] list-disc pl-4 space-y-1">
+          <h2 className="text-[14px] font-black text-leaf">📋 Quick Summary</h2>
+          <ul className="mt-2 text-[12px] font-semibold leading-6 text-ink-2 list-disc pl-4 space-y-1">
             <li>Full refund within 7 days of purchase if unused.</li>
             <li>Pro-rated refund within 7-30 days based on usage.</li>
             <li>No refund after 30 days.</li>
@@ -60,7 +60,7 @@ export function RefundPolicyPage() {
         <Section title="4. Refund Eligibility">
           <div className="space-y-3 mt-2">
             <div className="rounded-xl border border-[#ddecdf] bg-[#f9fdf9] p-3">
-              <p className="text-[13px] font-black text-[#138a5e]">Within 7 days of purchase</p>
+              <p className="text-[13px] font-black text-leaf">Within 7 days of purchase</p>
               <p className="mt-1">Full refund if no AI reports have been generated during the subscription period.</p>
             </div>
             <div className="rounded-xl border border-[#fff4df] bg-[#fffdf5] p-3">
@@ -68,7 +68,7 @@ export function RefundPolicyPage() {
               <p className="mt-1">Pro-rated refund based on unused days, minus any AI report generation costs.</p>
             </div>
             <div className="rounded-xl border border-[#fbe6e1] bg-[#fffbfa] p-3">
-              <p className="text-[13px] font-black text-[#e14b36]">After 30 days</p>
+              <p className="text-[13px] font-black text-coral">After 30 days</p>
               <p className="mt-1">No refund will be issued. You may continue using Pro features until the subscription expires.</p>
             </div>
           </div>
@@ -77,7 +77,7 @@ export function RefundPolicyPage() {
         <Section title="5. How to Request a Refund">
           <ol className="list-decimal pl-4 space-y-2">
             <li>
-              Email us at <a className="text-[#d6850a] underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> with
+              Email us at <a className="text-marigold-deep underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a> with
               subject line &quot;Refund Request&quot;.
             </li>
             <li>Include your registered phone number or email address.</li>
@@ -86,7 +86,7 @@ export function RefundPolicyPage() {
           </ol>
           <p className="mt-2">
             You can also request a refund via our{' '}
-            <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/help')} type="button">Help & Support</button> page
+            <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/help')} type="button">Help & Support</button> page
             or WhatsApp support.
           </p>
         </Section>
@@ -101,7 +101,7 @@ export function RefundPolicyPage() {
 
         <Section title="7. Non-Refundable Cases">
           <ul className="list-disc pl-4 space-y-2">
-            <li>Violation of our <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/terms')} type="button">Terms & Conditions</button> leading to account suspension.</li>
+            <li>Violation of our <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/terms')} type="button">Terms & Conditions</button> leading to account suspension.</li>
             <li>Requests made after 30 days from purchase date.</li>
             <li>Duplicate payment issues should be reported within 48 hours.</li>
           </ul>
@@ -110,8 +110,8 @@ export function RefundPolicyPage() {
         <Section title="8. Contact">
           <p>
             For refund inquiries, contact us at{' '}
-            <a className="text-[#d6850a] underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-            {' '}or visit our <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/contact')} type="button">Contact</button> page.
+            <a className="text-marigold-deep underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            {' '}or visit our <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/contact')} type="button">Contact</button> page.
           </p>
         </Section>
       </article>
@@ -121,9 +121,9 @@ export function RefundPolicyPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-[18px] border border-[#e5decf] bg-white p-4 shadow-sm">
-      <h2 className="text-[14px] font-black text-[#1c1916]">{title}</h2>
-      <div className="mt-2 text-[12px] font-semibold leading-6 text-[#5d544c]">{children}</div>
+    <section className="rounded-[18px] border border-line bg-surface p-4 shadow-sm">
+      <h2 className="text-[14px] font-black text-ink">{title}</h2>
+      <div className="mt-2 text-[12px] font-semibold leading-6 text-ink-2">{children}</div>
     </section>
   )
 }

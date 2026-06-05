@@ -10,7 +10,6 @@ import {
   TuitionMandiLogo,
   cx,
 } from '@/components/common/tuition-mandi-ui'
-import { BookLoverIllustration } from '@/components/common/illustrations'
 
 function ChoiceCard({
   tone,
@@ -87,7 +86,13 @@ export function WelcomePage() {
         </div>
 
         <div className="my-auto flex flex-1 items-center justify-center py-4">
-          <BookLoverIllustration className="w-full max-w-[280px] xs:max-w-[320px] md:max-w-[360px] h-auto" />
+          <img
+            src="/main_image.webp"
+            alt="TuitionMandi Welcome"
+            loading="eager"
+            decoding="async"
+            className="w-full max-w-[280px] xs:max-w-[320px] md:max-w-[360px] h-auto rounded-[24px]"
+          />
         </div>
 
         <div className="mt-4">

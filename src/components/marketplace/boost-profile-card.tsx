@@ -90,7 +90,7 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
 
     if (loading) {
         return (
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 animate-pulse">
+            <div className="rounded-2xl border border-slate-200 bg-surface p-4 animate-pulse">
                 <div className="h-4 w-32 bg-slate-200 rounded mb-2"></div>
                 <div className="h-10 bg-slate-100 rounded"></div>
             </div>
@@ -117,7 +117,7 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
     }
 
     return (
-        <section className="rounded-2xl border border-saffron/30 bg-white px-4 py-4 shadow-sm">
+        <section className="rounded-2xl border border-saffron/30 bg-surface px-4 py-4 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
                 <span className="text-xl">🚀</span>
                 <p className="text-xs uppercase tracking-[0.16em] text-saffron font-bold">{t('boostProfile.title')}</p>
@@ -144,7 +144,7 @@ export function BoostProfileCard({ onBoostSuccess }: BoostProfileCardProps) {
                     type="button"
                     disabled={processing}
                     onClick={() => handlePurchase(opt)}
-                    className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 transition-colors hover:border-saffron hover:bg-saffron/5 disabled:opacity-50"
+                    className="w-full flex items-center justify-between rounded-xl border border-slate-200 bg-surface p-3 transition-colors hover:border-saffron hover:bg-saffron/5 disabled:opacity-50"
                 >
                     <div className="text-left">
                         <p className="text-sm font-bold text-ink">{t(opt.labelKey)}</p>

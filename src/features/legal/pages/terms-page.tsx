@@ -63,7 +63,7 @@ export function TermsPage() {
             <li>Pro Plan pricing: ₹199/month or ₹1,499/year.</li>
             <li>Payments are processed securely via Razorpay.</li>
             <li>Pro Plan access is granted immediately upon successful payment capture.</li>
-            <li>See our <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/refund')} type="button">Refund Policy</button> for cancellation and refund terms.</li>
+            <li>See our <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/refund')} type="button">Refund Policy</button> for cancellation and refund terms.</li>
           </ul>
         </Section>
 
@@ -99,7 +99,7 @@ export function TermsPage() {
         <Section title="9. Data & Privacy">
           <p>
             Your use of TuitionMandi is also governed by our{' '}
-            <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/privacy')} type="button">Privacy Policy</button>,
+            <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/privacy')} type="button">Privacy Policy</button>,
             which describes how we collect, use, and protect your personal data. By using the App, you consent
             to our data practices as described therein.
           </p>
@@ -146,8 +146,8 @@ export function TermsPage() {
         <Section title="15. Contact">
           <p>
             For questions about these Terms, contact us at{' '}
-            <a className="text-[#d6850a] underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-            {' '}or via our <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/help')} type="button">Help & Support</button> page.
+            <a className="text-marigold-deep underline" href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            {' '}or via our <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/help')} type="button">Help & Support</button> page.
           </p>
         </Section>
       </article>
@@ -157,9 +157,9 @@ export function TermsPage() {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-[18px] border border-[#e5decf] bg-white p-4 shadow-sm">
-      <h2 className="text-[14px] font-black text-[#1c1916]">{title}</h2>
-      <div className="mt-2 text-[12px] font-semibold leading-6 text-[#5d544c]">{children}</div>
+    <section className="rounded-[18px] border border-line bg-surface p-4 shadow-sm">
+      <h2 className="text-[14px] font-black text-ink">{title}</h2>
+      <div className="mt-2 text-[12px] font-semibold leading-6 text-ink-2">{children}</div>
     </section>
   )
 }

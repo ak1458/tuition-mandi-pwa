@@ -46,41 +46,41 @@ function TeacherResultCard({
   const whatsappUrl = buildWhatsAppLink(teacher.phone_e164, teacher.full_name, profileUrl)
 
   return (
-    <article className="rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)] transition-all duration-300 hover:shadow-[0_14px_30px_rgba(53,38,22,0.1)]">
+    <article className="rounded-[18px] border border-line bg-surface p-3 shadow-[0_10px_24px_rgba(53,38,22,0.06)] transition-all duration-300 hover:shadow-[0_14px_30px_rgba(53,38,22,0.1)]">
       <div className="flex items-start gap-3">
         <PersonAvatar name={teacher.full_name} size="sm" variant={teacherVariant(teacher.full_name)} />
         <Link className="min-w-0 flex-1" to={`/profile/${teacher.id}`}>
           <div className="flex items-center gap-1.5">
-            <h2 className="truncate text-[13px] font-extrabold text-[#1c1916]">{teacher.full_name}</h2>
+            <h2 className="truncate text-[13px] font-extrabold text-ink">{teacher.full_name}</h2>
             {teacher.is_verified && (
               <span className="grid h-4 w-4 place-items-center rounded-full bg-[#138a5e] text-white">
                 <Icon className="h-2.5 w-2.5" name="check" />
               </span>
             )}
           </div>
-          <p className="mt-0.5 truncate text-[11px] font-semibold text-[#5d544c]">
+          <p className="mt-0.5 truncate text-[11px] font-semibold text-ink-2">
             {teacher.subjects.slice(0, 2).join(' + ')} - {teacher.classes_taught.slice(0, 2).join(', ')}
           </p>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-bold text-[#5d544c]">
-            <span className="inline-flex items-center gap-1 text-[#f2a114]">
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] font-bold text-ink-2">
+            <span className="inline-flex items-center gap-1 text-marigold">
               <Icon className="h-3.5 w-3.5 fill-current" name="star" />
               {rating > 0 ? rating.toFixed(1) : 'New'} {ratingCount > 0 && `(${ratingCount})`}
             </span>
             {teacher.area_mohalla && (
               <>
-                <span className="text-[#847a6c]">-</span>
-                <span className="truncate text-[#847a6c] max-w-[120px]">{teacher.area_mohalla}</span>
+                <span className="text-ink-soft">-</span>
+                <span className="truncate text-ink-soft max-w-[120px]">{teacher.area_mohalla}</span>
               </>
             )}
           </div>
         </Link>
         <IconButton className="h-9 w-9 border-transparent shadow-none" label="Save teacher">
-          <Icon className="h-5 w-5 text-[#d6850a]" name="heart" />
+          <Icon className="h-5 w-5 text-marigold-deep" name="heart" />
         </IconButton>
       </div>
       <div className="mt-3 flex gap-2">
         <Link
-          className="flex-1 rounded-xl border border-[#fcefd2] bg-[#fcefd2] px-3 py-2 text-center text-[12px] font-extrabold text-[#d6850a]"
+          className="flex-1 rounded-xl border border-[#fcefd2] bg-marigold-wash px-3 py-2 text-center text-[12px] font-extrabold text-marigold-deep"
           to={`/profile/${teacher.id}`}
         >
           {profileLabel}
@@ -96,7 +96,7 @@ function TeacherResultCard({
             WhatsApp
           </a>
         ) : (
-          <span className="flex-1 rounded-xl bg-[#ece7dc] px-3 py-2 text-center text-[12px] font-extrabold text-[#847a6c]">
+          <span className="flex-1 rounded-xl bg-paper-2 px-3 py-2 text-center text-[12px] font-extrabold text-ink-soft">
             {noPhoneLabel}
           </span>
         )}
@@ -207,7 +207,7 @@ export function SearchPage() {
         <div className="mb-4 flex items-center justify-between gap-3">
           <TuitionMandiLogo compact />
           <button
-            className="inline-flex items-center gap-1 rounded-full border border-[#e5decf] bg-white px-3 py-2 text-[12px] font-extrabold text-[#138a5e]"
+            className="inline-flex items-center gap-1 rounded-full border border-line bg-surface px-3 py-2 text-[12px] font-extrabold text-leaf"
             onClick={() => navigate('/login')}
             type="button"
           >
@@ -215,31 +215,31 @@ export function SearchPage() {
           </button>
         </div>
 
-        <h1 className="text-[22px] font-black leading-tight text-[#1c1916]">
+        <h1 className="text-[22px] font-black leading-tight text-ink">
           Aapko kaunsa tutor chahiye?
         </h1>
 
-        <form className="mt-4 rounded-2xl border border-[#e5decf] bg-white p-2 shadow-[0_12px_24px_rgba(53,38,22,0.05)]" onSubmit={onSearch}>
+        <form className="mt-4 rounded-2xl border border-line bg-surface p-2 shadow-[0_12px_24px_rgba(53,38,22,0.05)]" onSubmit={onSearch}>
           <div className="flex items-center gap-2">
             <Icon className="ml-2 h-5 w-5 text-[#82786d]" name="search" />
             <input
-              className="min-w-0 flex-1 bg-transparent py-3 text-[14px] font-semibold text-[#1c1916] outline-none placeholder:text-[#847a6c]"
+              className="min-w-0 flex-1 bg-transparent py-3 text-[14px] font-semibold text-ink outline-none placeholder:text-ink-soft"
               onChange={(event) => setQuery(event.target.value)}
               placeholder="e.g. Class 10 Maths tutor near Civil Lines"
               value={query}
             />
-            <IconButton className="h-10 w-10 border-transparent bg-[#f4f1ea] shadow-none" label="Voice search">
-              <Icon className="h-4 w-4 text-[#d6850a]" name="mic" />
+            <IconButton className="h-10 w-10 border-transparent bg-paper shadow-none" label="Voice search">
+              <Icon className="h-4 w-4 text-marigold-deep" name="mic" />
             </IconButton>
           </div>
         </form>
 
         <div className="mt-5">
-          <p className="text-[12px] font-black text-[#1c1916]">{copy.search.popular}</p>
+          <p className="text-[12px] font-black text-ink">{copy.search.popular}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             {QUICK_SEARCHES.map((item) => (
               <button
-                className="rounded-xl bg-[#fcefd2] px-3 py-2 text-[12px] font-extrabold text-[#d6850a] transition-all hover:bg-[#d6850a] hover:text-white"
+                className="rounded-xl bg-marigold-wash px-3 py-2 text-[12px] font-extrabold text-marigold-deep transition-all hover:bg-[#d6850a] hover:text-white"
                 key={item.label}
                 onClick={() => onQuick(item.queryText)}
                 type="button"
@@ -257,7 +257,7 @@ export function SearchPage() {
               <span className="grid h-7 w-7 place-items-center rounded-xl bg-[#138a5e] text-white">
                 <Icon className="h-4 w-4" name="star" />
               </span>
-              <h3 className="text-[13px] font-black text-[#138a5e]">TuitionMandi AI Assistant</h3>
+              <h3 className="text-[13px] font-black text-leaf">TuitionMandi AI Assistant</h3>
               {isFallback && (
                 <span className="rounded-full bg-[#c87b22]/10 px-2 py-0.5 text-[9px] font-black text-[#c87b22]">
                   Suggested recommendations
@@ -273,7 +273,7 @@ export function SearchPage() {
                 <div className="mt-2 flex flex-wrap gap-1.5">
                   {suggestions.map((item) => (
                     <button
-                      className="rounded-lg bg-white/70 px-2.5 py-1 text-[11px] font-black text-[#235840] border border-[#d2eadb] hover:bg-white"
+                      className="rounded-lg bg-white/70 px-2.5 py-1 text-[11px] font-black text-[#235840] border border-[#d2eadb] hover:bg-surface"
                       key={item}
                       onClick={() => onQuick(item)}
                       type="button"
@@ -289,8 +289,8 @@ export function SearchPage() {
 
         <div className="mt-8 flex items-center justify-between">
           <div>
-            <h2 className="text-[15px] font-black text-[#1c1916]">{title}</h2>
-            <p className="mt-0.5 text-[11px] font-semibold text-[#847a6c]">
+            <h2 className="text-[15px] font-black text-ink">{title}</h2>
+            <p className="mt-0.5 text-[11px] font-semibold text-ink-soft">
               {copy.search.resultSubtitle}
             </p>
           </div>
@@ -299,11 +299,11 @@ export function SearchPage() {
         {/* Dynamic premium error boundary */}
         {error && (
           <div className="mt-6 rounded-[22px] border border-[#ffd5cc] bg-[#fff3f0] p-5 text-center shadow-[0_12px_24px_rgba(216,75,63,0.06)] animate-in fade-in duration-300">
-            <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-[#ffd5cc] text-[#e14b36] shadow-sm">
+            <span className="mx-auto grid h-11 w-11 place-items-center rounded-full bg-[#ffd5cc] text-coral shadow-sm">
               <Icon className="h-6 w-6" name="report" />
             </span>
-            <h3 className="mt-4 text-[14px] font-black text-[#1c1916]">Aapka offline status / issue lag raha hai</h3>
-            <p className="mt-2 text-[12px] font-bold leading-5 text-[#847a6c]">{error}</p>
+            <h3 className="mt-4 text-[14px] font-black text-ink">Aapka offline status / issue lag raha hai</h3>
+            <p className="mt-2 text-[12px] font-bold leading-5 text-ink-soft">{error}</p>
             <button
               className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#e14b36] px-6 py-3 text-sm font-black text-white hover:bg-[#c23f33] active:scale-[0.98] transition-all shadow-[0_8px_16px_rgba(216,75,63,0.2)]"
               onClick={() => loadTeachers(query || 'Mathematics')}
@@ -317,13 +317,13 @@ export function SearchPage() {
 
         <div className="mt-4 space-y-3">
           {loading ? (
-            <div className="rounded-[18px] border border-[#e5decf] bg-white p-5 text-sm font-bold text-[#847a6c] animate-pulse">
+            <div className="rounded-[18px] border border-line bg-surface p-5 text-sm font-bold text-ink-soft animate-pulse">
               Matching tutors dhoondh rahe hain...
             </div>
           ) : teachers.length === 0 ? (
-            <div className="rounded-[18px] border border-[#e5decf] bg-white p-5 text-center">
-              <p className="text-sm font-black text-[#1c1916]">{copy.search.emptyTitle}</p>
-              <p className="mt-1 text-xs font-semibold text-[#847a6c]">{copy.search.emptySubtitle}</p>
+            <div className="rounded-[18px] border border-line bg-surface p-5 text-center">
+              <p className="text-sm font-black text-ink">{copy.search.emptyTitle}</p>
+              <p className="mt-1 text-xs font-semibold text-ink-soft">{copy.search.emptySubtitle}</p>
               <button
                 className="mt-4 rounded-xl bg-[#138a5e] px-5 py-3 text-sm font-bold text-white"
                 onClick={() => navigate('/profile/setup')}

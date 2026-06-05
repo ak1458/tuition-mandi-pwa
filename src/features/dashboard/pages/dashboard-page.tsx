@@ -5,7 +5,7 @@ import { useAuth } from '@/app/providers/auth-provider'
 import { getDashboardSummary } from '@/features/dashboard/services/dashboard-service'
 import { listStudents } from '@/features/students/services/students-service'
 import type { DashboardSummary, Student } from '@/types/domain'
-import { Icon } from '@/components/common/tuition-mandi-ui'
+import { BrandMark, Icon } from '@/components/common/tuition-mandi-ui'
 import { Avatar, Btn, Card, IconBtn, Pill, SectionLabel, StatTile, Verified } from '@/components/common/tm-kit'
 import { NotificationsPanel } from '@/components/common/notifications-panel'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
@@ -63,6 +63,8 @@ export function DashboardPage() {
   }, [teacherId])
 
   useEffect(() => {
+    // Fetch-on-mount: state updates land in a later microtask, not synchronously.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadSummary().catch(() => {})
   }, [loadSummary])
 
@@ -92,25 +94,28 @@ export function DashboardPage() {
 
       <div style={{ padding: '8px 18px 0' }}>
         {/* ink hero — today's teaching at a glance */}
-        <Card pad={0} style={{ overflow: 'hidden', background: 'var(--ink)', border: 'none', boxShadow: 'var(--shadow-ink)' }}>
+        <Card pad={0} style={{ overflow: 'hidden', background: 'var(--hero-bg)', border: 'var(--hero-border)', boxShadow: 'var(--hero-shadow)' }}>
           <div style={{ padding: 18, position: 'relative' }}>
             <div style={{ position: 'absolute', right: -20, top: -20, width: 130, height: 130, borderRadius: 999, background: 'radial-gradient(circle, rgba(242,161,20,.26), transparent 70%)' }} />
-            <div style={{ display: 'flex', gap: 16 }}>
-              <div>
-                <div className="font-mono" style={{ fontSize: 30, fontWeight: 700, color: 'var(--on-ink)', lineHeight: 1 }}>{presentToday}</div>
-                <div style={{ fontSize: 11.5, color: 'rgba(251,247,238,.66)', fontWeight: 600, marginTop: 4 }}>{copy.dashboard.presentToday}</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 16 }}>
+              <div style={{ display: 'flex', gap: 16 }}>
+                <div>
+                  <div className="font-mono" style={{ fontSize: 30, fontWeight: 700, color: 'var(--hero-fg)', lineHeight: 1 }}>{presentToday}</div>
+                  <div style={{ fontSize: 11.5, color: 'color-mix(in srgb, var(--hero-fg) 66%, transparent)', fontWeight: 600, marginTop: 4 }}>{copy.dashboard.presentToday}</div>
+                </div>
+                <div style={{ width: 1, background: 'color-mix(in srgb, var(--hero-fg) 16%, transparent)' }} />
+                <div>
+                  <div className="font-mono" style={{ fontSize: 30, fontWeight: 700, color: '#F7AE2C', lineHeight: 1 }}>{inquiryCount}</div>
+                  <div style={{ fontSize: 11.5, color: 'color-mix(in srgb, var(--hero-fg) 66%, transparent)', fontWeight: 600, marginTop: 4 }}>{copy.dashboard.inquiries}</div>
+                </div>
               </div>
-              <div style={{ width: 1, background: 'rgba(255,255,255,.14)' }} />
-              <div>
-                <div className="font-mono" style={{ fontSize: 30, fontWeight: 700, color: '#F7AE2C', lineHeight: 1 }}>{inquiryCount}</div>
-                <div style={{ fontSize: 11.5, color: 'rgba(251,247,238,.66)', fontWeight: 600, marginTop: 4 }}>{copy.dashboard.inquiries}</div>
-              </div>
+              <BrandMark size={32} />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 16, padding: '11px 13px', borderRadius: 13, background: 'rgba(255,255,255,.08)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 16, padding: '11px 13px', borderRadius: 13, background: 'color-mix(in srgb, var(--hero-fg) 9%, transparent)' }}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: 'rgba(247,174,44,.18)', color: '#F7AE2C', display: 'grid', placeItems: 'center', flexShrink: 0 }}><Icon name="clock" style={{ width: 18, height: 18 }} /></div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 10.5, color: 'rgba(251,247,238,.6)', fontWeight: 600 }}>{feePendingCount > 0 ? copy.dashboard.feePending : copy.dashboard.todayStatus}</div>
-                <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--on-ink)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div style={{ fontSize: 10.5, color: 'color-mix(in srgb, var(--hero-fg) 60%, transparent)', fontWeight: 600 }}>{feePendingCount > 0 ? copy.dashboard.feePending : copy.dashboard.todayStatus}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 700, color: 'var(--hero-fg)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {feePendingCount > 0 ? `${feePendingCount} ${feePendingCount === 1 ? 'student' : 'students'}` : `${totalStudents} ${totalStudents === 1 ? 'student' : 'students'}`}
                 </div>
               </div>
@@ -134,6 +139,21 @@ export function DashboardPage() {
             <div style={{ fontSize: 11.5, color: 'var(--ink-2)', marginTop: 1 }}>Verified tutor banein, zyada leads payein</div>
           </div>
           <Icon name="chevron" style={{ width: 18, height: 18, color: 'var(--leaf-deep)' }} />
+        </Card>
+
+        {/* AI progress report — surfaced so the AI feature is easy to find */}
+        <Card pad={13} onClick={() => navigate('/reports')} style={{ marginTop: 14, display: 'flex', alignItems: 'center', gap: 12, background: 'var(--marigold-wash)', border: 'none' }}>
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: 'var(--marigold)', color: 'var(--on-marigold)', display: 'grid', placeItems: 'center', flexShrink: 0 }}>
+            <Icon name="sparkle" style={{ width: 20, height: 20 }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <span style={{ fontSize: 13.5, fontWeight: 800, color: 'var(--ink)' }}>AI Progress Report</span>
+              <Pill tone="gold" style={{ fontSize: 9.5 }}>AI</Pill>
+            </div>
+            <div style={{ fontSize: 11.5, color: 'var(--ink-2)', marginTop: 1 }}>Parent ke liye report seconds me banayein</div>
+          </div>
+          <Icon name="chevron" style={{ width: 18, height: 18, color: 'var(--marigold-deep)' }} />
         </Card>
 
         {/* new leads (real parent inquiries) */}

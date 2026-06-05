@@ -78,7 +78,7 @@ export function RateTeacherPage() {
                     </div>
                     <Link
                         to={`/profile/${id}`}
-                        className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-muted hover:border-saffron/40 transition-colors"
+                        className="rounded-lg border border-slate-200 bg-surface px-3 py-1.5 text-[11px] font-semibold text-muted hover:border-saffron/40 transition-colors"
                     >
                         ← Profile
                     </Link>
@@ -119,7 +119,7 @@ export function RateTeacherPage() {
                             onChange={(e) => setForm({ ...form, parent_name: e.target.value })}
                             placeholder="Aapka poora naam"
                             required
-                            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
+                            className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
                         />
                     </div>
 
@@ -137,7 +137,7 @@ export function RateTeacherPage() {
                             inputMode="numeric"
                             maxLength={10}
                             pattern="[6-9][0-9]{9}"
-                            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
+                            className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
                         />
                     </div>
 
@@ -152,7 +152,7 @@ export function RateTeacherPage() {
                             onChange={(e) => setForm({ ...form, student_class: e.target.value })}
                             placeholder="Class 10"
                             required
-                            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
+                            className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
                         />
                     </div>
 
@@ -167,7 +167,7 @@ export function RateTeacherPage() {
                             onChange={(e) => setForm({ ...form, subject_taught: e.target.value })}
                             placeholder="Mathematics"
                             required
-                            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
+                            className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all"
                         />
                     </div>
 
@@ -182,7 +182,7 @@ export function RateTeacherPage() {
                             placeholder="Apna anubhav likhein..."
                             maxLength={300}
                             rows={3}
-                            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all resize-none"
+                            className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-3 text-sm text-ink placeholder:text-slate-400 focus:border-saffron focus:outline-none focus:ring-2 focus:ring-saffron/20 transition-all resize-none"
                         />
                         <p className="text-[10px] text-muted mt-1 text-right">{300 - form.review_text.length} chars left</p>
                     </div>

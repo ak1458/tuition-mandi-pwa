@@ -1,59 +1,74 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 /**
- * Detects when a new service worker is waiting to activate.
- * Returns `updateReady` flag and `applyUpdate` function.
- * Calling `applyUpdate` posts SKIP_WAITING and reloads the page.
+ * Seamless, no-nag PWA updates.
+ *
+ * Old behaviour showed a persistent "Reload" toast that reappeared on every
+ * launch/foreground until tapped — annoying. Instead we now apply a new service
+ * worker automatically and reload ONLY while the app is backgrounded, so the
+ * user is never interrupted mid-task and simply sees the fresh version the next
+ * time they return. A guard prevents any reload loop.
  */
 export function useServiceWorkerUpdate() {
-  const [updateReady, setUpdateReady] = useState(false)
-  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null)
-
   useEffect(() => {
     if (!('serviceWorker' in navigator)) return
 
-    let reg: ServiceWorkerRegistration | undefined
+    let refreshing = false
+    let controllerChanged = false
 
-    function onUpdateFound() {
-      const installing = reg?.installing
-      if (!installing) return
-      installing.addEventListener('statechange', () => {
-        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
-          setWaitingWorker(installing)
-          setUpdateReady(true)
+    const reloadWhenHidden = () => {
+      // Only reload while the tab/app is hidden → invisible, seamless refresh.
+      if (controllerChanged && !refreshing && document.visibilityState === 'hidden') {
+        refreshing = true
+        window.location.reload()
+      }
+    }
+
+    const activate = (worker: ServiceWorker) => {
+      // Ask the waiting worker to take over. It will fire `controllerchange`.
+      worker.postMessage({ type: 'SKIP_WAITING' })
+    }
+
+    const trackInstalling = (worker: ServiceWorker | null) => {
+      if (!worker) return
+      worker.addEventListener('statechange', () => {
+        // A new worker finished installing while an old one controls the page.
+        if (worker.state === 'installed' && navigator.serviceWorker.controller) {
+          activate(worker)
         }
       })
     }
 
-    navigator.serviceWorker.getRegistration().then((registration) => {
-      if (!registration) return
-      reg = registration
+    let cleanupReg: (() => void) | undefined
 
-      // Already waiting (e.g. page was open when SW updated)
-      if (registration.waiting && navigator.serviceWorker.controller) {
-        setWaitingWorker(registration.waiting)
-        setUpdateReady(true)
-        return
-      }
+    navigator.serviceWorker
+      .getRegistration()
+      .then((registration) => {
+        if (!registration) return
 
-      registration.addEventListener('updatefound', onUpdateFound)
-    }).catch(() => {})
+        // A worker is already waiting (installed before this page loaded).
+        if (registration.waiting && navigator.serviceWorker.controller) {
+          activate(registration.waiting)
+        }
 
-    // When SKIP_WAITING completes the controller changes — reload then.
-    let reloading = false
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!reloading) {
-        reloading = true
-        window.location.reload()
-      }
-    })
-  }, [])
+        const onUpdateFound = () => trackInstalling(registration.installing)
+        registration.addEventListener('updatefound', onUpdateFound)
+        cleanupReg = () => registration.removeEventListener('updatefound', onUpdateFound)
+      })
+      .catch(() => {})
 
-  function applyUpdate() {
-    if (waitingWorker) {
-      waitingWorker.postMessage({ type: 'SKIP_WAITING' })
+    const onControllerChange = () => {
+      controllerChanged = true
+      reloadWhenHidden()
     }
-  }
 
-  return { updateReady, applyUpdate }
+    navigator.serviceWorker.addEventListener('controllerchange', onControllerChange)
+    document.addEventListener('visibilitychange', reloadWhenHidden)
+
+    return () => {
+      navigator.serviceWorker.removeEventListener('controllerchange', onControllerChange)
+      document.removeEventListener('visibilitychange', reloadWhenHidden)
+      cleanupReg?.()
+    }
+  }, [])
 }

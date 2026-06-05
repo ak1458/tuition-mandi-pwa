@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Tuition Mandi — design kit primitives.
  * Faithful TSX port of the Clone-design prototype's `ui.jsx`, so screens

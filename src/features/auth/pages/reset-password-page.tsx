@@ -127,14 +127,14 @@ export function ResetPasswordPage() {
         </div>
 
         <div className="mt-8 text-center">
-          <h1 className="text-[24px] font-black leading-tight text-[#1c1916]">
+          <h1 className="text-[24px] font-black leading-tight text-ink">
             {success
               ? 'Password Updated!'
               : linkState === 'invalid'
               ? 'Link Expired'
               : 'Reset Password'}
           </h1>
-          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-[#5d544c]">
+          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-ink-2">
             {success
               ? 'Aapka password badal diya gaya hai. Ab login karein.'
               : linkState === 'invalid'
@@ -145,13 +145,13 @@ export function ResetPasswordPage() {
           </p>
         </div>
 
-        <section className="mt-6 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
+        <section className="mt-6 rounded-[22px] border border-line bg-surface p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
           {success ? (
             <div className="space-y-4">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#dcf1e7] text-[#138a5e]">
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-leaf-wash text-leaf">
                 <Icon className="h-8 w-8" name="check" />
               </div>
-              <p className="text-center text-sm font-bold text-[#138a5e]">
+              <p className="text-center text-sm font-bold text-leaf">
                 Password successfully updated.
               </p>
               <PrimaryButton onClick={() => navigate('/login', { replace: true })} type="button">
@@ -160,13 +160,13 @@ export function ResetPasswordPage() {
             </div>
           ) : linkState === 'invalid' ? (
             <div className="space-y-3 text-center">
-              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-[#fbe6e1] text-[#e14b36]">
+              <div className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-coral-wash text-coral">
                 <Icon className="h-8 w-8" name="lock" />
               </div>
-              <p className="text-sm font-bold text-[#e14b36]">
+              <p className="text-sm font-bold text-coral">
                 Link expired ya already use ho chuka hai.
               </p>
-              <p className="text-[12px] font-semibold text-[#5d544c]">
+              <p className="text-[12px] font-semibold text-ink-2">
                 Login screen par ja kar &quot;Forgot password&quot; option se naya link bhejein.
               </p>
               <PrimaryButton onClick={() => navigate('/login', { replace: true })} type="button">
@@ -174,15 +174,15 @@ export function ResetPasswordPage() {
               </PrimaryButton>
             </div>
           ) : linkState === 'checking' ? (
-            <p className="py-8 text-center text-sm font-semibold text-[#847a6c]">Verifying link…</p>
+            <p className="py-8 text-center text-sm font-semibold text-ink-soft">Verifying link…</p>
           ) : (
             <form className="space-y-3" onSubmit={handleSubmit}>
-              <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="new-password">
+              <label className="block text-[12px] font-black text-ink" htmlFor="new-password">
                 New Password
               </label>
               <input
                 autoComplete="new-password"
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold outline-none focus:border-marigold-deep"
                 id="new-password"
                 minLength={PASSWORD_MIN_LENGTH}
                 onChange={(event) => setNewPassword(event.target.value)}
@@ -190,12 +190,12 @@ export function ResetPasswordPage() {
                 type="password"
                 value={newPassword}
               />
-              <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="confirm-password">
+              <label className="block text-[12px] font-black text-ink" htmlFor="confirm-password">
                 Confirm Password
               </label>
               <input
                 autoComplete="new-password"
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold outline-none focus:border-marigold-deep"
                 id="confirm-password"
                 minLength={PASSWORD_MIN_LENGTH}
                 onChange={(event) => setConfirmPassword(event.target.value)}
@@ -205,7 +205,7 @@ export function ResetPasswordPage() {
               />
 
               {errorMessage && (
-                <p className="rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">
+                <p className="rounded-xl bg-coral-wash px-3 py-2 text-sm font-bold text-coral">
                   {errorMessage}
                 </p>
               )}

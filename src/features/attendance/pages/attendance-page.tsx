@@ -168,7 +168,7 @@ export function AttendancePage() {
   }
 
   return (
-    <div className="min-h-full bg-[#f4f1ea] pb-28">
+    <div className="min-h-full bg-paper pb-28">
       <PageHeader
         left={
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate(-1)}>
@@ -177,7 +177,7 @@ export function AttendancePage() {
         }
         right={
           <input
-            className="max-w-[128px] rounded-xl border border-[#e5decf] bg-white px-2 py-2 text-xs font-bold text-[#1c1916]"
+            className="max-w-[128px] rounded-xl border border-line bg-surface px-2 py-2 text-xs font-bold text-ink"
             onChange={(event) => setSelectedDate(event.target.value)}
             type="date"
             value={selectedDate}
@@ -188,14 +188,14 @@ export function AttendancePage() {
       />
 
       <section className="px-4 py-4">
-        <div className="rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+        <div className="rounded-[22px] border border-line bg-surface p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-[12px] font-bold text-[#847a6c]">{copy.attendance.subtitle}</p>
-              <p className="mt-1 text-[28px] font-black text-[#138a5e]">{presentCount}/{students.length || 0}</p>
+              <p className="text-[12px] font-bold text-ink-soft">{copy.attendance.subtitle}</p>
+              <p className="mt-1 text-[28px] font-black text-leaf">{presentCount}/{students.length || 0}</p>
             </div>
             <select
-              className="max-w-[150px] rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-xs font-bold text-[#1c1916]"
+              className="max-w-[150px] rounded-xl border border-line bg-surface-2 px-3 py-3 text-xs font-bold text-ink"
               onChange={(event) => setSelectedBatchId(event.target.value)}
               value={selectedBatchId}
             >
@@ -209,40 +209,40 @@ export function AttendancePage() {
           </div>
         </div>
 
-        {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
-        {message && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{message}</p>}
+        {errorMessage && <p className="mt-3 rounded-xl bg-coral-wash px-3 py-2 text-sm font-bold text-coral">{errorMessage}</p>}
+        {message && <p className="mt-3 rounded-xl bg-leaf-wash px-3 py-2 text-sm font-bold text-leaf">{message}</p>}
 
         <div className="mt-4 space-y-3">
           {isLoading ? (
-            <div className="rounded-[18px] border border-[#e5decf] bg-white p-4 text-sm font-bold text-[#847a6c]">{copy.attendance.loading}</div>
+            <div className="rounded-[18px] border border-line bg-surface p-4 text-sm font-bold text-ink-soft">{copy.attendance.loading}</div>
           ) : students.length === 0 ? (
-            <div className="rounded-[18px] border border-[#e5decf] bg-white p-6 text-center text-sm font-bold text-[#847a6c]">{copy.attendance.empty}</div>
+            <div className="rounded-[18px] border border-line bg-surface p-6 text-center text-sm font-bold text-ink-soft">{copy.attendance.empty}</div>
           ) : (
             students.map((student, index) => {
               const status = statusMap[student.id] ?? 'present'
               return (
                 <article
-                  className="flex flex-wrap items-center gap-3 rounded-[18px] border border-[#e5decf] bg-white p-3 shadow-sm"
+                  className="flex flex-wrap items-center gap-3 rounded-[18px] border border-line bg-surface p-3 shadow-sm"
                   key={student.id}
                 >
                   <PersonAvatar name={student.full_name} size="sm" variant={index % 2 ? 'female' : 'student'} />
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-1.5">
-                      <p className="truncate text-[13px] font-extrabold text-[#1c1916]">{student.full_name}</p>
+                      <p className="truncate text-[13px] font-extrabold text-ink">{student.full_name}</p>
                       <DemoTrialBadge createdAt={student.created_at} label={copy.demo.label} variant="compact" />
                     </div>
-                    <p className="text-[11px] font-semibold text-[#847a6c]">{student.class_label}</p>
+                    <p className="text-[11px] font-semibold text-ink-soft">{student.class_label}</p>
                   </div>
-                  <div className="flex rounded-xl bg-[#f4f1ea] p-1">
+                  <div className="flex rounded-xl bg-paper p-1">
                     {(['present', 'absent'] as const).map((option) => (
                       <button
                         className={cx(
                           'rounded-lg px-3 py-1.5 text-[11px] font-black',
                           status === option
                             ? option === 'present'
-                              ? 'bg-[#dcf1e7] text-[#138a5e]'
-                              : 'bg-[#fbe6e1] text-[#e14b36]'
-                            : 'text-[#847a6c]',
+                              ? 'bg-leaf-wash text-leaf'
+                              : 'bg-coral-wash text-coral'
+                            : 'text-ink-soft',
                         )}
                         key={option}
                         onClick={() => onToggleStatus(student.id, option)}

@@ -48,7 +48,7 @@ ${profileUrl}
             <button
                 type="button"
                 onClick={handleShare}
-                className="flex-1 rounded-xl border border-slate-200 bg-white py-2.5 text-center text-[11px] font-bold text-ink transition-all hover:border-saffron/40 hover:shadow-sm"
+                className="flex-1 rounded-xl border border-slate-200 bg-surface py-2.5 text-center text-[11px] font-bold text-ink transition-all hover:border-saffron/40 hover:shadow-sm"
             >
                 📤 Share Profile
             </button>

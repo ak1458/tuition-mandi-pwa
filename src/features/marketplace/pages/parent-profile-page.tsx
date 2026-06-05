@@ -4,7 +4,6 @@ import {
   PageShell,
   PrimaryButton,
   TuitionMandiLogo,
-  FamilyStudyIllustration,
 } from '@/components/common/tuition-mandi-ui'
 import { LanguageSwitcher } from '@/components/common/language-switcher'
 import { useTuitionMandiCopy } from '@/i18n/tuition-mandi-copy'
@@ -39,7 +38,13 @@ export function ParentProfilePage() {
           <LanguageSwitcher />
         </div>
 
-        <FamilyStudyIllustration className="mt-8 rounded-[28px] shadow-md" />
+        <img
+          src="/parentlogin.webp"
+          alt="Parent Login"
+          loading="eager"
+          decoding="async"
+          className="mt-8 w-full max-w-[320px] mx-auto h-auto block"
+        />
 
         <div className="mt-8 text-center">
           <h1 className="text-[22px] font-black leading-tight text-ink">Parent Login</h1>

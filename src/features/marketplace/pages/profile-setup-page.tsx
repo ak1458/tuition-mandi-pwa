@@ -102,7 +102,7 @@ function ChipSelector({
                         onClick={() => onToggle(opt)}
                         className={`rounded-xl border px-3 py-2.5 text-[12px] font-semibold tracking-wide transition-all duration-200 ${isSelected
                                 ? 'border-[#e07a2f] bg-[#e07a2f]/10 text-[#e07a2f] shadow-sm'
-                                : 'border-slate-200 bg-white text-slate-500 hover:border-[#e07a2f]/40 hover:text-slate-800'
+                                : 'border-slate-200 bg-surface text-slate-500 hover:border-[#e07a2f]/40 hover:text-slate-800'
                             }`}
                     >
                         {opt}
@@ -123,7 +123,7 @@ function Toggle({
     onChange: (v: boolean) => void
 }) {
     return (
-        <label className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 cursor-pointer hover:border-[#e07a2f]/40 transition-colors">
+        <label className="flex items-center justify-between rounded-xl border border-slate-200 bg-surface px-4 py-3 cursor-pointer hover:border-[#e07a2f]/40 transition-colors">
             <span className="text-sm font-medium text-slate-800">{label}</span>
             <div
                 onClick={(e) => {
@@ -134,7 +134,7 @@ function Toggle({
                     }`}
             >
                 <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ${checked ? 'translate-x-[22px]' : 'translate-x-[2px]'
+                    className={`inline-block h-5 w-5 transform rounded-full bg-surface shadow-md transition-transform duration-300 ${checked ? 'translate-x-[22px]' : 'translate-x-[2px]'
                         }`}
                 />
             </div>
@@ -173,7 +173,7 @@ function TextInput({
             placeholder={placeholder}
             required={required}
             maxLength={maxLength}
-            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#e07a2f] focus:outline-none focus:ring-2 focus:ring-[#e07a2f]/20 transition-all"
+            className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#e07a2f] focus:outline-none focus:ring-2 focus:ring-[#e07a2f]/20 transition-all"
         />
     )
 }
@@ -310,7 +310,7 @@ export function ProfileSetupPage() {
 
                             <div>
                                 <FormLabel>WhatsApp Number *</FormLabel>
-                                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-[#e07a2f] focus-within:ring-2 focus-within:ring-[#e07a2f]/20 transition-all">
+                                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-surface focus-within:border-[#e07a2f] focus-within:ring-2 focus-within:ring-[#e07a2f]/20 transition-all">
                                     <span className="grid w-14 place-items-center border-r border-slate-200 bg-slate-50 text-sm font-bold text-slate-500">+91</span>
                                     <input
                                         type="tel"
@@ -376,7 +376,7 @@ export function ProfileSetupPage() {
                                     placeholder="Apne baare mein kuch likhein..."
                                     maxLength={200}
                                     rows={3}
-                                    className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#e07a2f] focus:outline-none focus:ring-2 focus:ring-[#e07a2f]/20 transition-all resize-none"
+                                    className="w-full rounded-xl border border-slate-200 bg-surface px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-[#e07a2f] focus:outline-none focus:ring-2 focus:ring-[#e07a2f]/20 transition-all resize-none"
                                 />
                             </div>
                         </div>
@@ -419,7 +419,7 @@ export function ProfileSetupPage() {
                                             onClick={() => setForm({ ...form, medium: m })}
                                             className={`flex-1 rounded-xl border px-3 py-2.5 text-sm font-semibold transition-all duration-200 ${form.medium === m
                                                     ? 'border-[#e07a2f] bg-[#e07a2f]/10 text-[#e07a2f]'
-                                                    : 'border-slate-200 bg-white text-slate-500 hover:border-[#e07a2f]/40'
+                                                    : 'border-slate-200 bg-surface text-slate-500 hover:border-[#e07a2f]/40'
                                                 }`}
                                         >
                                             {m}
@@ -522,7 +522,7 @@ export function ProfileSetupPage() {
                             <button
                                 type="button"
                                 onClick={handleBack}
-                                className="flex-1 rounded-2xl border border-slate-200 bg-white py-3.5 text-sm font-semibold text-slate-500 hover:border-[#e07a2f]/40 hover:text-slate-800 transition-all"
+                                className="flex-1 rounded-2xl border border-slate-200 bg-surface py-3.5 text-sm font-semibold text-slate-500 hover:border-[#e07a2f]/40 hover:text-slate-800 transition-all"
                             >
                                 ← Peeche
                             </button>

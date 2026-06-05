@@ -60,9 +60,10 @@ export const appEnv = {
 export const hasSupabaseConfig = Boolean(appEnv.supabaseUrl && appEnv.supabaseAnonKey)
 export const isPhoneAuthEnabled = appEnv.phoneAuthEnabled
 export const isGoogleAuthEnabled = appEnv.googleAuthEnabled
+
 /**
- * Hardened for production: Local storage simulation mode is completely disabled.
- * The application strictly relies on the remote live Supabase database.
+ * Hardened for production: local-storage simulation mode is disabled. The app
+ * strictly relies on the remote live Supabase database.
  */
 export const isLocalMode = false
 

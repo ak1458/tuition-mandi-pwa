@@ -141,47 +141,47 @@ export function HelpPage() {
         {/* Quick contact strip */}
         <div className="grid grid-cols-2 gap-3">
           <a
-            className="flex flex-col items-center gap-2 rounded-2xl border border-[#ddecdf] bg-[#f4fbf6] p-4 text-center text-[#138a5e]"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#ddecdf] bg-[#f4fbf6] p-4 text-center text-leaf"
             href={buildSupportWhatsAppLink('Help request', `From: ${userName || 'TuitionMandi user'}\nContact: ${contact}`)}
             rel="noreferrer"
             target="_blank"
           >
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-[#138a5e]">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-surface text-leaf">
               <Icon className="h-5 w-5" name="whatsapp" />
             </span>
             <span className="text-[13px] font-black">WhatsApp Support</span>
-            <span className="text-[10px] font-semibold text-[#5d544c]">{SUPPORT_CONFIG.whatsappNumber}</span>
+            <span className="text-[10px] font-semibold text-ink-2">{SUPPORT_CONFIG.whatsappNumber}</span>
           </a>
           <a
-            className="flex flex-col items-center gap-2 rounded-2xl border border-[#fcefd2] bg-[#fcefd2] p-4 text-center text-[#d6850a]"
+            className="flex flex-col items-center gap-2 rounded-2xl border border-[#fcefd2] bg-marigold-wash p-4 text-center text-marigold-deep"
             href={buildSupportMailto('Help request', `From: ${userName || 'TuitionMandi user'}\nContact: ${contact}`)}
           >
-            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-[#d6850a]">
+            <span className="grid h-10 w-10 place-items-center rounded-2xl bg-surface text-marigold-deep">
               <Icon className="h-5 w-5" name="message" />
             </span>
             <span className="text-[13px] font-black">Email Support</span>
-            <span className="text-[10px] font-semibold text-[#5d544c]">{SUPPORT_CONFIG.email}</span>
+            <span className="text-[10px] font-semibold text-ink-2">{SUPPORT_CONFIG.email}</span>
           </a>
         </div>
 
-        <p className="mt-2 rounded-xl border border-[#e5decf] bg-white px-3 py-2 text-center text-[11px] font-semibold text-[#847a6c]">
+        <p className="mt-2 rounded-xl border border-line bg-surface px-3 py-2 text-center text-[11px] font-semibold text-ink-soft">
           Support hours: {SUPPORT_CONFIG.hours}
         </p>
 
         {/* Contact form */}
-        <section className="mt-6 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
-          <h2 className="text-[15px] font-black text-[#1c1916]">Send us a message</h2>
-          <p className="mt-1 text-[12px] font-semibold text-[#847a6c]">Aap form bharein — humein 24 hr mein reply mil jayega.</p>
+        <section className="mt-6 rounded-[22px] border border-line bg-surface p-4 shadow-[0_14px_30px_rgba(53,38,22,0.07)]">
+          <h2 className="text-[15px] font-black text-ink">Send us a message</h2>
+          <p className="mt-1 text-[12px] font-semibold text-ink-soft">Aap form bharein — humein 24 hr mein reply mil jayega.</p>
 
           {submitted ? (
-            <div className="mt-5 rounded-[18px] bg-[#dcf1e7] p-5 text-center">
-              <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-white text-[#138a5e]">
+            <div className="mt-5 rounded-[18px] bg-leaf-wash p-5 text-center">
+              <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-surface text-leaf">
                 <Icon className="h-7 w-7" name="check" />
               </div>
-              <p className="mt-3 text-base font-black text-[#138a5e]">Shukriya! Aapka message bhej diya gaya.</p>
-              <p className="mt-1 text-[12px] font-semibold text-[#5d544c]">TuitionMandi team jaldi se aapko contact karegi.</p>
+              <p className="mt-3 text-base font-black text-leaf">Shukriya! Aapka message bhej diya gaya.</p>
+              <p className="mt-1 text-[12px] font-semibold text-ink-2">TuitionMandi team jaldi se aapko contact karegi.</p>
               <button
-                className="mt-4 rounded-xl border border-[#ddecdf] bg-white px-4 py-2 text-sm font-bold text-[#138a5e]"
+                className="mt-4 rounded-xl border border-[#ddecdf] bg-surface px-4 py-2 text-sm font-bold text-leaf"
                 onClick={() => {
                   setSubmitted(false)
                   setSubject('')
@@ -195,24 +195,24 @@ export function HelpPage() {
           ) : (
             <form className="mt-4 space-y-3" onSubmit={handleSubmit}>
               <input
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold outline-none focus:border-marigold-deep"
                 onChange={(event) => setSubject(event.target.value)}
                 placeholder="Subject (e.g., Pro plan upgrade issue)"
                 value={subject}
               />
               <input
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold outline-none focus:border-marigold-deep"
                 onChange={(event) => setContact(event.target.value)}
                 placeholder="Phone or email for reply"
                 value={contact}
               />
               <textarea
-                className="min-h-[120px] w-full resize-none rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold leading-6 outline-none focus:border-[#d6850a]"
+                className="min-h-[120px] w-full resize-none rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold leading-6 outline-none focus:border-marigold-deep"
                 onChange={(event) => setMessage(event.target.value)}
                 placeholder="Apni problem detail mein likhein..."
                 value={message}
               />
-              {errorMessage && <p className="rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
+              {errorMessage && <p className="rounded-xl bg-coral-wash px-3 py-2 text-sm font-bold text-coral">{errorMessage}</p>}
               <button
                 className="w-full rounded-xl bg-[#d6850a] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] disabled:opacity-60"
                 disabled={submitting}
@@ -222,14 +222,14 @@ export function HelpPage() {
               </button>
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="rounded-xl border border-[#ddecdf] bg-[#f4fbf6] px-3 py-3 text-sm font-bold text-[#138a5e]"
+                  className="rounded-xl border border-[#ddecdf] bg-[#f4fbf6] px-3 py-3 text-sm font-bold text-leaf"
                   onClick={sendOnWhatsApp}
                   type="button"
                 >
                   Send on WhatsApp
                 </button>
                 <button
-                  className="rounded-xl border border-[#fcefd2] bg-[#fcefd2] px-3 py-3 text-sm font-bold text-[#d6850a]"
+                  className="rounded-xl border border-[#fcefd2] bg-marigold-wash px-3 py-3 text-sm font-bold text-marigold-deep"
                   onClick={sendOverEmail}
                   type="button"
                 >
@@ -242,15 +242,15 @@ export function HelpPage() {
 
         {/* FAQ */}
         <section className="mt-6">
-          <h2 className="text-[15px] font-black text-[#1c1916]">Frequently asked questions</h2>
+          <h2 className="text-[15px] font-black text-ink">Frequently asked questions</h2>
           <div className="mt-3 space-y-2">
             {FAQS.map((faq, index) => {
               const expanded = openFaq === index
               return (
                 <article
                   className={cx(
-                    'overflow-hidden rounded-[16px] border bg-white shadow-sm transition',
-                    expanded ? 'border-[#fcefd2] bg-[#fcfaff]' : 'border-[#e5decf]',
+                    'overflow-hidden rounded-[16px] border bg-surface shadow-sm transition',
+                    expanded ? 'border-[#fcefd2] bg-[#fcfaff]' : 'border-line',
                   )}
                   key={faq.q}
                 >
@@ -260,14 +260,14 @@ export function HelpPage() {
                     onClick={() => setOpenFaq(expanded ? null : index)}
                     type="button"
                   >
-                    <span className="text-[13px] font-black text-[#1c1916]">{faq.q}</span>
+                    <span className="text-[13px] font-black text-ink">{faq.q}</span>
                     <Icon
-                      className={cx('h-4 w-4 shrink-0 text-[#847a6c] transition-transform', expanded && 'rotate-90')}
+                      className={cx('h-4 w-4 shrink-0 text-ink-soft transition-transform', expanded && 'rotate-90')}
                       name="chevron-right"
                     />
                   </button>
                   {expanded && (
-                    <p className="border-t border-[#ece7dc] px-4 py-3 text-[12px] font-semibold leading-6 text-[#5d544c]">
+                    <p className="border-t border-[#ece7dc] px-4 py-3 text-[12px] font-semibold leading-6 text-ink-2">
                       {faq.a}
                     </p>
                   )}
@@ -279,7 +279,7 @@ export function HelpPage() {
 
         {/* CTA */}
         <button
-          className="mt-7 w-full rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#d6850a]"
+          className="mt-7 w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm font-bold text-marigold-deep"
           onClick={() => navigate('/search')}
           type="button"
         >
