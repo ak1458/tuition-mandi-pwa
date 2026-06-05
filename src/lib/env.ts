@@ -27,6 +27,17 @@ if (isProductionBuild && rawOpenRouterKey) {
   )
 }
 
+/**
+ * Which auth methods to surface in the UI. Phone OTP requires a paid SMS
+ * provider (Twilio/MSG91) configured in Supabase — until that exists, showing
+ * the tab only produces "provider is not enabled" errors, so it is OFF by
+ * default. Google requires the OAuth provider enabled in Supabase + a Google
+ * Cloud OAuth client; ON by default (the button degrades to a friendly message
+ * if the backend isn't ready yet). Flip these via env once configured.
+ */
+const phoneAuthEnabled = import.meta.env.VITE_ENABLE_PHONE_AUTH === 'true'
+const googleAuthEnabled = import.meta.env.VITE_ENABLE_GOOGLE_AUTH !== 'false'
+
 export const appEnv = {
   appEnv: rawAppEnv,
   localMode: isLocalModeFlag,
@@ -34,6 +45,8 @@ export const appEnv = {
   supabaseAnonKey,
   supabaseRedirectUrl: import.meta.env.VITE_SUPABASE_REDIRECT_URL ?? '',
   razorpayKey: import.meta.env.VITE_RAZORPAY_KEY ?? '',
+  phoneAuthEnabled,
+  googleAuthEnabled,
   /**
    * Only honoured in dev / local-mode builds. In production this is forced empty
    * so the browser never holds the key even if someone ships it.
@@ -45,6 +58,8 @@ export const appEnv = {
 }
 
 export const hasSupabaseConfig = Boolean(appEnv.supabaseUrl && appEnv.supabaseAnonKey)
+export const isPhoneAuthEnabled = appEnv.phoneAuthEnabled
+export const isGoogleAuthEnabled = appEnv.googleAuthEnabled
 /**
  * Hardened for production: Local storage simulation mode is completely disabled.
  * The application strictly relies on the remote live Supabase database.

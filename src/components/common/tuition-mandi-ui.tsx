@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode, SVGProps } from 'react'
+import { useTheme } from '@/hooks/use-theme'
 
 export function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(' ')
@@ -398,9 +399,9 @@ export function Icon({ name, className, ...props }: IconProps) {
 
 export function TuitionMandiLogo({ compact = false, tagline = 'Your Digital Register' }: { compact?: boolean; tagline?: string }) {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex min-w-0 items-center gap-2.5">
       <div
-        className="flex h-11 w-11 items-center justify-center rounded-[14px]"
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px]"
         style={{ background: 'var(--marigold-wash)', boxShadow: 'var(--shadow-sm)' }}
       >
         {/* Brand mark — open book (learning) + spark (the "aha" of a good tutor) */}
@@ -490,7 +491,7 @@ export function IconButton({
     <button
       aria-label={label}
       className={cx(
-        'grid h-10 w-10 place-items-center rounded-xl border border-[#e5decf] bg-white text-[#302820] shadow-sm active:scale-[0.98]',
+        'grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-line bg-surface text-ink shadow-sm active:scale-[0.98]',
         className,
       )}
       type="button"
@@ -509,7 +510,7 @@ export function PrimaryButton({
   return (
     <button
       className={cx(
-        'w-full rounded-xl bg-[#d6850a] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(73,48,168,0.18)] active:scale-[0.99] disabled:opacity-50',
+        'w-full rounded-xl bg-marigold-deep px-4 py-3 text-sm font-bold text-on-marigold shadow-[0_12px_24px_rgba(73,48,168,0.18)] active:scale-[0.99] disabled:opacity-50',
         className,
       )}
       type="button"
@@ -528,7 +529,7 @@ export function LinkButton({
   return (
     <a
       className={cx(
-        'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#138a5e] px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)] active:scale-[0.99]',
+        'inline-flex w-full min-w-0 items-center justify-center gap-2 rounded-xl bg-leaf px-4 py-3 text-sm font-bold text-white shadow-[0_12px_24px_rgba(13,123,81,0.18)] active:scale-[0.99]',
         className,
       )}
       {...props}
@@ -551,7 +552,7 @@ export function Chip({
     <span
       className={cx(
         'inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-[11px] font-bold',
-        active ? 'border-[#d9eee2] bg-[#dcf1e7] text-[#138a5e]' : 'border-[#e5decf] bg-white text-[#5d544c]',
+        active ? 'border-line bg-leaf-wash text-leaf-deep' : 'border-line bg-surface text-ink-2',
         className,
       )}
     >
@@ -562,8 +563,8 @@ export function Chip({
 
 export function PageShell({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <main className={cx('min-h-screen bg-[#f4f1ea] text-[#1c1916]', className)}>
-      <div className="mx-auto min-h-screen w-full max-w-[480px] bg-[linear-gradient(180deg,#f4f1ea_0%,#f4f1ea_44%,#ffffff_100%)]">
+    <main className={cx('min-h-screen overflow-x-hidden bg-paper text-ink', className)}>
+      <div className="mx-auto min-h-screen w-full max-w-[480px] overflow-x-hidden bg-[linear-gradient(180deg,var(--paper)_0%,var(--paper)_44%,var(--surface)_100%)]">
         {children}
       </div>
     </main>
@@ -584,13 +585,16 @@ export function PageHeader({
   className?: string
 }) {
   return (
-    <header className={cx('sticky top-0 z-30 border-b border-[#efe4d6] bg-[#f4f1ea]/95 px-4 py-3 backdrop-blur', className)}>
+    <header
+      className={cx('sticky top-0 z-30 border-b px-4 py-3 backdrop-blur', className)}
+      style={{ background: 'color-mix(in srgb, var(--paper) 94%, transparent)', borderColor: 'var(--line)' }}
+    >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           {left}
           <div className="min-w-0">
-            <h1 className="truncate text-base font-extrabold text-[#1c1916]">{title}</h1>
-            {subtitle && <p className="truncate text-[11px] font-medium text-[#847a6c]">{subtitle}</p>}
+            <h1 className="truncate text-base font-extrabold text-ink">{title}</h1>
+            {subtitle && <p className="truncate text-[11px] font-medium text-ink-soft">{subtitle}</p>}
           </div>
         </div>
         {right}
@@ -599,185 +603,79 @@ export function PageHeader({
   )
 }
 
+export function ThemeToggleButton({ onDark = false }: { onDark?: boolean }) {
+  const { theme, toggle } = useTheme()
+  const dark = theme === 'dark'
+
+  return (
+    <button
+      aria-label="Toggle theme"
+      className="tm-btn grid h-9 w-9 shrink-0 place-items-center rounded-xl border shadow-sm transition active:scale-[0.98]"
+      onClick={toggle}
+      style={{
+        background: onDark ? 'color-mix(in srgb, var(--surface) 88%, transparent)' : 'var(--surface)',
+        borderColor: onDark ? 'color-mix(in srgb, var(--line) 70%, transparent)' : 'var(--line)',
+        color: 'var(--ink)',
+      }}
+      type="button"
+    >
+      <Icon className="h-[18px] w-[18px]" name={dark ? 'sun' : 'moon'} />
+    </button>
+  )
+}
+
 export function FamilyStudyIllustration({ className }: { className?: string }) {
+  // Modern flat illustration. Every fill is a brand token (var(--…)) so it
+  // adapts to light AND dark via [data-theme] — no hardcoded white panels that
+  // glow in dark mode. Skin tones are fixed warm neutrals that read on both the
+  // cream (light) and warm-brown (dark) marigold-wash backdrop.
   return (
     <svg
       className={cx('w-full', className)}
-      viewBox="0 0 400 320"
+      viewBox="0 0 400 300"
       role="img"
-      aria-label="Parent and child studying together at a warm home study desk"
+      aria-label="A parent and child reading a book together"
       preserveAspectRatio="xMidYMid meet"
     >
-      <defs>
-        <linearGradient id="familySky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#fff5e2" />
-          <stop offset="55%" stopColor="#fffaf0" />
-          <stop offset="100%" stopColor="#ffffff" />
-        </linearGradient>
-        <radialGradient id="familyHalo" cx="50%" cy="36%" r="55%">
-          <stop offset="0%" stopColor="#ffe8b8" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#ffe8b8" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient id="deskWood" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#f0d9b6" />
-          <stop offset="100%" stopColor="#d9b27e" />
-        </linearGradient>
-        <linearGradient id="bookOpen" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#ffffff" />
-          <stop offset="100%" stopColor="#f4eddc" />
-        </linearGradient>
-      </defs>
+      {/* Rounded scene backdrop — adapts with theme */}
+      <rect x="0" y="0" width="400" height="300" rx="28" fill="var(--marigold-wash)" />
+      <ellipse cx="200" cy="150" rx="150" ry="120" fill="var(--surface)" opacity="0.45" />
 
-      {/* Background */}
-      <rect width="400" height="320" rx="24" fill="url(#familySky)" />
-      <ellipse cx="200" cy="118" rx="160" ry="92" fill="url(#familyHalo)" />
+      {/* Floating brand accents */}
+      <path d="M86 60l3.2 7 7.2.7-5.4 4.9 1.7 7.1-6.7-3.9-6.7 3.9 1.7-7.1-5.4-4.9 7.2-.7z" fill="var(--marigold)" />
+      <circle cx="322" cy="70" r="6" fill="var(--sky)" />
+      <path d="M312 110c-5-7-15-3.5-15 3.5 0 8.5 15 16 15 16s15-7.5 15-16c0-7-10-10.5-15-3.5z" fill="var(--coral)" />
+      <circle cx="70" cy="150" r="4.5" fill="var(--leaf)" />
 
-      {/* Decorative star / dot / heart floating cues */}
-      <path
-        d="M156 38l3 7 7 .7-5.3 4.7 1.6 7-6.3-3.7-6.3 3.7 1.6-7-5.3-4.7 7-.7z"
-        fill="#f3c64d"
-      />
-      <circle cx="244" cy="42" r="4" fill="#7da8ee" />
-      <path
-        d="M205 56c-4-6-12-3-12 3 0 7 12 13 12 13s12-6 12-13c0-6-8-9-12-3z"
-        fill="#f4a3a3"
-      />
+      {/* Ground arc the pair sits on */}
+      <path d="M48 252c0-44 60-66 152-66s152 22 152 66z" fill="var(--marigold)" opacity="0.18" />
 
-      {/* Left bookshelf hint */}
-      <rect x="22" y="92" width="48" height="98" rx="4" fill="#f4e2c4" />
-      <rect x="28" y="100" width="36" height="6" rx="2" fill="#d8b986" />
-      <rect x="28" y="112" width="28" height="6" rx="2" fill="#c89a6a" />
-      <rect x="28" y="124" width="34" height="6" rx="2" fill="#b07e58" />
-      <rect x="28" y="136" width="22" height="6" rx="2" fill="#d8b986" />
-      <rect x="28" y="148" width="30" height="6" rx="2" fill="#c89a6a" />
+      {/* PARENT — left, leaf body */}
+      <path d="M96 252c0-40 22-66 56-66s56 26 56 66z" fill="var(--leaf)" />
+      <path d="M150 196c8 6 18 6 26 0v18c-8 5-18 5-26 0z" fill="var(--leaf-deep)" />
+      <circle cx="163" cy="152" r="30" fill="#e9b48b" />
+      <path d="M133 150c0-22 14-34 30-34s30 12 30 32c-8-5-16-7-24-5-3-8-22-9-28 0-4 2-7 4-8 7z" fill="var(--ink)" />
+      <circle cx="155" cy="153" r="2.2" fill="#3a2a20" />
+      <circle cx="171" cy="153" r="2.2" fill="#3a2a20" />
+      <path d="M156 164c4 4 11 4 15 0" stroke="#bf6a4d" strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      {/* Parent arm around child / to book */}
+      <path d="M150 224c14-6 26-4 40 6" stroke="var(--leaf)" strokeWidth="16" strokeLinecap="round" fill="none" />
 
-      {/* Right potted plant */}
-      <path
-        d="M348 196c-6-18-2-44 8-58M362 196c4-22 16-38 28-46M334 196c-2-14 4-30 14-40"
-        stroke="#82a85d"
-        strokeWidth="6"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <ellipse cx="368" cy="148" rx="14" ry="9" fill="#9fc179" />
-      <ellipse cx="356" cy="158" rx="11" ry="7" fill="#9fc179" />
-      <ellipse cx="346" cy="168" rx="10" ry="7" fill="#b3d18d" />
-      <path d="M338 198h44l-4 28h-36z" fill="#d09060" />
+      {/* CHILD — right, coral body */}
+      <path d="M214 252c0-30 16-50 38-50s38 20 38 50z" fill="var(--coral)" />
+      <path d="M240 210c6 4 14 4 20 0v14c-6 4-14 4-20 0z" fill="var(--coral-deep)" />
+      <circle cx="250" cy="176" r="23" fill="#f0c39a" />
+      <path d="M227 174c0-17 11-26 23-26s23 9 23 24c-6-4-12-5-18-4-3-6-17-7-21 0-3 1-6 3-7 6z" fill="var(--ink)" />
+      <circle cx="244" cy="177" r="2" fill="#3a2a20" />
+      <circle cx="258" cy="177" r="2" fill="#3a2a20" />
+      <path d="M245 186c3 3 8 3 11 0" stroke="#bf6a4d" strokeWidth="2" fill="none" strokeLinecap="round" />
+      {/* Child arm to book */}
+      <path d="M236 230c-8-4-14-2-20 6" stroke="var(--coral)" strokeWidth="13" strokeLinecap="round" fill="none" />
 
-      {/* Photo frame on wall */}
-      <rect x="288" y="58" width="42" height="36" rx="4" fill="#ffffff" stroke="#e0c69b" strokeWidth="2" />
-      <path d="M294 86l8-10 6 6 8-12 8 16z" fill="#cfe2bd" />
-      <circle cx="318" cy="68" r="3" fill="#f3c64d" />
-
-      {/* Desk */}
-      <rect x="32" y="244" width="336" height="20" rx="6" fill="url(#deskWood)" />
-      <rect x="50" y="264" width="6" height="38" fill="#b08454" />
-      <rect x="344" y="264" width="6" height="38" fill="#b08454" />
-
-      {/* Open book between them */}
-      <path
-        d="M158 220c14-10 36-10 50 0v22c-14-8-36-8-50 0z"
-        fill="url(#bookOpen)"
-        stroke="#d8b986"
-        strokeWidth="1.5"
-      />
-      <path d="M183 220v22" stroke="#d8b986" strokeWidth="1.5" />
-      <path d="M168 226h12M168 232h10M196 226h12M196 232h10" stroke="#caa66f" strokeWidth="1.5" strokeLinecap="round" />
-
-      {/* Stack of books on left */}
-      <rect x="56" y="226" width="40" height="8" rx="2" fill="#3f7bc7" />
-      <rect x="60" y="234" width="38" height="8" rx="2" fill="#f3c64d" />
-      <rect x="58" y="242" width="40" height="6" rx="2" fill="#e07c4d" />
-
-      {/* Coffee mug right */}
-      <rect x="316" y="222" width="22" height="22" rx="4" fill="#f3eddc" stroke="#d8b986" strokeWidth="1.5" />
-      <path d="M338 226h6a4 4 0 0 1 0 8h-6" fill="none" stroke="#d8b986" strokeWidth="1.5" />
-      <path d="M324 218c0-3 2-3 2-6M330 218c0-3 2-3 2-6" stroke="#caa66f" strokeWidth="1.4" strokeLinecap="round" fill="none" />
-
-      {/* PARENT (mother) — left figure */}
-      {/* Hair back */}
-      <path
-        d="M88 122c0-30 18-48 42-48 26 0 42 20 42 50v52c-12 6-72 6-84 0z"
-        fill="#1c1411"
-      />
-      {/* Face */}
-      <ellipse cx="130" cy="134" rx="22" ry="25" fill="#e2a987" />
-      {/* Hair front */}
-      <path
-        d="M108 116c4-22 18-32 36-30s28 14 28 30c-6-2-14 0-22 4-2-6-10-10-22-4-8 4-16 4-20 0z"
-        fill="#1c1411"
-      />
-      {/* Eyes */}
-      <ellipse cx="121" cy="134" rx="1.6" ry="2" fill="#1f1612" />
-      <ellipse cx="139" cy="134" rx="1.6" ry="2" fill="#1f1612" />
-      {/* Smile */}
-      <path d="M124 144c2 3 8 4 12 0" stroke="#7a4938" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-      {/* Cardigan body */}
-      <path
-        d="M76 240c0-32 18-58 54-58s54 26 54 58H76z"
-        fill="#7466c8"
-      />
-      {/* Inner shirt */}
-      <path d="M114 188c10 8 22 8 32 0v20c-10 6-22 6-32 0z" fill="#fcfcfc" />
-      {/* Arm reaching to book */}
-      <path
-        d="M152 218c10-4 16-2 24 6"
-        stroke="#7466c8"
-        strokeWidth="14"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <ellipse cx="178" cy="226" rx="6" ry="5" fill="#e2a987" />
-      {/* Pen in hand */}
-      <path d="M180 230l8 6" stroke="#1f1612" strokeWidth="2.2" strokeLinecap="round" />
-
-      {/* CHILD — middle figure */}
-      <ellipse cx="200" cy="160" rx="18" ry="20" fill="#e8b18a" />
-      {/* Hair */}
-      <path d="M184 152c2-16 12-22 24-20s16 12 14 22c-6-2-12 0-18 4-2-4-10-8-20-6z" fill="#231811" />
-      {/* Eyes */}
-      <ellipse cx="193" cy="160" rx="1.6" ry="2" fill="#1f1612" />
-      <ellipse cx="207" cy="160" rx="1.6" ry="2" fill="#1f1612" />
-      {/* Smile */}
-      <path d="M196 168c2 3 6 3 8 0" stroke="#7a4938" strokeWidth="1.4" fill="none" strokeLinecap="round" />
-      {/* Body / orange shirt */}
-      <path d="M178 240c0-26 12-46 22-46s22 20 22 46h-44z" fill="#e87149" />
-      {/* Collar */}
-      <path d="M192 196l8 8 8-8" fill="none" stroke="#b85432" strokeWidth="2" strokeLinecap="round" />
-      {/* Arms / writing */}
-      <path d="M188 220c0-8 4-12 12-12s12 4 12 12" stroke="#e8b18a" strokeWidth="10" strokeLinecap="round" fill="none" />
-      <path d="M204 224l8 8" stroke="#1f1612" strokeWidth="2" strokeLinecap="round" />
-
-      {/* PARENT (father) — right figure */}
-      {/* Hair */}
-      <path d="M252 110c0-22 14-36 32-36s32 14 32 36v8c-10-6-54-6-64 0z" fill="#1d130f" />
-      {/* Face */}
-      <ellipse cx="284" cy="132" rx="22" ry="24" fill="#cf9472" />
-      {/* Beard */}
-      <path
-        d="M262 138c0 14 10 24 22 24s22-10 22-24c-4 6-12 8-22 8s-18-2-22-8z"
-        fill="#231811"
-      />
-      {/* Glasses */}
-      <circle cx="274" cy="130" r="6.5" fill="none" stroke="#1f1612" strokeWidth="1.6" />
-      <circle cx="294" cy="130" r="6.5" fill="none" stroke="#1f1612" strokeWidth="1.6" />
-      <path d="M280.5 130h7" stroke="#1f1612" strokeWidth="1.6" />
-      {/* Eyes inside glasses */}
-      <circle cx="274" cy="130" r="1.6" fill="#1f1612" />
-      <circle cx="294" cy="130" r="1.6" fill="#1f1612" />
-      {/* Smile */}
-      <path d="M278 144c4 3 8 3 12 0" stroke="#7a4938" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-      {/* Green shirt */}
-      <path d="M232 240c0-32 22-58 52-58s52 26 52 58h-104z" fill="#2e8b58" />
-      {/* Collar shadow */}
-      <path d="M278 188c4 4 10 4 14 0v8c-4 3-10 3-14 0z" fill="#236b44" />
-      {/* Buttons */}
-      <circle cx="285" cy="200" r="1.5" fill="#1d4d31" />
-      <circle cx="285" cy="212" r="1.5" fill="#1d4d31" />
-      <circle cx="285" cy="224" r="1.5" fill="#1d4d31" />
-      {/* Arm reaching */}
-      <path d="M252 220c-10-2-18 2-24 10" stroke="#2e8b58" strokeWidth="14" strokeLinecap="round" fill="none" />
-      <ellipse cx="226" cy="232" rx="6" ry="5" fill="#cf9472" />
+      {/* Open book they share */}
+      <path d="M158 226c20-14 44-14 64 0v30c-20-10-44-10-64 0z" fill="var(--surface)" stroke="var(--marigold-deep)" strokeWidth="2" />
+      <path d="M190 226v30" stroke="var(--marigold-deep)" strokeWidth="2" />
+      <path d="M170 234h14M170 242h11M196 234h14M196 242h11" stroke="var(--ink-soft)" strokeWidth="2" strokeLinecap="round" />
     </svg>
   )
 }
@@ -807,9 +705,9 @@ export function TeacherWelcomeIllustration({ className }: { className?: string }
         </linearGradient>
       </defs>
 
-      {/* Background */}
-      <rect width="360" height="320" rx="24" fill="url(#teacherSky)" />
-      <ellipse cx="160" cy="150" rx="170" ry="120" fill="url(#teacherHalo)" />
+      {/* Background — theme-adaptive */}
+      <rect width="360" height="320" rx="24" fill="var(--marigold-wash)" />
+      <ellipse cx="160" cy="150" rx="170" ry="120" fill="var(--surface)" opacity="0.35" />
 
       {/* Soft city silhouette in background */}
       <g opacity="0.18">
@@ -824,8 +722,8 @@ export function TeacherWelcomeIllustration({ className }: { className?: string }
       {/* Decorative blob behind the teacher */}
       <path
         d="M76 64c44-22 110-18 142 18 28 30 28 84 4 130-26 48-92 64-148 38-58-26-78-90-46-138 14-22 28-36 48-48z"
-        fill="#fceeca"
-        opacity="0.55"
+        fill="var(--surface)"
+        opacity="0.35"
       />
 
       {/* Tiny leaf bottom-left */}
@@ -915,7 +813,7 @@ export function TeacherWelcomeIllustration({ className }: { className?: string }
       {/* ── FLOATING CARDS — calendar / students / chart ── */}
       {/* Calendar card */}
       <g>
-        <rect x="248" y="46" width="76" height="64" rx="14" fill="#fffdf6" stroke="#ecdcc0" strokeWidth="1.5" />
+        <rect x="248" y="46" width="76" height="64" rx="14" fill="var(--surface)" stroke="var(--line)" strokeWidth="1.5" />
         <rect x="258" y="58" width="56" height="10" rx="3" fill="#a8893f" opacity="0.18" />
         <path d="M268 54v8M278 54v8M288 54v8M298 54v8" stroke="#a8893f" strokeWidth="2" strokeLinecap="round" />
         <circle cx="266" cy="78" r="2.2" fill="#a8893f" />
@@ -932,7 +830,7 @@ export function TeacherWelcomeIllustration({ className }: { className?: string }
 
       {/* Students card */}
       <g>
-        <rect x="262" y="124" width="74" height="62" rx="14" fill="#fffdf6" stroke="#ecdcc0" strokeWidth="1.5" />
+        <rect x="262" y="124" width="74" height="62" rx="14" fill="var(--surface)" stroke="var(--line)" strokeWidth="1.5" />
         <circle cx="287" cy="148" r="9" fill="none" stroke="#5b8e3a" strokeWidth="2.4" />
         <path d="M275 174c2-9 8-13 12-13s10 4 12 13" stroke="#5b8e3a" strokeWidth="2.4" fill="none" strokeLinecap="round" />
         <circle cx="307" cy="146" r="7" fill="none" stroke="#5b8e3a" strokeWidth="2.4" />
@@ -941,7 +839,7 @@ export function TeacherWelcomeIllustration({ className }: { className?: string }
 
       {/* Chart card */}
       <g>
-        <rect x="248" y="200" width="76" height="64" rx="14" fill="#fffdf6" stroke="#ecdcc0" strokeWidth="1.5" />
+        <rect x="248" y="200" width="76" height="64" rx="14" fill="var(--surface)" stroke="var(--line)" strokeWidth="1.5" />
         <path
           d="M260 250l8-10 8 4 8-14 8 6 8-18"
           stroke="#5b8e3a"

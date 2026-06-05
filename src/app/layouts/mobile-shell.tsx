@@ -7,8 +7,8 @@ export function MobileShell() {
   useOfflineSync()
 
   return (
-    <main className="flex min-h-screen w-full flex-col bg-[#f4f1ea]">
-      <section className="mx-auto min-h-screen w-full max-w-[480px] flex-1 overflow-y-auto bg-[#f4f1ea] pb-24">
+    <main className="flex min-h-screen w-full overflow-x-hidden flex-col bg-paper">
+      <section className="mx-auto min-h-screen w-full max-w-[480px] flex-1 overflow-x-hidden overflow-y-auto bg-paper pb-24">
         <Outlet />
       </section>
 

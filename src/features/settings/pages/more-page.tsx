@@ -28,9 +28,9 @@ interface SectionProps {
 
 function Section({ title, description, children }: SectionProps) {
   return (
-    <section className="mt-4 rounded-[20px] border border-[#e5decf] bg-white p-4 shadow-sm">
-      <h2 className="text-[13px] font-black uppercase tracking-wide text-[#1c1916]">{title}</h2>
-      {description && <p className="mt-1 text-[11px] font-semibold text-[#847a6c]">{description}</p>}
+    <section className="mt-4 rounded-[20px] border border-line bg-surface p-4 shadow-sm">
+      <h2 className="text-[13px] font-black uppercase tracking-wide text-ink">{title}</h2>
+      {description && <p className="mt-1 text-[11px] font-semibold text-ink-soft">{description}</p>}
       <div className="mt-3 space-y-2">{children}</div>
     </section>
   )
@@ -70,7 +70,7 @@ function Row({
     <Component
       className={cx(
         'flex w-full items-center gap-3 px-1 py-3 text-left',
-        divider && 'border-b border-[#ece7dc] last:border-b-0',
+        divider && 'border-b border-line last:border-b-0',
       )}
       onClick={onClick}
       type={onClick ? 'button' : undefined}
@@ -81,10 +81,10 @@ function Row({
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-black text-[#1c1916]">{label}</p>
-        {hint && <p className="mt-0.5 truncate text-[11px] font-semibold text-[#847a6c]">{hint}</p>}
+        <p className="truncate text-sm font-black text-ink">{label}</p>
+        {hint && <p className="mt-0.5 truncate text-[11px] font-semibold text-ink-soft">{hint}</p>}
       </div>
-      {trailing ?? (onClick && <Icon className="h-4 w-4 text-[#847a6c]" name="chevron-right" />)}
+      {trailing ?? (onClick && <Icon className="h-4 w-4 text-ink-soft" name="chevron-right" />)}
     </Component>
   )
 }
@@ -96,7 +96,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (nex
       aria-label={label}
       className={cx(
         'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors',
-        checked ? 'bg-[#138a5e]' : 'bg-[#d8cdba]',
+        checked ? 'bg-leaf' : 'bg-line-strong',
       )}
       onClick={() => onChange(!checked)}
       role="switch"
@@ -227,7 +227,7 @@ export function MorePage() {
   }, [copy.more.freePlan, copy.more.proPlan, isPro, planExpiresAt])
 
   return (
-    <div className="min-h-full bg-[#f4f1ea] pb-24">
+    <div className="min-h-full overflow-x-hidden bg-paper pb-24">
       <PageHeader subtitle={copy.more.subtitle} title={copy.more.title} />
 
       <section className="px-4 py-4">
@@ -321,11 +321,11 @@ export function MorePage() {
         {/* Preferences */}
         <Section title="Preferences">
           <div className="flex items-center justify-between gap-3 px-1 py-2">
-            <span className="text-sm font-black text-[#1c1916]">{copy.more.language}</span>
+            <span className="text-sm font-black text-ink">{copy.more.language}</span>
             <LanguageSwitcher />
           </div>
           <div className="flex items-center justify-between gap-3 px-1 py-2">
-            <span className="flex items-center gap-2 text-sm font-black text-[#1c1916]">
+            <span className="flex items-center gap-2 text-sm font-black text-ink">
               <Icon name={theme === 'dark' ? 'moon' : 'sun'} className="h-4 w-4 text-marigold-deep" />
               {theme === 'dark' ? 'Dark mode' : 'Light mode'}
             </span>

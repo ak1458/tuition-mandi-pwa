@@ -10,10 +10,13 @@ import {
   IconButton,
   PageShell,
   PrimaryButton,
+  ThemeToggleButton,
   TuitionMandiLogo,
+  TeacherWelcomeIllustration,
   cx,
 } from '@/components/common/tuition-mandi-ui'
-import { EducatorIllustration } from '@/components/common/illustrations'
+import { isGoogleAuthEnabled, isPhoneAuthEnabled } from '@/lib/env'
+import { friendlyAuthError } from '@/lib/auth-errors'
 import type { ConsentPayload } from '@/types/auth'
 
 type LoginMode = 'phone' | 'email'
@@ -51,7 +54,7 @@ export function LoginPage() {
   const location = useLocation()
   const state = location.state as LocationState | null
 
-  const [mode, setMode] = useState<LoginMode>('phone')
+  const [mode, setMode] = useState<LoginMode>(isPhoneAuthEnabled ? 'phone' : 'email')
   const [phoneDigits, setPhoneDigits] = useState('')
   const [otpCode, setOtpCode] = useState('')
   const [otpRequested, setOtpRequested] = useState(false)
@@ -119,7 +122,7 @@ export function LoginPage() {
       setOtpCooldown(OTP_RESEND_SECONDS)
       setInfoMessage(t('login.otpSentTo', { phone: phoneNumberE164 }))
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : t('login.otpSendFailed'))
+      setErrorMessage(friendlyAuthError(error, 'phone'))
     } finally {
       setIsSubmitting(false)
     }
@@ -143,7 +146,7 @@ export function LoginPage() {
       )
       navigate(phoneIsSignup ? '/profile/setup' : redirectTo, { replace: true })
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : t('login.otpVerifyFailed'))
+      setErrorMessage(friendlyAuthError(error, 'phone'))
     } finally {
       setIsSubmitting(false)
     }
@@ -177,7 +180,7 @@ export function LoginPage() {
         navigate(redirectTo, { replace: true })
       }
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : t('login.loginFailed'))
+      setErrorMessage(friendlyAuthError(error, 'email'))
     } finally {
       setIsSubmitting(false)
     }
@@ -199,7 +202,7 @@ export function LoginPage() {
       await resetPassword(trimmedEmail)
       setInfoMessage(`Password reset link ${trimmedEmail} par bhej diya gaya hai. Email check karein.`)
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Reset email nahi bhej paye.')
+      setErrorMessage(friendlyAuthError(error, 'email'))
     } finally {
       setIsSubmitting(false)
     }
@@ -221,7 +224,7 @@ export function LoginPage() {
 
       await signInWithGoogle(consentPayload)
     } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : copy.login.googleError)
+      setErrorMessage(friendlyAuthError(error, 'google'))
     } finally {
       setIsSubmitting(false)
     }
@@ -238,7 +241,10 @@ export function LoginPage() {
           <IconButton className="h-9 w-9" label="Back" onClick={() => navigate('/')}>
             <Icon className="h-4 w-4" name="arrow-left" />
           </IconButton>
-          <LanguageSwitcher />
+          <div className="flex items-center gap-2">
+            <ThemeToggleButton />
+            <LanguageSwitcher />
+          </div>
         </div>
 
         <div className="mt-4">
@@ -246,48 +252,50 @@ export function LoginPage() {
         </div>
 
         <div className="mt-6 flex items-center justify-center py-2">
-          <EducatorIllustration className="w-full max-w-[280px] xs:max-w-[320px] h-auto" />
+          <TeacherWelcomeIllustration className="w-full max-w-[280px] xs:max-w-[320px] h-auto" />
         </div>
 
         <div className="mt-6 text-center">
-          <h1 className="text-[24px] font-black leading-tight text-[#1c1916]">{copy.login.title}</h1>
-          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-[#5d544c]">
+          <h1 className="text-[24px] font-black leading-tight text-ink">{copy.login.title}</h1>
+          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-6 text-ink-2">
             {copy.login.subtitle}
           </p>
         </div>
 
-        <section className="mt-5 rounded-[22px] border border-[#e5decf] bg-white p-4 shadow-[0_14px_32px_rgba(53,38,22,0.07)]">
-          <div className="grid grid-cols-2 rounded-xl bg-[#f4f1ea] p-1">
-            {[
-              ['phone', copy.common.mobile],
-              ['email', copy.common.email],
-            ].map(([value, label]) => (
-              <button
-                className={cx(
-                  'rounded-lg px-3 py-2 text-sm font-black',
-                  mode === value ? 'bg-white text-[#d6850a] shadow-sm' : 'text-[#847a6c]',
-                )}
-                key={value}
-                onClick={() => {
-                  setMode(value as LoginMode)
-                  setErrorMessage('')
-                  setInfoMessage('')
-                  setShowForgotPassword(false)
-                }}
-                type="button"
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+        <section className="mt-5 rounded-[22px] border border-line bg-surface p-4 shadow-md">
+          {isPhoneAuthEnabled && (
+            <div className="grid grid-cols-2 rounded-xl bg-paper p-1">
+              {[
+                ['phone', copy.common.mobile],
+                ['email', copy.common.email],
+              ].map(([value, label]) => (
+                <button
+                  className={cx(
+                    'rounded-lg px-3 py-2 text-sm font-black',
+                    mode === value ? 'bg-surface text-marigold-deep shadow-sm' : 'text-ink-soft',
+                  )}
+                  key={value}
+                  onClick={() => {
+                    setMode(value as LoginMode)
+                    setErrorMessage('')
+                    setInfoMessage('')
+                    setShowForgotPassword(false)
+                  }}
+                  type="button"
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
 
           {mode === 'phone' && !otpRequested && (
             <form className="mt-4 space-y-3" onSubmit={sendOtp}>
               <div className="flex items-center justify-between">
-                <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="phone">
+                <label className="block text-[12px] font-black text-ink" htmlFor="phone">
                   {copy.login.mobileNumber}
                 </label>
-                <label className="flex items-center gap-1 text-[10px] font-bold text-[#847a6c]">
+                <label className="flex items-center gap-1 text-[10px] font-bold text-ink-soft">
                   <input
                     checked={phoneIsSignup}
                     className="h-3 w-3"
@@ -297,8 +305,8 @@ export function LoginPage() {
                   New account?
                 </label>
               </div>
-              <div className="flex overflow-hidden rounded-xl border border-[#e5decf] bg-[#fffdf8] focus-within:border-[#d6850a]">
-                <span className="grid w-14 place-items-center border-r border-[#e5decf] text-sm font-black text-[#d6850a]">+91</span>
+              <div className="flex overflow-hidden rounded-xl border border-line bg-surface-2 focus-within:border-marigold-deep">
+                <span className="grid w-14 place-items-center border-r border-line text-sm font-black text-marigold-deep">+91</span>
                 <input
                   className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold outline-none"
                   id="phone"
@@ -317,11 +325,11 @@ export function LoginPage() {
 
           {mode === 'phone' && otpRequested && (
             <form className="mt-4 space-y-3" onSubmit={verifyOtp}>
-              <label className="block text-[12px] font-black text-[#1c1916]" htmlFor="otp">
+              <label className="block text-[12px] font-black text-ink" htmlFor="otp">
                 OTP
               </label>
               <input
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none focus:border-marigold-deep"
                 id="otp"
                 inputMode="numeric"
                 maxLength={6}
@@ -340,7 +348,7 @@ export function LoginPage() {
 
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#847a6c]"
+                  className="rounded-xl border border-line bg-surface px-4 py-3 text-sm font-bold text-ink-soft"
                   onClick={() => setOtpRequested(false)}
                   type="button"
                 >
@@ -351,7 +359,7 @@ export function LoginPage() {
                 </PrimaryButton>
               </div>
               <button
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-4 py-3 text-sm font-bold text-[#d6850a] disabled:opacity-50"
+                className="w-full rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm font-bold text-marigold-deep disabled:opacity-50"
                 disabled={otpCooldown > 0 || isSubmitting}
                 onClick={sendOtp}
                 type="button"
@@ -364,7 +372,7 @@ export function LoginPage() {
           {mode === 'email' && !showForgotPassword && (
             <form className="mt-4 space-y-3" onSubmit={handleEmailSubmit}>
               {/* Login / Sign Up toggle */}
-              <div className="grid grid-cols-2 rounded-lg bg-[#f4f1ea] p-0.5">
+              <div className="grid grid-cols-2 rounded-lg bg-paper p-0.5">
                 {[
                   ['login', 'Login'] as const,
                   ['signup', 'Sign Up'] as const,
@@ -372,7 +380,7 @@ export function LoginPage() {
                   <button
                     className={cx(
                       'rounded-md px-3 py-1.5 text-[12px] font-black',
-                      emailAction === value ? 'bg-white text-[#d6850a] shadow-sm' : 'text-[#847a6c]',
+                      emailAction === value ? 'bg-surface text-marigold-deep shadow-sm' : 'text-ink-soft',
                     )}
                     key={value}
                     onClick={() => {
@@ -389,7 +397,7 @@ export function LoginPage() {
 
               <input
                 autoComplete="email"
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none placeholder:text-ink-soft focus:border-marigold-deep"
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="teacher@example.com"
                 type="email"
@@ -397,7 +405,7 @@ export function LoginPage() {
               />
               <input
                 autoComplete={emailAction === 'signup' ? 'new-password' : 'current-password'}
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none placeholder:text-ink-soft focus:border-marigold-deep"
                 minLength={emailAction === 'signup' ? PASSWORD_MIN_LENGTH : undefined}
                 onChange={(event) => setPassword(event.target.value)}
                 placeholder={emailAction === 'signup' ? `Create password (min ${PASSWORD_MIN_LENGTH} chars)` : copy.common.password}
@@ -423,7 +431,7 @@ export function LoginPage() {
 
               {emailAction === 'login' && (
                 <button
-                  className="w-full text-center text-[12px] font-bold text-[#d6850a]"
+                  className="w-full text-center text-[12px] font-bold text-marigold-deep"
                   onClick={() => {
                     setShowForgotPassword(true)
                     setForgotEmail(email)
@@ -440,13 +448,13 @@ export function LoginPage() {
 
           {mode === 'email' && showForgotPassword && (
             <form className="mt-4 space-y-3" onSubmit={handleForgotPassword}>
-              <p className="text-[12px] font-black text-[#1c1916]">Reset Password</p>
-              <p className="text-[11px] font-semibold text-[#5d544c]">
+              <p className="text-[12px] font-black text-ink">Reset Password</p>
+              <p className="text-[11px] font-semibold text-ink-2">
                 Email dalein — hum reset link bhejenge.
               </p>
               <input
                 autoComplete="email"
-                className="w-full rounded-xl border border-[#e5decf] bg-[#fffdf8] px-3 py-3 text-sm font-semibold outline-none focus:border-[#d6850a]"
+                className="w-full rounded-xl border border-line bg-surface-2 px-3 py-3 text-sm font-semibold text-ink outline-none placeholder:text-ink-soft focus:border-marigold-deep"
                 onChange={(event) => setForgotEmail(event.target.value)}
                 placeholder="teacher@example.com"
                 type="email"
@@ -454,7 +462,7 @@ export function LoginPage() {
               />
               <div className="grid grid-cols-2 gap-2">
                 <button
-                  className="rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#847a6c]"
+                  className="rounded-xl border border-line bg-surface px-4 py-3 text-sm font-bold text-ink-soft"
                   onClick={() => {
                     setShowForgotPassword(false)
                     setErrorMessage('')
@@ -472,28 +480,33 @@ export function LoginPage() {
           )}
 
           {/* Google OAuth */}
-          <button
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#e5decf] bg-white px-4 py-3 text-sm font-bold text-[#1c1916]"
-            onClick={handleGoogleLogin}
-            type="button"
-          >
-            <span className="grid h-5 w-5 place-items-center rounded-full border border-[#e5decf] text-[12px] font-black text-[#e14b36]">G</span>
-            {copy.login.google}
-          </button>
+          {isGoogleAuthEnabled && (
+            <>
+              <button
+                className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-line bg-surface px-4 py-3 text-sm font-bold text-ink disabled:opacity-50"
+                disabled={isSubmitting}
+                onClick={handleGoogleLogin}
+                type="button"
+              >
+                <span className="grid h-5 w-5 place-items-center rounded-full border border-line text-[12px] font-black text-coral">G</span>
+                {copy.login.google}
+              </button>
 
-          {/* If user clicks Google but consent block not shown above, surface a hint */}
-          {!showConsentBlock && (
-            <p className="mt-2 text-center text-[10px] font-semibold text-[#847a6c]">
-              Google se sign in karne par <button className="underline text-[#d6850a]" onClick={() => navigate('/privacy')} type="button">Privacy</button> aur <button className="underline text-[#d6850a]" onClick={() => navigate('/terms')} type="button">Terms</button> accept honge.
-            </p>
+              {/* If user clicks Google but consent block not shown above, surface a hint */}
+              {!showConsentBlock && (
+                <p className="mt-2 text-center text-[10px] font-semibold text-ink-soft">
+                  Google se sign in karne par <button className="underline text-marigold-deep" onClick={() => navigate('/privacy')} type="button">Privacy</button> aur <button className="underline text-marigold-deep" onClick={() => navigate('/terms')} type="button">Terms</button> accept honge.
+                </p>
+              )}
+            </>
           )}
 
-          {infoMessage && <p className="mt-3 rounded-xl bg-[#dcf1e7] px-3 py-2 text-sm font-bold text-[#138a5e]">{infoMessage}</p>}
-          {errorMessage && <p className="mt-3 rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>}
+          {infoMessage && <p className="mt-3 rounded-xl bg-leaf-wash px-3 py-2 text-sm font-bold text-leaf-deep">{infoMessage}</p>}
+          {errorMessage && <p className="mt-3 rounded-xl bg-coral-wash px-3 py-2 text-sm font-bold text-coral">{errorMessage}</p>}
         </section>
 
         <button
-          className="mt-5 w-full text-center text-[13px] font-black text-[#138a5e]"
+          className="mt-5 w-full text-center text-[13px] font-black text-leaf"
           onClick={() => navigate('/search')}
           type="button"
         >
@@ -514,8 +527,8 @@ interface ConsentBlockProps {
 
 function ConsentBlock({ agreeToTerms, setAgreeToTerms, confirmAge, setConfirmAge, navigate }: ConsentBlockProps) {
   return (
-    <div className="space-y-2 rounded-xl border border-[#fcefd2] bg-[#fcefd2] p-3">
-      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-[#5d544c]">
+    <div className="space-y-2 rounded-xl border border-marigold-wash bg-marigold-wash p-3">
+      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-ink-2">
         <input
           checked={agreeToTerms}
           className="mt-0.5 h-4 w-4 shrink-0"
@@ -525,17 +538,17 @@ function ConsentBlock({ agreeToTerms, setAgreeToTerms, confirmAge, setConfirmAge
         />
         <span>
           Maine{' '}
-          <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/privacy')} type="button">
+          <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/privacy')} type="button">
             Privacy Policy
           </button>{' '}
           aur{' '}
-          <button className="text-[#d6850a] underline font-bold" onClick={() => navigate('/terms')} type="button">
+          <button className="text-marigold-deep underline font-bold" onClick={() => navigate('/terms')} type="button">
             Terms
           </button>{' '}
           padhi hain aur accept karta hoon.
         </span>
       </label>
-      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-[#5d544c]">
+      <label className="flex items-start gap-2 text-[11px] font-semibold leading-5 text-ink-2">
         <input
           checked={confirmAge}
           className="mt-0.5 h-4 w-4 shrink-0"

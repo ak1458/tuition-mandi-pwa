@@ -33,31 +33,31 @@ export function ParentProfilePage() {
 
   return (
     <PageShell>
-      <section className="min-h-full bg-[#f4f1ea] px-5 pb-24 pt-5">
+      <section className="min-h-full bg-paper px-5 pb-24 pt-5">
         <div className="flex items-center justify-between">
           <TuitionMandiLogo tagline="Parent Portal" />
           <LanguageSwitcher />
         </div>
 
-        <FamilyStudyIllustration className="mt-8 rounded-[28px] shadow-[0_20px_40px_rgba(106,68,25,0.06)]" />
+        <FamilyStudyIllustration className="mt-8 rounded-[28px] shadow-md" />
 
         <div className="mt-8 text-center">
-          <h1 className="text-[22px] font-black leading-tight text-[#1c1916]">Parent Login</h1>
-          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-relaxed text-[#5d544c]">
+          <h1 className="text-[22px] font-black leading-tight text-ink">Parent Login</h1>
+          <p className="mx-auto mt-2 max-w-[280px] text-[13px] font-semibold leading-relaxed text-ink-2">
             Apna mobile number daliyie. Saved teachers aur inquiries aapke device par yaad rakhe jayenge.
           </p>
         </div>
 
-        <section className="mt-6 rounded-[24px] border border-[#e5decf] bg-white p-5 shadow-[0_12px_30px_rgba(53,38,22,0.05)]">
+        <section className="mt-6 rounded-[24px] border border-line bg-surface p-5 shadow-md">
           <form className="space-y-4" onSubmit={handleContinue}>
             <div>
-              <label className="mb-1.5 block text-[12px] font-black text-[#1c1916]" htmlFor="parent-phone">
+              <label className="mb-1.5 block text-[12px] font-black text-ink" htmlFor="parent-phone">
                 {copy.login.mobileNumber}
               </label>
-              <div className="flex overflow-hidden rounded-xl border border-[#e5decf] bg-[#fffdf8] focus-within:border-[#d6850a]">
-                <span className="grid w-14 place-items-center border-r border-[#e5decf] text-sm font-black text-[#d6850a]">+91</span>
+              <div className="flex overflow-hidden rounded-xl border border-line bg-surface-2 focus-within:border-marigold-deep">
+                <span className="grid w-14 place-items-center border-r border-line text-sm font-black text-marigold-deep">+91</span>
                 <input
-                  className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold outline-none"
+                  className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm font-semibold text-ink outline-none placeholder:text-ink-soft"
                   id="parent-phone"
                   inputMode="numeric"
                   maxLength={10}
@@ -70,21 +70,21 @@ export function ParentProfilePage() {
             </div>
 
             {errorMessage && (
-              <p className="rounded-xl bg-[#fbe6e1] px-3 py-2 text-sm font-bold text-[#e14b36]">{errorMessage}</p>
+              <p className="rounded-xl bg-coral-wash px-3 py-2 text-sm font-bold text-coral">{errorMessage}</p>
             )}
 
             <PrimaryButton type="submit">{copy.login.continueMobile}</PrimaryButton>
 
             <div className="grid grid-cols-2 gap-2">
               <button
-                className="rounded-xl border border-[#e5decf] bg-white px-3 py-3 text-sm font-bold text-[#d6850a]"
+                className="rounded-xl border border-line bg-surface px-3 py-3 text-sm font-bold text-marigold-deep"
                 onClick={() => navigate('/saved')}
                 type="button"
               >
                 Saved teachers ({savedTeachers.length})
               </button>
               <button
-                className="rounded-xl border border-[#e5decf] bg-white px-3 py-3 text-sm font-bold text-[#138a5e]"
+                className="rounded-xl border border-line bg-surface px-3 py-3 text-sm font-bold text-leaf"
                 onClick={() => navigate('/messages')}
                 type="button"
               >
@@ -94,9 +94,9 @@ export function ParentProfilePage() {
           </form>
         </section>
 
-        <p className="mt-8 text-center text-[11px] font-semibold text-[#847a6c]">
+        <p className="mt-8 text-center text-[11px] font-semibold text-ink-soft">
           Are you a teacher?{' '}
-          <button className="font-black text-[#d6850a]" onClick={() => navigate('/login')} type="button">
+          <button className="font-black text-marigold-deep" onClick={() => navigate('/login')} type="button">
             Login as Teacher
           </button>
         </p>

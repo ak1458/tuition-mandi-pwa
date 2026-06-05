@@ -22,10 +22,10 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs text-muted">{t('language.title')}:</span>
+    <div className="flex min-w-0 items-center gap-2">
+      <span className="hidden text-xs text-muted min-[380px]:inline">{t('language.title')}:</span>
       <select
-        className="rounded-lg border border-[#dfd4bc] bg-white px-2 py-1 text-xs"
+        className="max-w-[76px] rounded-lg border border-line bg-surface px-1.5 py-1 text-xs font-semibold text-ink min-[380px]:max-w-[104px] min-[380px]:px-2"
         onChange={(e) => handleChange(e.target.value as LanguageCode)}
         value={currentLang}
       >
