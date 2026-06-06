@@ -1,5 +1,28 @@
 # Auth Setup Checklist — what YOU must configure
 
+## ⏱ LIVE STATUS (probed against the real backend 2026-06-06)
+From `GET /auth/v1/settings` on `iqcnhgwrxijxylcctlsg`:
+- **Email**: `enabled` ✅ — verified: a real signup succeeded + queued a confirmation email. Email confirmation is **required** (`mailer_autoconfirm:false`).
+- **Google**: `disabled` ❌ — `/authorize?provider=google` → 400. Needs the steps below + a Google Cloud OAuth client.
+- **Phone**: `disabled` ❌ — but `sms_provider` is already `twilio`, so it's half-set. Needs: Twilio creds saved, a **sender**, and the **Phone toggle ON**.
+
+### I cannot finish these from here
+Enabling auth providers is a Supabase **Auth-config** action (dashboard / Management API) that my tools don't expose, and Google needs an OAuth client only you can create. So the two items below are **yours to click** — then I verify + deploy.
+
+### Exactly what's still needed from you
+1. **Google** → create OAuth client in Google Cloud, paste Client ID + Secret into Supabase (§2 below).
+2. **Twilio** → in Supabase Auth → Providers → Phone:
+   - Account SID: `ACe0fca…` (the one in `twillio_creds.md`) · Auth Token: from that file.
+   - **Sender — MISSING:** Supabase needs a **Messaging Service SID (`MG…`)** or a **Twilio phone number** to send FROM. You gave an API Key (`SK…`) + secret, not a sender. Provide the `MG…` SID or a Twilio number.
+   - Toggle **Enable Phone provider = ON**.
+   - India: number/Messaging Service must be **DLT-registered** and the account **out of trial**, or SMS to real users fails.
+   - When done, `/auth/v1/settings` will show `"phone":true` and I'll flip `VITE_ENABLE_PHONE_AUTH=true` + re-verify.
+3. **Security (from advisor):** enable **Leaked Password Protection** (Auth → Policies) and apply migration `0019_revoke_definer_rpc_execute.sql` (`supabase db push`).
+4. **Cleanup:** delete my verification user `qa.verify.9f3@gmail.com` (Auth → Users), and **delete `twillio_creds.md` + rotate the Twilio Auth Token** (it's exposed in chat/file).
+
+---
+
+
 The app code is already correct. The login errors you saw are **backend
 configuration**, not bugs:
 
