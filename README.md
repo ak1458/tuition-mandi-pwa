@@ -1,20 +1,12 @@
-![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
-
-### Stack
-
-React • PWA • Supabase • Edge Functions • Offline-First
-
-### Local development
-
-Check the `CONTRIBUTING.md` file for details on how to set up the project locally and start contributing.
-
----
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![Supabase](https://img.shields.io/badge/Supabase-Edge%20Functions-3FCF8E?logo=supabase)](https://supabase.com)
+[![PWA](https://img.shields.io/badge/PWA-Offline--First-5A0FC8?logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps)
+[![i18n](https://img.shields.io/badge/i18n-Hindi%20%2B%20English-FF9800)]()
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ﻿# ðŸš€ Tuition Mandi PWA
 
 Production PWA for tuition teachers with offline mutation queue, Supabase Edge Functions, and AI progress reports.
-
-![React](https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=react&logoColor=black) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white) ![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=flat-square)
 
 ## ðŸŒŸ Features
 * Comprehensive implementation tailored for modern standards.
