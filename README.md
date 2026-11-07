@@ -1,106 +1,39 @@
-# TuitionMandi App (Tuition Teacher PWA)
+# TuitionMandi
 
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev)
-[![Supabase](https://img.shields.io/badge/Supabase-Edge%20Functions-3FCF8E?logo=supabase)](https://supabase.com)
-[![PWA](https://img.shields.io/badge/PWA-Offline--First-5A0FC8?logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps)
-[![i18n](https://img.shields.io/badge/i18n-Hindi%20%2B%20English-FF9800)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+A teacher workflow PWA for student records, attendance, fees, and progress reports, with local mode and Supabase integration.
 
+[![React: UI](https://img.shields.io/badge/React-UI-149ECA?style=flat-square&logo=react&logoColor=white)](https://react.dev)
+[![TypeScript: Typed](https://img.shields.io/badge/TypeScript-Typed-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Supabase: Backend](https://img.shields.io/badge/Supabase-Backend-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-64748B?style=flat-square)](LICENSE)
 
-**🤖 AI CONNECTORS: Please read `AI_CONTEXT.md` in the root of this repository before proceeding! It contains the master roadmap, current state, and index of all design documents.**
+[Architecture](ARCHITECTURE.md) · [Deployment](DEPLOYMENT.md) · [Audit notes](PRODUCTION-AUDIT.md)
 
-Production-focused PWA for tuition teachers with:
-- Phone OTP primary auth
-- Attendance + fees tracking
-- AI Hindi progress report generation (Supabase Edge Function)
-- Offline queue for attendance/fee mutations
-- Installable PWA shell
+## What is here
 
-## 1) Local App Run
+- Student, batch, attendance, and fee workflows.
+- Offline mutation queues and installable PWA assets.
+- English/Hindi localization and teacher/parent marketplace screens.
+- Supabase functions for progress reports, plan upgrades, exports, and account deletion.
 
-```bash
-npm install
-npm run dev:host
-```
-
-Open: `http://localhost:5173`
-
-## 2) Environment Setup
-
-Use `.env.local` (already configured for local mode) or copy `.env.example`:
-
-```env
-VITE_APP_ENV=development
-VITE_LOCAL_MODE=true
-VITE_SUPABASE_URL=
-VITE_SUPABASE_ANON_KEY=
-VITE_SUPABASE_REDIRECT_URL=http://localhost:5173
-VITE_RAZORPAY_KEY=
-VITE_OPENROUTER_API_KEY=...
-VITE_OPENROUTER_MODEL=google/gemini-2.0-flash-lite-001
-VITE_OPENROUTER_REFERER=https://smilefotilo.com
-VITE_OPENROUTER_TITLE=TuitionMandi App
-```
-
-`VITE_LOCAL_MODE=true` lets the app run without Supabase using local storage.
-
-## 3) OpenRouter
-
-OpenRouter direct API calls are used only in local mode (`VITE_LOCAL_MODE=true`) when `VITE_OPENROUTER_API_KEY` is set.
-For production, keep `VITE_OPENROUTER_API_KEY` empty so provider credentials are not exposed in browser bundles.
-
-## 4) Plan + Paywall
-
-- `profiles.plan`: `free | pro`
-- `profiles.plan_expires_at`: nullable timestamp
-- Free plan limits:
-  - Max 15 active students
-  - Max 1 AI report
-- Pro plan unlocks unlimited students and AI reports.
-- Client-side upgrade modal + server-side enforcement both enabled.
-
-## 5) Supabase Deployment (Later)
-
-Install/login/link (interactive):
+## Run locally
 
 ```bash
-npx supabase login
-npx supabase link --project-ref YOUR_PROJECT_REF
+git clone https://github.com/ak1458/tuition-mandi-pwa.git
+cd tuition-mandi-pwa
+npm ci
+cp .env.example .env.local
+npm run dev
 ```
 
-Push schema + deploy function:
+Use `VITE_LOCAL_MODE=true` for local storage mode. Configure Supabase for connected operation. Keep provider secrets in server-side function configuration; `VITE_*` variables are included in browser builds, so the optional local provider key must remain empty in production.
 
-```bash
-npm run supabase:db:push
-npm run supabase:functions:deploy
-```
+## Engineering notes
 
-Or use helper script:
+Feature modules live in `src/features/`; authentication and routing live in `src/app/`; database and function code live in `supabase/`.
 
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\deploy.ps1 -ProjectRef YOUR_PROJECT_REF
-```
+Available checks: `npm run lint` and `npm run build`. See [architecture](ARCHITECTURE.md), [deployment](DEPLOYMENT.md), and the [recorded production audit](PRODUCTION-AUDIT.md) for setup and outstanding verification. Local mode does not establish that authentication, billing, or report integrations work in a deployed environment.
 
-Set required function secrets:
+## License
 
-```bash
-npx supabase secrets set GEMINI_API_KEY=YOUR_GEMINI_FLASH_API_KEY RAZORPAY_KEY_ID=YOUR_RAZORPAY_KEY_ID RAZORPAY_KEY_SECRET=YOUR_RAZORPAY_KEY_SECRET
-```
-
-## 6) Build and Preview
-
-```bash
-npm run build
-npm run preview:host
-```
-
-## 7) Local Server Smoke Test (PowerShell)
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\local-server-test.ps1
-```
-
-## 8) Manual QA
-
-Use project-level checklist outside this folder:
-- `../MANUAL_QA_CHECKLIST_V1.md`
+Copyright © 2026 Ashraf Kamal. Reuse is restricted by [LICENSE](LICENSE).
